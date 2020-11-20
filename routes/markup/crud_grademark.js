@@ -2,9 +2,6 @@
 
 'use strict';
 const config = require('../../config');
-
-const PHP_HOST= config.get('PHP_HOST');
-const PHP_PORT= config.get('PHP_PORT');
 const express = require('express');
 const images = require('./images');
 const http = require('http');

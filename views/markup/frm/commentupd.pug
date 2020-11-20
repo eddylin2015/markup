@@ -50,7 +50,6 @@ script(type="text/javascript").
                 postjson.push(json[i]);
               }
             }
-            //$( "#ShowMsg" ).dialog("open");
             $.post( "/internal/markup/studcourse/editpingyu/pingyusavejson?fn=!{fn}&aot=!{aot}",{data: postjson})
                .done( function(data) { ShowMsg(data);  });
             $( this ).dialog( "close" );
@@ -63,7 +62,6 @@ script(type="text/javascript").
   function commentupdfrm_completeCallback(response) {
     response=response.replace('<pre style="word-wrap: break-word; white-space: pre-wrap;">', "").replace("</pre>", "");
     document.getElementById('commentupdfrm_nr').innerHTML = parseInt(document.getElementById('commentupdfrm_nr').innerHTML) + 1;
-    
     let sid=$('#commentupdfrmSID').text();
     let classno=$('#commentupdfrmCLASSNO').text();
     let json=JSON.parse( response);

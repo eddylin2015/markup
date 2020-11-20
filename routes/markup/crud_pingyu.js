@@ -212,8 +212,6 @@ router.post('/studcourse/editpingyu/pingyusavejson', images.multer.single('image
         Response.write( "Update  Records:" );        
         Response.end( entity.toString());
     });
-    //let jsondata=JSON.stringify( {myclass:myclass,"saot": saot,"paot": paot, "stafref": staf,"mycrs": req.user.marksys_info[2], "data":req.body.data});    
-    //netutils.HttpPost(PHP_HOST, '/a/markups/mrscourse/pingyusavejson.php',jsondata, Response);
 });
 router.get('/studcourse/regpingyu/:book', (req, Response, next) => {
     if(!CheckCLASSNO(req,req.params.book)){ res.end("no right");return;}

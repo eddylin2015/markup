@@ -128,7 +128,6 @@ async function UpdatePingYuArr( aot, alist, cb) {
     pool.getConnection(async function (err, connection) {
         if (err) { cb(err); return; }
         let cnt = 0;
-        //console.log(alist)
         if (alist) {
             for (let i = 0; i < alist.length; i++) {
                 let ar_ = alist[i];
@@ -153,7 +152,6 @@ async function UpdatePingYuArr( aot, alist, cb) {
     });
 }
 //Reg Stud Grade Course 
-
 
 module.exports = {
     createSchema: createSchema,
