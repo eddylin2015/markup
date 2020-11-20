@@ -1,0 +1,193 @@
+script(src='/javascripts/cool/py-data-utf.js')
+script(src='/javascripts/cool/pycode.txt.js')
+div(title=` 輸入評語 Comment dialog  `,style="display:none;background-color:black;color:white;")#commentupdfrm
+  p 用戶: #{profile.id} 上傳評語
+  span#commentupdfrmSID
+  span _
+  span#commentupdfrmCLASSNO
+  span 評語
+  form(enctype="multipart/form-data",action="/internal/dashboard/sharefiles/mrsMarkXls", method="post",onSubmit="return AIM.submit(this, {'onStart' : commentupdfrm_startCallback, 'onComplete' : commentupdfrm_completeCallback})")
+    input(type="hidden",name="title")
+    input(type="file" name="upload" multiple="multiple")
+    input(type="submit" value="提交",style="color:black;",onclick="commentupdfrm_submit_wait(this)")#commentupdfrm_submit
+  p
+    span#commentupdfrm_nr 0
+    span#commentupdfrm_json
+div(title="Basic dialog",style="display:none")#commentupdfrm_res
+  div#commentupdfrm_res_XLSTable
+  div(style="display:block")#commentupdfrm_res_XLSJSON       
+script(type="text/javascript").
+  function commentupdfrm_submit_wait(x)  { $('#'+x.id).hide(); setTimeout(()=>{$('#'+x.id).show(); }, 3000);  }    
+
+  function OpenCommentupdfrm(sid,classno){
+  $('#commentupdfrmSID').text(sid);
+  $('#commentupdfrmCLASSNO').text(classno);
+  $("#commentupdfrm" ).dialog("open");
+  }
+  $(document).ready(function(){
+    $("#commentupdfrm").dialog( { autoOpen: false,height:  $(window).height()*0.9,  width:'90%', });  
+    $("#commentupdfrm_res").dialog( { autoOpen: false, height:  $(window).height()*0.9,  width:'90%',
+      buttons: [
+        {
+          text: "Update Record",  icon: "ui-icon-heart",
+          click: function() {
+            ShowMsg("Loading ... ");
+            let sid=$('#commentupdfrmSID').text();
+            let classno=$('#commentupdfrmCLASSNO').text();
+            let json=JSON.parse( document.getElementById('commentupdfrm_res_XLSJSON').innerHTML);
+            let postjson=new Array();
+            console.log(json);
+            for(i=0;i<json.length;i++)
+            {
+              console.log(sid,classno);
+              console.log( json[i]);
+              if( sid=='' || ( sid== json[i][1] && classno== json[i][2]  ))
+              if(json[i][1].match(/^[0-9]+$/)){
+                json[i][6]=TPingYuPrase_prase(json[i][6]);
+                json[i][7]=TPingYuPrase_prase(json[i][7]);
+                json[i][8]=TPingYuPrase_prase(json[i][8]);
+                console.log(json[i]);
+                postjson.push(json[i]);
+              }
+            }
+            //$( "#ShowMsg" ).dialog("open");
+            $.post( "/internal/markup/studcourse/editpingyu/pingyusavejson?fn=!{fn}&aot=!{aot}",{data: postjson})
+               .done( function(data) { ShowMsg(data);  });
+            $( this ).dialog( "close" );
+          }
+        }
+      ]
+    });
+  });  
+  function commentupdfrm_startCallback() { return true; }
+  function commentupdfrm_completeCallback(response) {
+    response=response.replace('<pre style="word-wrap: break-word; white-space: pre-wrap;">', "").replace("</pre>", "");
+    document.getElementById('commentupdfrm_nr').innerHTML = parseInt(document.getElementById('commentupdfrm_nr').innerHTML) + 1;
+    
+    let sid=$('#commentupdfrmSID').text();
+    let classno=$('#commentupdfrmCLASSNO').text();
+    let json=JSON.parse( response);
+    let tbl="<table>";
+    let postjson=new Array();
+    console.log(sid);
+    for(let i=0;i<json.length;i++){
+      let rowsid=json[i][1];
+      if( sid=='' || rowsid == 'session_id' || ( sid== rowsid && classno== json[i][2]  )){
+      tbl+="<tr>"; 
+      for(let j=0;j<json[i].length;j++){ json[i][j]=TPingYuPrase_prase(json[i][j]); tbl+="<td>"+json[i][j]+"</td>"; } 
+      tbl+="</tr>";
+      if(rowsid!='session_id')  postjson.push(json[i]);
+      }
+    }
+    tbl+="</table>";
+    document.getElementById('commentupdfrm_res_XLSTable').innerHTML=tbl;
+    document.getElementById('commentupdfrm_res_XLSJSON').innerHTML = JSON.stringify(postjson);
+    $( "#commentupdfrm_res" ).dialog("open");
+  }
+  
+  function Xcode(c)
+  {
+    let c_ = c.split('-');
+    c=c_[0];
+    console.log(c_);
+    for(i=0;i<pingyu_txt_code.length;i++)
+    {
+      sa =pingyu_txt_code[i].split('=');
+      if(sa[0]==c.toUpperCase()) {
+        if(c_.length>1){
+          let res=sa[1];
+          for(let i=1;i<c_.length;i++){
+            res =res.replace("%s",c_[i]);
+          }
+          return res;
+        }else
+        {
+           return sa[1];
+        }
+      }
+    }
+    alert("錯誤評語碼:"+c);
+    //return "<"+c+">";
+    return "&lt;"+c+"&gt;";
+  }
+  function TPingYuPrase_prase(py1)  
+  {
+    if(!py1) return "";
+    var temp1="";
+    var temp2="";
+    var pos1=0;
+    var pos2=0;
+    var result="";
+    if(py1.replace(/^\s+|\s+$/g, "")=='') return "";
+    //let csize=1;pos1=py1.indexOf('<');pos2=py1.indexOf('>');
+    let csize=4;
+    pos1=py1.indexOf('&lt;');
+    pos2=py1.indexOf('&gt;');
+    while(pos1>=0 && pos2>=0)
+    {
+      temp1=py1.substring(0,pos1);
+      //console.log(temp1);
+      temp2=py1.substring(pos1+csize,pos2)
+      //console.log(temp2);
+      py1=py1.substring(pos2+csize,py1.length);
+      //console.log(py1);
+      result+=temp1;
+      result+=Xcode(temp2);
+      //pos1=py1.indexOf('<');
+      //pos2=py1.indexOf('>');
+      pos1=py1.indexOf('&lt;');
+      pos2=py1.indexOf('&gt;');
+    }
+    if(py1.length>0) result+=py1;
+    return result;
+  }
+  $('#savebtn').click(function(event){
+  		closeedit();
+  		var json={};
+  		var result_set="";
+  		var error_msg="";
+  		var decode_error_msg="";
+  		$('.M').each(function(i){
+  			if(OriginalData[$(this).attr('id')]!=$(this).text())
+  			{
+  				decode=$(this).text();
+  				var old_decode_txt=decode;
+  				decode=TPingYuPrase_prase(decode);
+  				//console.log(decode);
+  				//console.log(old_decode_txt);
+  				if(decode != null)
+  				$(this).text(decode);
+  				var pingyu_maxchar=87
+  				if($(this).text().length>pingyu_maxchar)
+  				{ 
+  				if($(this).parent().next('tr').children('td:first').text() == $(this).parent().children('td:first').text())
+  				{
+  				next_td=$(this).parent().next('tr').children('td:first');
+  				for(i=0;i<10;i++){
+  				//console.log(next_td.attr('id'));
+  				if(next_td.attr('id') != undefined && next_td.attr('id').split('_')[0]==$(this).attr('id').split('_')[0]){
+  					next_td.text($(this).text().substring(pingyu_maxchar,$(this).text().length)+next_td.text());
+  					$(this).text($(this).text().substring(0,pingyu_maxchar));
+  					//console.log($(this).parent().next('tr').children('td:first').text());
+  					break;
+  				}
+  				next_td=next_td.next();
+  				}
+  				}else{alert('一行評語超過'+pingyu_maxchar+'個字節.請把部份覆制到第二行?'+decode);}
+  				}
+  				if( _Field_Defs==null){
+  				    json[$(this).attr('id')]=$(this).text().replace(/^\s+|\s+$/g, "");
+  				}else{
+  				    fH=$(this).attr('id').split('_')[0];
+  				    if(_Field_Defs[fH]=='INT' && ! $(this).text().match(/^[0-9]+$/))
+  			      {
+  					    error_msg= '錯誤:輸入整數!\n'+$(this).attr('id')+'\n'+ $(this).text() ;
+  				    }else{
+  					    json[$(this).attr('id')]=$(this).text().replace(/^\s+|\s+$/g, "");
+  				    }
+  				}
+  			}	
+  		});
+  	});
+
+ 

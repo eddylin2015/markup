@@ -1,0 +1,49 @@
+extends ../base.pug  
+
+block content
+  script(src='/javascripts/jquery.js')
+  script(src='/javascripts/bootstrap.js')  
+  script(src='/jquery-ui-dist/jquery-ui.js')
+  link(rel='stylesheet', href='/jquery-ui-dist/jquery-ui.css')
+  script(src='/javascripts/cool/attend/autocomplete_studlist.js')
+  h3 #{action} 重新運算
+  form(method="POST")
+    .form-group
+      label(for="title") 班別
+      -r=profile.id != 2002024
+      input.form-control(type="text", name="cno", id="cno", value=classno, readonly=r)
+    .form-group
+      label(for="title") 學段
+      input.form-control(type="text", name="SID", id="SID", value=allowOpSect)
+    .form-group
+      label(for="title") 起始日期
+      input.form-control(type="text", name="sdate", id="sdate", value='')
+    .form-group
+      label(for="title") 結束日期
+      input.form-control(type="text", name="edate", id="edate", value='')
+    .form-group
+      label(for="title") Opt
+      select(name="CalcFlag")
+        option(value='true')  重新運算
+    .form-group
+      label(for="title") Opt
+      select(name="saveFlag")
+        //option(value='true') 儲存結果
+        option(value="false") 測試結果
+    button.btn.btn-success(type="submit") submit
+  script.
+    function GetCurrDate()
+    {
+      var now = new Date();
+      var datestr= now.getFullYear() + "/";
+      if (now.getMonth()+1 <10 ) datestr+="0";
+      datestr+=now.getMonth()+1 + "/"
+      if (now.getDate() <10 ) datestr+="0";
+      datestr+=now.getDate() ;
+      return datestr;
+    }
+    $(function() {
+      $( '#sdate' ).val(GetCurrDate());
+      $( '#edate' ).val(GetCurrDate());
+    });    
+

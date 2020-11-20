@@ -1,0 +1,178 @@
+mixin page1(dt)
+  table(class='stb')
+    tr(style='height:1.2cm')
+      td(class='page1school') 澳門浸信中學
+    tr(style='height:1cm')
+      td(class='page1term',style='margin:0;padding:0;text-align:center;font-size:26px')= `${dt.term} 學習評估報告`
+
+  table(class='stb')
+    tr(style='height:0.8cm;margin:0px;padding-bottom:0px;')
+      td(style='width:40%')
+        span(style='font-size:22px;')= `姓名: ${dt.c_name}`
+      td(style='width:40%')
+        span( style='font-size:22px;')= `班別: ${dt.classno}`
+      td(style='width:20%')
+        span(style='font-size:22px;')= `學號: ${dt.seat}`  
+
+  table(class='stb')
+    tr(class='stb' style='height:1cm')
+      td(class='stb1' rowspan=2 style='width:1.5cm;text-align:center;margin:0;padding:0;letter-spacing: 5px;') 範疇
+      td(class='stb1' style='margin:0;width-mini:1.5cm;height:0.8cm') 德育
+      td(class='stb1' colspan=2 style='width:1.8cm') 語文
+      td(class='stb2', rowspan=2) 自<br>然<br>觀<br>察
+      td(class='stb2', rowspan=2) 數<br>理<br>邏<br>輯
+      td(class='stb2',  rowspan=2) 音<br>樂<br>活<br>動
+      td( class='stb2', rowspan=2) 體<br>能<br>活<br>動
+      td(class='stb2' , rowspan=2) 美<br>藝<br>活<br>動
+      td(class='stb2' , rowspan=2) 學<br>校<br>生<br>活
+      td(class='stb2' , rowspan=2) 家<br>庭<br>生<br>活
+      td(class='stb2',  rowspan=2) 清<br>潔<br>衛<br>生
+      td( class='stb2',  rowspan=2) 守<br>時<br>勤<br>到
+      tr(class='stb' style='height:2.8cm')
+        td( class='stb3') 聖<br><br>經
+        td( class='stb3') 中<br><br>文
+        td(class='stb3') 英<br><br>文
+      tr(class='stb' style='height:1cm')
+        td( class='stb1') 
+          span(align='center' style='text-align:center;margin:0;padding:0;letter-spacing: 5px;') 表現
+        td(class='stb1')=  dt.G1
+        td(class='stb1')=  dt.G2
+        td(class='stb1')=  dt.G3
+        td(class='stb1')=  dt.G4
+        td(class='stb1')= dt.G5
+        td(class='stb1')= dt.G6
+        td(class='stb1')= dt.G7
+        td(class='stb1')= dt.G8
+        td(class='stb1')= dt.G9
+        td(class='stb1')= dt.G10
+        td(class='stb1')= dt.G11
+        td(class='stb1')= dt.G12
+      tr(class='stb' style='height:9cm')
+        td(class='stb1')
+          p(  align=center style='text-align:center') 評<span></span></p>
+          p(  align=center style='text-align:center') <span><p>&nbsp;</p></span></p>
+          p(  align=center style='text-align:center') 語</p>
+        td(class='stb1_pingyu'  colspan=12 valign=top)
+          p(class='stb1_pingyu', style='text-indent: 25.45px;') <p>&nbsp;</p>
+          p(class='stb1_pingyu', style='text-indent: 42.00px;')= dt.reviews
+          p(class='stb1_pingyu', style='text-indent:.25px;')= dt.later
+          p(class='stb1_pingyu', style='text-indent:.25px;')= dt.upclass
+      tr( class='stb' style='height:4cm')
+        td( class='stb1')
+          p( align=center style='text-align:center') 獲<br>取<br>奬<br>項</p>
+        td(class='stb1_honor' colspan=12)
+          p(  style='margin-right:27.85px; margin-left:25.55px;text-indent:.25px;')= dt.honor1
+          p(  style='margin-right:27.85px; margin-left:25.55px;text-indent:.25px;')= dt.honor2
+          p(  style='margin-right:27.85px; margin-left:25.55px;text-indent:.25px;')= dt.honor3
+      tr(style='height:1cm')
+        td( colspan=13 style='font-size:16px;border:solid black 1.0px;')
+          p &nbsp;表現說明<span>: A </span>表現優異<span > B</span>表現良好<span > C</span>表現尚可<span> D</span>有待改進 </p>
+    table(class='ks10')
+      tr 
+       td( colspan=6)
+         p( style='font-size:16px') <span>&nbsp;派發日期 :</span>
+           span= dt.PDate
+         br
+         br
+         br
+      tr
+        td <span>校長: </span>
+        td
+        td <span>主任: </span>
+        td
+        td <span>班主任: </span>
+        td 
+
+
+mixin page0(dt)
+  div &nbsp;
+  p &nbsp;
+  table( border=0 cellspacing=3 cellpadding=0)
+    tr
+      td <p>&nbsp;</p>
+    tr
+      td(style='padding:.75pt .75pt .75pt .75pt')
+        p( style='text-align:center;padding-bottom:10px;') <img  src="/mk/png/mbclogo_outline_new_0.png"></p>
+    tr
+      td( style='text-align:center') 
+        span(class='page0title') 學習發展評估報告
+    tr
+      td(style='text-align:center') 
+        span(class='page0title')= dt.term
+  p &nbsp;
+  p &nbsp;
+  table(style='width:10cm;font-size:28.0pt;')
+    tr
+      td(class='page0titleName', style='width:2.2cm') 姓名:
+      td(class='page0titleName', style='width:7.8cm;border-bottom:solid black 1.0pt;text-align:center')= dt.c_name
+    tr
+      td(class='page0titleName') 班別:
+      td(class='page0titleName',style='border-bottom:solid black 1.0pt;text-align:center')= dt.classno  
+    tr
+      td(class='page0titleName') 學號:
+      td(class='page0titleName',style='border-bottom:solid black 1.0pt;text-align:center')= dt.seat
+  p &nbsp;</p>
+  p &nbsp;</p>
+  
+  p(class='page0Address') 校址:澳門黑沙環中街410號&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;電話:28470838，28470388</p>
+
+html
+  head
+    meta(charset="utf-8")
+    title mbc
+    script(src="//code.jquery.com/jquery-1.10.2.js")
+    link(rel="stylesheet" href="/mk/css/kscore.css")
+    style.
+      span.page0title{
+        font-family:'標楷體';
+        font-weight:bold;
+        font-size:26.0pt;
+      }
+      td.page0titleName{
+        font-family:'新細明體';
+        font-size:24.0pt;
+        margin-top:10pt;
+        padding-top:10pt;
+      }
+      p.page0Address{
+        font-family:'細明體';
+        font-size:16.0pt;
+      }
+      td.page1school{
+        font-family:'新細明體';
+        margin:0;
+        padding:0;
+        text-align:center;
+        font-weight: bold;
+        font-size:26px
+      }
+      td.page1term{
+        font-family:'細明體';
+        margin:0;
+        padding:0;
+        text-align:center;
+        font-weight: bold;
+        font-size:22px;
+      }
+      td.page1course{
+        font-family:'新細明體';
+        font-size:16px;
+      }
+  body
+    -i=0;
+    while i< (books.length/2)
+      - book = books[i]
+
+      div(style='margin-left:1cm;page-break-after:always', align='center')     
+        + page0(books[i*2])
+      div(style='margin-left:1.7cm;page-break-after:always', align='center')
+        + page0(books[i*2+1])
+      div(style="margin-left:-2cm;page-break-after:always", align='center')
+        + page1(books[i*2+1])
+      if (i*2+1) < (books.length-1)
+        div(style='margin-left:-1.6cm;page-break-after:always', align='center')
+          + page1(books[i*2])
+      else
+        div(style='margin-left:-1.6cm;', align='center')
+          + page1(books[i*2])
+      - i++

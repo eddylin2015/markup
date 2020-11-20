@@ -1,0 +1,54 @@
+﻿//- attend
+extends ../base.pug
+block content
+  style.
+    td{border: 1px solid grey; margin-left: 10px; margin-right: 10px;padding-left: 10px; padding-right: 10px;}
+    a  { color: #e1e1ea ; }
+
+  table#listclass
+    tr
+      - fn = ["CNO","JSON","XLS","成績單1","成績單2","成績單3","總表1","總表2","總表3","總表","成績分數","成績等級"]
+      each c in fn
+        td= c
+    each c in books
+      tr
+        td= c.classno
+        td
+          a( href=`/internal/markup/markstatisrawdata/${c.classno}/json`)
+            span json
+        td
+          a(href=`/internal/markup/markstatisrawdata/${c.classno}/xls`)
+            span xls
+        td
+          a(href=`/internal/markup/markstatisrawdata/${c.classno}/termreport?term=1`)
+            span term1
+        td    
+          a(href=`/internal/markup/markstatisrawdata/${c.classno}/termreport?term=2`)
+            span term2
+        td    
+          a(href=`/internal/markup/markstatisrawdata/${c.classno}/termreport?term=3`)
+            span term3                            
+        td    
+          a(href=`/internal/markup/markstatisxls/${c.classno}?term=1`)
+            span 1段總成績                                        
+        td    
+          a(href=`/internal/markup/markstatisxls/${c.classno}?term=2`)
+            span 2段總成績                                        
+        td    
+          a(href=`/internal/markup/markstatisxls/${c.classno}?term=3`)
+            span 3段總成績                                                                            
+        td    
+          a(href=`/internal/markup/markstatisxls/${c.classno}`)
+            span 學年總成績                                        
+        td    
+          a(href=`/internal/markup/markstatisrawdata/${c.classno}/finalreport?term=3&mg=m`)
+            span finaldocx                            
+        td    
+          a(href=`/internal/markup/markstatisrawdata/${c.classno}/finalreport?term=3&mg=g`)
+            span finaldocx                            
+            
+            
+  script.
+    $(document).ready(function(){
+    $("tr:odd").css("background-color", "black");
+    });

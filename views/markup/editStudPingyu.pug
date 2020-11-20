@@ -1,0 +1,188 @@
+extends ./baseEditStudCourse.pug
+mixin link(aotid,aot, idname, grade)
+  if aot==3 && aotid==2
+    td.M(id=idname,style='width:250px;')= grade
+  else if aotid==aot
+    td.M(id=idname,style='width:250px;')= grade
+  else 
+    td(style='width:250px;')= grade
+block content
+  style.
+    textarea
+    {
+    display:block;
+    margin-top:0px;
+    margin-left:0px;
+    margin-right:0px;
+    margin-bottom:0px;
+    background-color:#EFFBFB;
+    text-align:left;
+    font-size:16px;
+    }
+    input[type="text"]
+    {
+    width:300px;
+    display:block;
+    margin-bottom:1px;
+    background-color:yellow;
+    }
+    td.M
+    {
+    border: 1px solid green;
+    
+    width:320px;
+    height:25px;
+    text-align:left;
+    }
+
+  div#tableContent
+    table#EDUTBL
+      tbody
+        tr
+          td(class="ID_EDU_TD") I
+          td(class="ID_EDU_TD") 座
+          td(class="ID_EDU_TD") 姓名
+          td(class="ID_EDU_TD") L
+          td#MA_H(style='min-width:340px;text-align:center;border: 1px solid green;') 第一段評語
+          td#MB_H(style='min-width:340px;text-align:center;border: 1px solid green;') 第二段評語
+          td#MC_H(style='min-width:340px;text-align:center;border: 1px solid green;') 學年評語
+        each book in books
+          tr
+            td.ID_EDU_TD(style='max-width:5px;font-size:1em;')
+              p(style="overflow-y: scroll;height:1px;width: 1px; word-break: break-all;")= book.stud_ref
+            td= book.seat
+            td= book.c_name
+            td= book.lineno   
+            +link(aot,1,`MA_pingyu1_${book.stud_ref}`,book.py1)
+            +link(aot,2,`MB_pingyu2_${book.stud_ref}`,book.py2)
+            +link(aot,3,`MC_pingyu3_${book.stud_ref}`,book.py3)
+  script(language="javascript", src="/javascripts/cool/pycode.txt.js")
+  script.
+    var fn='!{fn}';
+    var PostUrl='pingyusave?aot=!{aot}&fn=!{fn}';    
+    var returnUrl='/internal/markup/pingyu/!{course_d_id}?r=true&fn=!{fn}';
+    var CGIExpXlsUrl='/internal/PublicAPI/ExpXls.php?charset=utf-8&filename=pingyu_!{fn}.xls';
+    $('#returnUrlBtn').attr("href", returnUrl);
+    $('#CSVFrmPOST').attr("action", CGIExpXlsUrl);
+    function Xcode(c)
+    {
+       let c_ = c.split('-');
+       c=c_[0];
+       for(i=0;i<pingyu_txt_code.length;i++)
+       {
+          sa =pingyu_txt_code[i].split('=')
+          if(sa[0]==c.toUpperCase())
+          {
+            if(c_.length>1){
+              let res=sa[1];
+              for(let i=1;i<c_.length;i++) res =res.replace("%s",c_[i]);
+              return res;
+            }else{
+                return sa[1];
+            }
+          }
+        }
+        alert("錯誤評語碼:"+c);
+        return "<"+c+">";
+      }
+    function TPingYuPrase_prase(py1)  
+    {
+        var temp1="", temp2="";
+        var pos1=0, pos2=0;
+        var result="";
+        if(py1.replace(/^\s+|\s+$/g, "")=='') return "";
+        pos1=py1.indexOf('<');
+        pos2=py1.indexOf('>');
+        while(pos1>=0 && pos2>=0)
+        {
+            temp1=py1.substring(0,pos1);
+            temp2=py1.substring(pos1+1,pos2)
+            py1=py1.substring(pos2+1,py1.length);
+            result+=temp1;
+            result+=Xcode(temp2);
+            pos1=py1.indexOf('<');
+            pos2=py1.indexOf('>');
+        }
+        if(py1.length>0) result+=py1;
+        return result;
+    }    
+    $(document).ready(function(){
+      BindingPastFrm("PastFrm","PastFrmText","EDUTBL");
+      BindingCSVFrm('CSVFrm','CSVFrm_Link','tableContent','data.xls');
+      BindingFunctions("editbtn","nullsavebtn","pastbtn","exportbtn",'readmodebtn');
+      BindingHead_EditMode(['MA_H','MB_H','MC_H']);
+      //BindingFieldDefsIntegerFields({'MA':'INT','MB':'INT','MC':'INT','MD':'INT','ME':'INT','MF':'INT','MG':'DEC'});
+      GenOriginalData();
+      $('#savebtn').click(function(event){
+        closeedit();
+        var json={};
+        var result_set="";
+        var error_msg="";
+        var decode_error_msg="";
+        $('.M').each(function(i){
+          if(OriginalData[$(this).attr('id')]!=$(this).text())
+          {
+            decode=$(this).text();
+            var old_decode_txt=decode;
+            decode=TPingYuPrase_prase(decode);
+            console.log(decode)
+            if(decode != null)
+            $(this).text(decode);
+            var pingyu_maxchar=87
+            if($(this).text().length>pingyu_maxchar)
+            { 
+            if($(this).parent().next('tr').children('td:first').text() == $(this).parent().children('td:first').text())
+            {
+            next_td=$(this).parent().next('tr').children('td:first');
+            for(i=0;i<10;i++){
+            if(next_td.attr('id') != undefined && next_td.attr('id').split('_')[0]==$(this).attr('id').split('_')[0]){
+              next_td.text($(this).text().substring(pingyu_maxchar,$(this).text().length)+next_td.text());
+              $(this).text($(this).text().substring(0,pingyu_maxchar));
+              break;
+            }
+            next_td=next_td.next();
+            }
+            }else{alert('一行評語超過'+pingyu_maxchar+'個字節.請把部份覆制到第二行?'+decode);}
+            }
+            if( _Field_Defs==null){
+            json[$(this).attr('id')]=$(this).text().replace(/^\s+|\s+$/g, "");
+            }else{
+                fH=$(this).attr('id').split('_')[0];
+                if(_Field_Defs[fH]=='INT' && ! $(this).text().match(/^[0-9]+$/))
+                  {
+                  error_msg= '錯誤:輸入整數!\n'+$(this).attr('id')+'\n'+ $(this).text() ;
+                }else{
+              json[$(this).attr('id')]=$(this).text().replace(/^\s+|\s+$/g, "");
+                }
+            }
+          }  
+        });
+        if( PostUrl != null){
+        $.post( PostUrl, { datajson: JSON.stringify(json), type: "json",keycode:'125678985432' })
+          .done(function( data ) {
+            alert( "Update Data : " + data + error_msg);
+            for(var key in json){ 
+          OriginalData[key]="-1";
+            }
+          });
+        }else{
+          alert("constructing ... POST:\n"+JSON.stringify(json));
+        }
+      });
+      $('#prtbtn').click(function(){
+            var toPrint = document.getElementById('tableContent');
+            var popupWin = window.open('', '_blank', 'width=350,height=150,location=no,left=200px');
+            popupWin.document.open();
+            popupWin.document.write('<html><title>'+"prt"+'</title><link rel="stylesheet" type="text/css" href="../print.css" /></head><body onload="window.print()">')
+        popupWin.document.write('<h4>'+fn+'</h4>');
+            popupWin.document.write(toPrint.innerHTML);
+            popupWin.document.write('</html>');
+            popupWin.document.close();
+      });
+    });  
+   
+
+
+
+
+  

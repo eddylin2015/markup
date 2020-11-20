@@ -1,0 +1,107 @@
+﻿//- Copyright 2017, Google, Inc.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+extends ../base.pug
+
+block content
+  script(src='/javascripts/cool/grid_export.js')
+  -var fn= cfield + "必修科目資料表";
+  form(method="POST", enctype="multipart/form-data",action=`/internal/PublicAPI/ExpXls.php?charset=utf-8&filename=${fn}.xls`)#CSVFrmPOST
+    .form-group.hidden
+      input.form-control(type="text", name="CSVFrmPOSTNAME", id="CSVFrmPOSTVALUE")
+  h3= fn 
+  .btn-group
+    a(href='#', class='btn btn-primary btn-sm')#exportbtn
+      i.glyphicon.glyphicon-download-alt
+      span  匯出Xls
+    a(href='#', class='btn btn-primary btn-sm')#prtbtn
+      i.glyphicon.glyphicon-print
+      span Print 
+  div#tableContent
+    table
+
+      tr
+        td |CLASS|
+        td SEAT
+        td |_NAME_|
+        td |_COURSE_|
+        td |測1|
+        td |考1|
+        td |小計1|
+        td |測2|
+        td |考2|
+        td |小計2|
+        td |測3|
+        td |考3|
+        td |小計3|
+        td | 總分 |
+        td |no|
+        td |_NAME_|
+        td |_COURSE_|
+        td |測1|
+        td |考1|
+        td |測2|
+        td |考2|
+        td |測3|
+        td |考3|
+      -var r0data=["","","","","","","","",""];
+      each book in books
+        if book.total < 1  
+          -r0data[0]=book.seat
+          -r0data[1]= book.c_name
+          -r0data[2]= book.coursename
+          -r0data[3]= book.t1
+          -r0data[4]= book.e1
+          -r0data[5]= book.t2
+          -r0data[6]= book.e2
+          -r0data[7]= book.t3
+          -r0data[8]= book.e3
+        if book.total > 0
+          tr
+            td= book.classno
+            td= book.seat
+            td= book.c_name
+            td= book.coursename
+            td(align='right')= book.t1
+            td(align='right')= book.e1
+            td(align='right')= book.total1
+            td(align='right')= book.t2
+            td(align='right')= book.e2
+            td(align='right')= book.total2
+            td(align='right')= book.t3
+            td(align='right')= book.e3
+            td(align='right')= book.total3
+            td(align='right')= book.total
+            -var flag=r0data[0]==book.seat
+            if flag
+              each v in r0data
+                td= v
+
+  script(type="text/javascript").
+    $(document).ready(function(){
+      $('#prtbtn').click(function(){
+        var divid= document.getElementById('tableContent');
+        var popupWin = window.open('', '_blank', 'width=350,height=150,location=no,left=200px');
+        popupWin.document.open();
+        popupWin.document.write('<html><title>prt</title></head><body>');
+        popupWin.document.write('#{fn}');
+        popupWin.document.write(divid.innerHTML);
+        popupWin.print();
+        popupWin.document.close();
+      });
+      $('#exportbtn').click(function(){
+        var txt= document.getElementById('tableContent').innerHTML;
+        document.getElementById('CSVFrmPOSTVALUE').value = txt;
+        document.getElementById('CSVFrmPOST').submit();
+      });
+    });      

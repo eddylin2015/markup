@@ -1,0 +1,83 @@
+﻿//- Copyright 2017, Google, Inc.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+extends ./baseEditStudCourse.pug
+mixin link(aotid,aot, idname, grade)
+  if aot==3 && aotid==2
+    td.M(id=idname,align='right')= grade
+  else if aotid==aot
+    td.M(id=idname,align='right')= grade
+  else 
+    td= grade
+block content
+  div#tableContent
+    table#EDUTBL
+      tbody
+        tr
+          td ID
+          td CNO
+          td _NO_
+          td _姓名_
+          td#MA_H GC_NAME
+          //td _GRADE_1_
+          //td _GRADE_2_
+          //td _GRADE_3_
+          td#MB_H _GRADE_1_
+          td#MC_H _GRADE_2_
+          td#MD_H _GRADE_3_
+
+        each book in books
+          tr
+            td.ID_EDU_TD= book.sgcid
+            td= book.classno
+            td= book.seat
+            td= book.c_name   
+            td.M(id=`MA_GC-Name_${book.sgcid}`,align='right')= book.GC_Name
+            //td= book.grade1
+            //td= book.grade2
+            //td= book.grade3
+            +link(aot,1,`MB_grade1_${book.sgcid}`,book.grade1)
+            +link(aot,2,`MB_grade2_${book.sgcid}`,book.grade2)
+            +link(aot,3,`MB_grade3_${book.sgcid}`,book.grade3)
+
+  script.
+    var fn='!{fn}';
+    var PostUrl='grademarksave.php?aot=!{aot}&fn=!{fn}';    
+    var returnUrl='/internal/markup/grademark/!{course_d_id}?r=true&fn=!{fn}';
+    var CGIExpXlsUrl='/internal/PublicAPI/ExpXls.php?charset=utf-8&filename=mark_!{fn}.xls';
+    $('#returnUrlBtn').attr("href", returnUrl);
+    $('#CSVFrmPOST').attr("action", CGIExpXlsUrl);
+    $(document).ready(function(){
+    	BindingPastFrm("PastFrm","PastFrmText","EDUTBL");
+    	BindingCSVFrm('CSVFrm','CSVFrm_Link','tableContent','data.xls');
+    	BindingFunctions("editbtn","savebtn","pastbtn","exportbtn",'readmodebtn');
+    	BindingHead_EditMode(['MA_H','MB_H','MC_H','MD_H','ME_H','MF_H','MG_H']);
+    	//BindingFieldDefsIntegerFields({'MA':'INT','MB':'INT','MC':'INT','MD':'INT','ME':'INT','MF':'INT','MG':'DEC'});
+    	GenOriginalData();
+    	
+    	$('#prtbtn').click(function(){
+            var toPrint = document.getElementById('tableContent');
+            var popupWin = window.open('', '_blank', 'width=350,height=150,location=no,left=200px');
+            popupWin.document.open();
+            popupWin.document.write('<html><title>'+"prt"+'</title><link rel="stylesheet" type="text/css" href="../print.css" /></head><body onload="window.print()">')
+    		    popupWin.document.write('<h4>'+fn+'</h4>');
+            popupWin.document.write(toPrint.innerHTML);
+            popupWin.document.write('</html>');
+            popupWin.document.close();
+    	});
+    });  
+   
+
+
+
+
+  

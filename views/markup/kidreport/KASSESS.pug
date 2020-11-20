@@ -1,0 +1,103 @@
+mixin page(assess_content,dt,pageno)
+  div(class='ass_title') 我的學習發展評估
+  table
+    tr 
+      td
+    tr 
+      td 日期:
+      td= dt.assdate	
+      td= `第 ${dt.assweek} 週    共上課 ${dt.assdays} 天`
+      td= `第 ${pageno}  頁`
+  table
+    tr 
+      td
+        span 主題:
+        span= dt.asstopic
+      td= dt.asssubtopic 
+  table(class='spf')
+    tr(class='spf',  style="height:0.5cm;max-height:0.5cm;")
+      td(class='spf', rowspan=2, style="text-align:center;width:14cm;max-width:14cm;")
+        span 學習內容
+      td(class='spf', style="text-align:center;",  colspan=4) 學習表現
+    tr(class='spf',  style="height:0.5cm;max-height:0.5cm;")
+      td(class='spf', style="text-align:center;")
+        span(class='wbfont') &#x25;
+      td(class='spf',style="text-align:center;") 
+        span(class='wgfont') &#x4A;
+      td(class='spf',style="text-align:center;") 
+        span(style="max-width:0.7cm") &#9734;
+      td(class='spf',style="text-align:center;") 
+        div(style="max-width:0.7cm")
+          img(src='/studjpg/heal.png')        
+    tr(class='spf')
+      td(class='spf', valign='top', style="width:14cm;max-width:14cm;")
+        table(class='c0') !{assess_content}
+      td( class='spf')
+      td( class='spf')
+      td( class='spf')
+      td( class='spf')
+  table
+    tr
+      td 紀錄說明作<span class=wbfont>&#x61;</span>表示
+    tr
+      td <span class=wbfont>&#x25;</span>=表現優異
+      td <span class=wgfont>&#x4A;</span>=表現良好
+      td <span>&#9734;</span>=表現有進步
+      td
+        img(src='/studjpg/heal.png')
+        span= "=需要努力"
+
+html
+  head
+    meta(charset="utf-8")
+    title mbc   
+    script(src="//code.jquery.com/jquery-1.10.2.js")
+    link(rel="stylesheet", href="/mk/css/kassess.css")
+  body    
+    -j=0;
+    -i=0;
+    -content0="<tr><td class=c01>主題活動:<br> &nbsp; </td>"
+    -content1=""
+    -content2=""
+    -content3=""
+    while i< (books.topic.length)
+      -j++
+      -itetopic = books.topic[i]
+      -len = itetopic.length  //- itetopic.indexOf("<div")
+      if len > 73  
+        -j++;
+      if j<25
+        -content0 = content0 + itetopic
+      else if j<52
+        -content1 = content1 + itetopic
+      else if j<77
+        -content2 = content2 + itetopic
+      else
+        -content3 = content3 + itetopic
+      -i++
+    -i=0;
+    while i< (books.stud.length)
+      - book = books.stud[i]
+      - i++
+      div(style='margin-left:1cm;')
+        +page(content0,books,1)
+        table <tr><td>學生姓名:!{book.c_name}<td> 班級:!{book.classno}<td>班號:!{book.seat}<tr><td>學年開始/結束<td>身高:!{book.height}<td>體重:!{book.weight}
+      div(style='page-break-after:always')        
+      div(style='margin-left:1.5cm;')
+        +page(content2,books,3)
+        if content3.length == 0
+          table <tr><td>學生姓名:!{book.c_name}<td style='height:1.5cm;'><span style='font-size:150%'>家長簽署:</span><u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
+      DIV(style='page-break-after:always')
+      div
+        if content3.length == 0
+          div 
+            span &nbsp; 
+        else
+          +page(content3,books,4)  
+          table <tr><td>學生姓名:!{book.c_name}<td style='height:1.5cm;'><span style='font-size:150%'>家長簽署:</span><u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
+      DIV(style='page-break-after:always')
+      div
+        +page(content1,books,2)
+      if i < (books.stud.length-1) 
+        DIV(style='page-break-after:always')
+      

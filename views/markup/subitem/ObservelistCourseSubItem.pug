@@ -1,0 +1,261 @@
+//- attend
+extends ../base.pug
+block content
+  style.
+    div.container{ margin:0px; }
+  style.
+    td{border: 1px solid grey; margin-left: 10px; margin-right: 10px;padding-left: 10px; padding-right: 10px;}
+  -fn="ObserveData"    
+  form(method="POST", enctype="multipart/form-data",action=`/internal/PublicAPI/ExpXls.php?charset=utf-8&filename=${fn}.xls`)#CSVFrmPOST
+    .form-group.hidden
+      input.form-control(type="text", name="CSVFrmPOSTNAME", id="CSVFrmPOSTVALUE")
+  .btn-group
+    a(href='#', class='btn btn-primary btn-sm')#exportbtn
+      i.glyphicon.glyphicon-download-alt
+      span  匯出Xls
+  h3 Observe Course List 
+  table#staflist
+    tr
+      each ostaf in ObserveStafList
+        td= ostaf
+
+  table#tbl
+    tr
+      td c_sid 
+      td course_d_id
+      td term
+      td Classno
+      td staf_ref
+      td courseName
+      td subitem
+      td marktype
+      td regdate
+      td lockdate
+      td 平均
+      td 及格率
+      td 高分率
+      td 低分率
+      td DataJson
+
+  script(src='/javascripts/cool/webtoolkit.aim.js')   
+  div(title="Show Msg",style="display:none")#ShowMsg
+    table#CrsSubItemDataViewFrmTable
+    pre#ShowMsgTxt  
+
+  script.   
+    function start_Load_Data()
+    {
+        var str="";
+        var tbl = document.getElementById("staflist");
+        var datatbl = document.getElementById("tbl");
+        for(let i=0;i<tbl.rows.length;i++)
+        {
+            var row=tbl.rows[i];
+            for(let j=0;j<row.cells.length;j++)
+            {
+                str+=row.cells[j].innerHTML;
+                var url="/internal/markup/subitem/ObserveJSONList/"+row.cells[j].innerHTML;
+                $.get( url, function( data ) {
+                    console.log(data);
+                    for(let k=0;k<data.length;k++){
+                        var arow=datatbl.insertRow();
+                        arow.insertCell().innerHTML=data[k]["c_sid"];
+                        arow.insertCell().innerHTML=data[k]["course_d_id"];
+                        arow.insertCell().innerHTML=data[k]["term"];
+                        arow.insertCell().innerHTML=data[k]["classno"];
+                        arow.insertCell().innerHTML=data[k]["staf_ref"];
+                        arow.insertCell().innerHTML=data[k]["courseName"];
+                        arow.insertCell().innerHTML=data[k]["subitem"];
+                        arow.insertCell().innerHTML=data[k]["marktype"];
+                        arow.insertCell().innerHTML=data[k]["regdate"].substr(0,10);
+                        arow.insertCell().innerHTML=data[k]["lockdate"].substr(0,10);
+                        //arow.insertCell().innerHTML=data[k]["avg"];
+                        //arow.insertCell().innerHTML=data[k]["ps_rate"];
+                        //arow.insertCell().innerHTML=data[k]["hs_rate"];
+                        //arow.insertCell().innerHTML=data[k]["ls_rate"];
+                        let json=JSON.parse(data[k]["DataJson"]);
+                        let mindex=0;
+                        if(json.length>1)
+                        for(let i=0;i<json[0].length;i++){
+                          if(json[0][i]=="mark") mindex=i;
+                        }
+                        let total=0;
+                        let cnt=0;
+                        let pcnt=0;
+                        let hcnt=0;
+                        let lcnt=0;
+                        for(let i=0;i< json.length;i++){
+                          for(let j=0;j<json[i].length;j++){
+                            let cellinnerHTML = json[i][j];
+                            if(i>1&&j==mindex){
+                                if(cellinnerHTML==""){}
+                                {
+                                    let n=Number(cellinnerHTML);
+                                    total+=n;
+                                    cnt++;
+                                    if(n>60) pcnt++;
+                                    if(n>80) hcnt++;
+                                    if(n<30) lcnt++;
+                                }
+                            }
+                          }
+                        }
+                        if(cnt>0)
+                        {
+                            arow.insertCell().innerHTML=(total/cnt).toFixed(2);
+                            arow.insertCell().innerHTML=(pcnt*100/cnt).toFixed(2);
+                            arow.insertCell().innerHTML=(hcnt*100/cnt).toFixed(2);
+                            arow.insertCell().innerHTML=(lcnt*100/cnt).toFixed(2);
+                        }
+
+                       let btncell=arow.insertCell();
+                        var btn = document.createElement("BUTTON");  
+                        btn.innerHTML = "VIEW";    
+                        btn.onclick=function(){
+                            let aarow=this.parentElement.parentElement;
+                            let json=JSON.parse(aarow.cells[15].innerHTML);
+                            let mindex=0;
+                            if(json.length>1)
+                            for(let i=0;i<json[0].length;i++){
+                              if(json[0][i]=="mark") mindex=i;
+                            }
+                            let total=0;
+                            let cnt=0;
+                            let pcnt=0;
+                            let hcnt=0;
+                            let lcnt=0;
+                            var table = document.getElementById("CrsSubItemDataViewFrmTable");           
+                            for(let i=table.rows.length;i>0;i--){ table.deleteRow(i-1);  }
+                            for(let i=0;i< json.length;i++){
+                              var row = table.insertRow();//0 first row
+                              for(let j=0;j<json[i].length;j++){
+                                var cell = row.insertCell(j);                
+                                cell.innerHTML = json[i][j];
+                                if(i>1&&j==mindex){
+                                    if(cell.innerHTML==""){}
+                                    {
+                                        let n=Number(cell.innerHTML);
+                                        total+=n;
+                                        cnt++;
+                                        if(n>60) pcnt++;
+                                        if(n>80) hcnt++;
+                                        if(n<30) lcnt++;
+                                    }
+                                }
+                              }
+                            }
+                            if(cnt>0)
+                            ShowMsg( JSON.stringify([total,cnt,pcnt,hcnt,lcnt,(total/cnt).toFixed(2),pcnt/cnt*100,hcnt/cnt*100,lcnt/cnt*100] ) );
+                        };              
+                        btncell.appendChild(btn);               
+                        let djcell=arow.insertCell()
+                        djcell.innerHTML=data[k]["DataJson"];
+                        djcell.style.display="none";
+
+                  }
+                },"json");
+            }
+        }
+    }
+    function ShowMsg(x)
+    {
+      document.getElementById('ShowMsgTxt').innerHTML=x;
+      $( "#ShowMsg" ).dialog("open"); //$("#ShowMsg").dialog( { autoOpen: false, });   
+    }
+    function mrscrsuploadx(x){
+      let tds= x.parentElement.parentElement.children;
+      let tdtxt=[];
+      for(let i=0;i<tds.length;i++){ tdtxt[i]=tds[i].innerText; }
+      let sessid=document.getElementById("esess_session_id").innerText;
+      let csid= $('#crsupdfrmSessID').text(sessid);
+      let cdid= $('#crsupdfrmCdID').text(tdtxt[0]);   
+      let crsname= $('#crsupdfrmCourseName').text(tdtxt[3]+tdtxt[5]);
+      $( "#crsupdfrm" ).dialog("open"); 
+    }
+    function mrscrsupload(){
+      let csid= $('#crsupdfrmSessID').text('');
+      let cdid= $('#crsupdfrmCdID').text('');   
+      let crsname= $('#crsupdfrmCourseName').text('');
+      $( "#crsupdfrm" ).dialog("open"); 
+    }
+    function ShowMrsCourseTotal(x,cid){
+      let url  ="/internal/markup/markstatisrawdata/"+x+"/json"
+      $.get( url, function( data ) {
+        $( "#ShowMsg" ).dialog( "option", "width", 1024 );
+        data = data.toString().replace(/\w+:/g, function (x) { return '"' + x.replace(":", '":'); });        
+        let json=JSON.parse(data);
+        let ctxt="<table><tr><td>class<td>seat<td>name<td>課程名<td>總分<td>補考<td>PX<td>Status"  ;
+        for(let i=0;i<json.length;i++){
+          ctxt+="<tr><td>"+ json[i].curr_class+"<td>"+ json[i].curr_seat+"<td>"+ json[i].c_name;
+          let mrsdata=json[i].marks;
+          let gid=0;pregid=0;
+          for(let j=0;j<mrsdata.length;j++){
+              if(mrsdata[j].course_d_id==cid){
+              ctxt+="<td>"+mrsdata[j].coursename+"<td>"+mrsdata[j].total+"<td>"+mrsdata[j].pk+"<td>"+mrsdata[j].P_X ;  
+              if(mrsdata[j].P_X==1) ctxt+="<td>[X]不格及" ;  
+              if(mrsdata[j].P_X==2) ctxt+="<td>[P]補考格及" ;  }
+          }
+        }
+        ctxt+="</table>";
+        ShowMsg(ctxt);
+      });
+    }
+    $(document).ready(function(){
+      start_Load_Data();
+      $("#ClassSelectorDialog").dialog( { autoOpen: false,width:400,});      
+      $("#accordion").accordion({ header: "h3" });
+      $("#ShowMsg").dialog( { autoOpen: false, width:900,});
+      $("#InfoDialog").dialog( {
+        autoOpen: false,
+        height: 400,
+        width:900,
+        buttons: [
+          {
+            text: "close",
+            icon: "ui-icon-heart",
+            click: function() { $( this ).dialog( "close" ); }
+          }
+        ]
+      });     
+      $('#btnInfo').click(function(){
+        $( "#InfoDialog" ).css("background", "black");
+        $( "#InfoDialog" ).css("color", "white");
+        $( "#InfoDialog" ).dialog("open");  
+      });
+
+      $('#btnCrs_upd').click(function(){ mrscrsupload();  });
+      $('#btnCommeUpd').click(function(){ $( "#commentupdfrm" ).dialog("open");  });
+      $('#btnConduUpd').click(function(){ $( "#conductupdfrm" ).dialog("open");  });
+      $('#btnGCrs_upd').click(function(){ $( "#gcrsupdfrm" ).dialog("open");  });
+      $('#btnGCrs').click(function(){ $("#gcrsupdClassDialog").dialog("open"); });
+      $('#btnGCrs_dow').click(function(){ 
+        $("#ClassSelectorDialogForm").attr("action","/internal/markup/grademarkxlsSelector");
+        $("#ClassSelectorDialog").dialog("open"); 
+      });      
+      $('#btnMarkStatis').click(function(){ 
+        $("#ClassSelectorDialogForm").attr("action","/internal/markup/markstatisxlsSelectorPSTAF");
+        $("#ClassSelectorDialog").dialog("open"); 
+      });
+      $('#btnCommentConductStatis').click(function(){ 
+        $("#ClassSelectorDialogForm").attr("action","/internal/markup/markcommentconductxlsSelectorPSTAF");
+        $("#ClassSelectorDialog").dialog("open"); 
+      });
+      $('.CrsSubItemListStyle').click(function(){
+        let tds=  this.parentElement.parentElement.children;
+        let tdtxt=[];
+        for(let i=0;i<tds.length;i++){
+          tdtxt[i]=tds[i].innerText;
+        }
+        $('#CrsSubItemListCRSINFO').text(JSON.stringify(tdtxt))
+        $("#CrsSubItemListFrm").dialog("open"); 
+        CrsSubItemListRefresh();
+        //alert(tdtxt);
+      });
+
+      $('#exportbtn').click(function(){
+        var txt= document.getElementById('tbl').innerHTML;
+        document.getElementById('CSVFrmPOSTVALUE').value ="<table>"+ txt+"</table>";
+        document.getElementById('CSVFrmPOST').submit();
+      });
+      
+    });

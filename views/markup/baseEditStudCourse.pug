@@ -1,0 +1,81 @@
+doctype html
+html
+  head
+    title MarkSi
+    meta(charset='utf-8')
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    script(src='/javascripts/jquery.min.js')
+    script( src='/jquery-ui-dist/jquery-ui.min.js')
+    link(href='/jquery-ui-dist/jquery-ui.min.css')
+    script(src='/javascripts/cool/grid_export.js')
+    script(src="/javascripts/cool/grid.js")
+    link(href='/stylesheets/cool/grid.css', rel='stylesheet')
+    link(rel="stylesheet" href="/stylesheets/cool/menu_style.css")
+    style.
+      table { border-collapse: collapse;}
+      table, td, th { border: 0px solid black;}
+      td { height:25px;	text-align:right;}
+      td.M {text-align:right;	height:25px;}
+      textarea
+      {
+      text-align:right;
+      display:block;
+      margin-top:0px;
+      margin-left:0px;
+      margin-right:0px;
+      margin-bottom:0px;
+      padding:0;
+      background-color:#EFFBFB;
+      resize:none;
+      }
+      input[type="text"]
+      {
+      width:50px;
+      display:block;
+      margin-bottom:0px;
+      margin-top:0px;
+      margin-left:0px;
+      margin-right:0px;
+      background-color:yellow;
+      }
+      .button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 10px 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+      }    
+  body
+    nav
+      ul
+        li       
+          a(href="#")#returnUrlBtn 返回
+        li
+          a(href="#") 編輯
+          ul
+            li
+              a( href="#")#editbtn 編輯模式	  
+            li
+              a( href="#")#readmodebtn 唯讀模式
+            li
+              a( href="#" )#pastbtn 粘貼
+            li
+              a( href="#" )#exportbtn 匯出
+            li
+              a( href="#" )#prtbtn 列印   		
+        li
+          a( href="#" )= fn
+        li
+          a( href="#", style="color:Lime")#savebtn 儲存( #{aot} )
+         
+ 
+    div#CSVFrm(style="background:white;font-color:black;")
+      div#CSVFrm_Link 匯出 
+      form#CSVFrmPOST(method="post", action='#', target="xlsdownload")
+        input#CSVFrmPOSTVALUE(type="hidden",  name="CSVFrmPOSTNAME")        
+
+    .container
+      block content         
