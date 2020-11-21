@@ -271,7 +271,8 @@ router.get('/studcourse/editgrademark/:book', (req, Response, next) => {
             course_d_id: grademark_d_id,
             books: entity,
             editable: req.query.r,
-            aot:aot
+            aot:aot,
+            cno:cno
         });
     });
 });

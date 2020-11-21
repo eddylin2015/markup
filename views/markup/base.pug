@@ -36,14 +36,14 @@ html
            filterjson.push(json[0]);
            cnt=0;
            console.log(cnt);
-           await new Promise(resolve => setTimeout(resolve, 1000));
+           await new Promise(resolve => setTimeout(resolve, 500));
          }
        }
        $.post(savejsonurl,{data: filterjson}).done( function(data) {
            msg+=data; 
            ShowMsg(msg);   
        });
-       await new Promise(resolve => setTimeout(resolve, 1000));
+       await new Promise(resolve => setTimeout(resolve, 3000));
        msg+="\n完成!";
        ShowMsg(msg);  
       }

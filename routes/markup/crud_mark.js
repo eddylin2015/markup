@@ -2,7 +2,6 @@
 
 'use strict';
 const config = require('../../config');
-
 const PHP_HOST = config.get('PHP_HOST');
 const PHP_PORT = config.get('PHP_PORT');
 const express = require('express');
@@ -15,34 +14,18 @@ var redis = require("redis"),
 const netutils = require('../../lib/net_utils');
 function getModel() { return require(`./model-mysql-pool_mark`); }
 const router = express.Router();
-// Use the oauth middleware to automatically get the user's profile
-// information and expose login/logout URLs to templates.
-// Set Content-Type for all responses for these routes
-/**
- * GET /markup/add
- * Display a page of books (up to ten at a time).
- */
-function CheckAdmin(req) {
-    if (req.user.id == 2002024) return true;
-    return false;
-}
-function CheckOfficeStaff(req) {
-    if (req.user.id == 2002024) return true;
-    return false;
-}
-function CheckCLASSCDID(req, cdid) {
-    if (!req.user.marksys_info[3]) return false;
-    let right = false;
-    for (let i = 0; i < req.user.marksys_info[3].length; i++) {
-        if (req.user.marksys_info[3][i].course_d_id == cdid) {
-            right = true;
+
+function GetCDIDS(req) {
+    let right = [];
+    if (req.user && req.user.marksys_info) {
+        for (let i = 0; i < req.user.marksys_info[2].length; i++) {
+            right.push(req.user.marksys_info[2][i].course_d_id);
         }
     }
-    return right;
+    return right.join(",");
 }
-
-function CheckCDID(req, cdid, cdids=null) {
-    if(cdids) return cdids.indexOf(cdid)>-1;
+function CheckCDID(req, cdid, cdids) {
+    if (cdids) return cdids.indexOf(cdid) > -1;
     let right = false;
     if (req.user && req.user.marksys_info) {
         if (req.user.marksys_info[1][0].RoleID == 1
@@ -61,41 +44,15 @@ function CheckCDID(req, cdid, cdids=null) {
     }
     return right;
 }
-function GetCDIDS(req){
-    let right = [];
-    if (req.user && req.user.marksys_info) {
-        for (let i = 0; i < req.user.marksys_info[2].length; i++) {
-            right.push(req.user.marksys_info[2][i].course_d_id);
-        }
-    }
-    return right.join(",");
-}
-
-function CheckCLASSNO(req, classno) {
-    let right = false;
-    if (req.user && req.user.marksys_info) {
-        if (req.user.marksys_info[1][0].RoleID == 1
-            || req.user.marksys_info[1][0].RoleID == 8
-            || req.user.marksys_info[1][0].RoleID == 9
-        ) {
-            return true;
-        }
-        else {
-            return req.user.marksys_info[1][0].classno == classno;
-        }
-    }
-    return right;
-}
 
 function GetAOT(req) {
     let aot = 10;
     if (req.user && req.user.marksys_info) {
-        if (req.query.fn.startsWith("I")) { aot = req.user.marksys_info[0][0].p_allowOpSect; }
-        if (req.query.fn.startsWith("P")) { aot = req.user.marksys_info[0][0].p_allowOpSect; }
-        if (req.query.fn.startsWith("S")) { aot = req.user.marksys_info[0][0].allowOpSect; }
+        aot = req.user.marksys_info[0][0].allowOpSect; 
     }
     return aot;
 }
+
 function GetAOTWith(fn, req) {
     let aot = 10;
     if (req.user && req.user.marksys_info) {
@@ -142,36 +99,6 @@ router.use((req, res, next) => {
     res.set('Content-Type', 'text/html');
     next();
 });
-function HttpPostMKWrgTotal(param_host, param_path, param_postData, respone) {
-    let options = {
-        hostname: param_host, port: 8082,
-        path: param_path, method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(param_postData) }
-    };
-    let req = http.request(options, (res) => {
-        res.setEncoding('utf8');
-        let rawData = '';
-        res.on('data', (chunk) => { rawData += chunk; });
-        res.on('end', () => {
-            respone.writeHead(200, {
-                //'Content-Type': 'application/json',
-                'Content-Type': 'text/html; charset=utf-8',
-                'X-Powered-By': 'bacon'
-            });
-            respone.write("<table id=tbname border=1><tr>");
-            respone.write("<td rowspan=2>編號<td rowspan=2>班<td rowspan=2>座<td rowspan=2>姓__名<td rowspan=2>錯誤<td rowspan=2>義工");
-            respone.write("<td colspan=8>第一段<td colspan=8>第二段<td colspan=8>第三段");
-            respone.write("<tr><td>遲到<td>缺席<td>曠次<td>曠節<td>違紀<td>褒獎<td>操行<td>參考<td>遲到<td>缺席<td>曠次<td>曠節<td>違紀<td>褒獎<td>操行<td>參考<td>遲到<td>缺席<td>曠次<td>曠節<td>違紀<td>褒獎<td>操行<td>參考");
-            respone.end(rawData);
-        }
-        );
-    });
-    req.on('error', (e) => {
-        console.error(`problem with request: ${e.message}`);
-    });
-    req.write(param_postData);
-    req.end();
-}
 
 router.get('/studcourse/:book', (req, res, next) => {
     if (CheckCDID(req, req.params.book)) { }
@@ -223,7 +150,7 @@ router.get('/studcourse/editstudmark/:book', (req, Response, next) => {
     let aot = GetAOT(req);
     let cdid = req.params.book;
     let staf_ref = netutils.id2staf(req.user);
-    getModel().readstudcourse(staf_ref, req.params.book, (err, entity) => {
+    getModel().readstudcourse(staf_ref, cdid, (err, entity) => {
         if (err) { next(err); return; }
         Response.render('markup/editStudCourse.pug', {
             profile: req.user,
@@ -236,53 +163,31 @@ router.get('/studcourse/editstudmark/:book', (req, Response, next) => {
     });
 });
 router.post('/studcourse/editstudmark/marksave.php', images.multer.single('image'), (req, Response, next) => {
-    let staf = "null";
-    if (req.user) staf = req.user.id;
+    let staf = req.user ? req.user.id : null;
     let aot = req.query.aot;
-    getModel().UpdateMark( aot,JSON.parse(req.body.datajson), (err, entity) => {
-        if (err) { next(err); return; }
-        Response.end(`第${aot}段, 更新${entity}筆...`);
-    });
-
-    //netutils.HttpPost(PHP_HOST, '/a/markups/mrscourse/marksave.php', "aot=" + aot + "&stafref=" + staf + "&datajson=" + req.body.datajson, Response);
+    if (staf && (aot == 1 || aot == 2 || aot == 3)) {
+        getModel().UpdateMark(JSON.parse(req.body.datajson), (err, entity) => {
+            if (err) { next(err); return; }
+            Response.end(`第${aot}段, 更新${entity}筆...`);
+        });
+    } else {
+        Response.end("Err");
+    }
 });
 
 router.post('/studcourse/editstudmark/marksavejson', images.multer.single('image'), (req, Response, next) => {
-    let saot = GetSAOT(req);
-    let paot = GetPAOT(req);
-    let cdids=GetCDIDS(req);
-    let staf = "null";
-    if (req.user) staf = req.user.id;
-    let aot = req.query.aot;
-    if (aot == 1 || aot == 2 || aot == 3) {
+    let staf = req.user ? req.user.id : null;
+    let aot = req.query.aot?req.query.aot: GetAOT(req);
+    if (staf && (aot == 1 || aot == 2 || aot == 3)) {
+        let cdids = GetCDIDS(req);
         let data = req.body.data;
-        let postdata = [];
-        for (let i = 0; i < data.length; i++) {
-            let cdid = data[i][1];
-            let studref = data[i][2];
-            cdid = cdid.match(/^[0-9]+$/);
-            studref = studref.match(/^[7-9][0-9A-F][0-9]+[A-B]$/);
-            if (studref && cdid && CheckCDID(req, data[i][1],cdids)) {
-                let mrk=null;
-                switch(aot)
-                {
-                    case "1":mrk={"t1":data[i][5],"e1":data[i][6]};break;
-                    case "2":mrk={"t2":data[i][7],"e2":data[i][8]};break;
-                    case "3":mrk={"t3":data[i][9],"e3":data[i][10],pk:data[i][11]};break;
-                }
-                postdata.push({cdid:cdid,std:studref,mrk:mrk});
-            }
-        }
-        getModel().UpdateMarkArr( postdata, (err, entity) => {
+        getModel().UpdateMarkArr(data,cdids, aot,(err, entity) => {
             if (err) { next(err); return; }
-            Response.end(`第${paot}段, 更新${entity}筆...`);
+            Response.end(`第${aot}段, 更新${entity}筆...`);
         });
     } else {
         Response.end(JSON.stringify(req.body.data))
     }
-
-
-
 });
 
 router.get('/studcourse/regstudcourse/:book', (req, Response, next) => {
@@ -325,7 +230,7 @@ function ExpArrayToXls(arraydata_str, exportfilename, respone) {
 }
 
 /**
- * Errors on "/books/*" routes.
+ * Errors on "/studcourse/*" routes.
  */
 router.use((err, req, res, next) => {
     // Format error and forward to generic error handler for logging and
