@@ -41,7 +41,8 @@ function CheckCLASSCDID(req, cdid) {
     return right;
 }
 
-function CheckCDID(req, cdid) {
+function CheckCDID(req, cdid, cdids=null) {
+    if(cdids) return cdids.indexOf(cdid)>-1;
     let right = false;
     if (req.user && req.user.marksys_info) {
         if (req.user.marksys_info[1][0].RoleID == 1
@@ -59,6 +60,15 @@ function CheckCDID(req, cdid) {
         }
     }
     return right;
+}
+function GetCDIDS(req){
+    let right = [];
+    if (req.user && req.user.marksys_info) {
+        for (let i = 0; i < req.user.marksys_info[2].length; i++) {
+            right.push(req.user.marksys_info[2][i].course_d_id);
+        }
+    }
+    return right.join(",");
 }
 
 function CheckCLASSNO(req, classno) {
@@ -213,8 +223,6 @@ router.get('/studcourse/editstudmark/:book', (req, Response, next) => {
     let aot = GetAOT(req);
     let cdid = req.params.book;
     let staf_ref = netutils.id2staf(req.user);
-    //let parm = { aot: aot, cdid: cdipingyud, course: req.query.fn, returl: req.baseUrl + `/studcourse/${cdid}`,fn:req.query.fn };
-    //netutils.HttpGet(PHP_HOST, `/a/markups/mrscourse/mark_grid.php?` + querystring.stringify(parm), Response);
     getModel().readstudcourse(staf_ref, req.params.book, (err, entity) => {
         if (err) { next(err); return; }
         Response.render('markup/editStudCourse.pug', {
@@ -227,43 +235,22 @@ router.get('/studcourse/editstudmark/:book', (req, Response, next) => {
         });
     });
 });
-/*
-router.post('/studcourse/editgrademark/grademarksave.php', images.multer.single('image'), (req, Response, next) => {
-    if(!grp.GRP_R_Pri_IE_CRS(req.user)){res.end("no right");return;}
-    let staf = req.user.id;
-    let stafref = netutils.id2staf(req.user);
-    let aot = GetAOT(req);
-    getModel().savegrademark(aot,JSON.parse( req.body.datajson), (err, entity) => {
-        if (err) { next(err); return; }        
-        Response.end(`第${aot}段,更新${Math.floor(entity/100)}筆, 成功!`);
-    });
-});
-
-router.post('/studcourse/editgrademark/grademarksavejson.php', images.multer.single('image'), (req, Response, next) => {
-    if(!grp.GRP_R_Pri_IE_CRS(req.user)){res.end("no right");return;}
-    let paot =  req.user.marksys_info[0][0].p_allowOpSect;
-    let data=req.body.data;
-    if(paot=="1"||paot=="2"||paot=="3"){
-        let fieldn='grade'+paot;
-        getModel().savegrademarkarray(fieldn, data , (err, entity) => {
-            if (err) { next(err); return; }
-            Response.end(`第${paot}段, 更新${entity}筆...`);        
-        });
-    }else{
-        Response.end("error aot!");
-    }
-});
-*/
 router.post('/studcourse/editstudmark/marksave.php', images.multer.single('image'), (req, Response, next) => {
     let staf = "null";
     if (req.user) staf = req.user.id;
     let aot = req.query.aot;
-    netutils.HttpPost(PHP_HOST, '/a/markups/mrscourse/marksave.php', "aot=" + aot + "&stafref=" + staf + "&datajson=" + req.body.datajson, Response);
+    getModel().UpdateMark( aot,JSON.parse(req.body.datajson), (err, entity) => {
+        if (err) { next(err); return; }
+        Response.end(`第${aot}段, 更新${entity}筆...`);
+    });
+
+    //netutils.HttpPost(PHP_HOST, '/a/markups/mrscourse/marksave.php', "aot=" + aot + "&stafref=" + staf + "&datajson=" + req.body.datajson, Response);
 });
 
 router.post('/studcourse/editstudmark/marksavejson', images.multer.single('image'), (req, Response, next) => {
     let saot = GetSAOT(req);
     let paot = GetPAOT(req);
+    let cdids=GetCDIDS(req);
     let staf = "null";
     if (req.user) staf = req.user.id;
     let aot = req.query.aot;
@@ -275,11 +262,18 @@ router.post('/studcourse/editstudmark/marksavejson', images.multer.single('image
             let studref = data[i][2];
             cdid = cdid.match(/^[0-9]+$/);
             studref = studref.match(/^[7-9][0-9A-F][0-9]+[A-B]$/);
-            if (studref && cdid && CheckCDID(req, data[i][1])) {
-                postdata.push(data[i]);
+            if (studref && cdid && CheckCDID(req, data[i][1],cdids)) {
+                let mrk=null;
+                switch(aot)
+                {
+                    case "1":mrk={"t1":data[i][5],"e1":data[i][6]};break;
+                    case "2":mrk={"t2":data[i][7],"e2":data[i][8]};break;
+                    case "3":mrk={"t3":data[i][9],"e3":data[i][10],pk:data[i][11]};break;
+                }
+                postdata.push({cdid:cdid,std:studref,mrk:mrk});
             }
         }
-        getModel().UpdateMarkArr(aot, data, (err, entity) => {
+        getModel().UpdateMarkArr( postdata, (err, entity) => {
             if (err) { next(err); return; }
             Response.end(`第${paot}段, 更新${entity}筆...`);
         });

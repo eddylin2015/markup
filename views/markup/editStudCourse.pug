@@ -1,5 +1,11 @@
 ﻿extends ./baseEditStudCourse.pug
 
+mixin link(aotid,aot, idname, grade)
+  if aotid==aot
+    td.M(id=idname,style='width:80px;text-align:right;')= grade
+  else 
+    td(style='width:80px;text-align:right;')= grade
+
 block content
 
   div#tableContent
@@ -21,13 +27,13 @@ block content
             td.ID_EDU_TD= book.stud_c_id
             td= book.seat
             td= book.c_name
-            td.M(id=`MA_t1_${book.stud_c_id}`,align='right')= book.t1
-            td.M(id=`MB_e1_${book.stud_c_id}`,align='right')= book.e1
-            td.M(id=`MC_t2_${book.stud_c_id}`,align='right')= book.t2
-            td.M(id=`MD_e2_${book.stud_c_id}`,align='right')= book.e2
-            td.M(id=`ME_t3_${book.stud_c_id}`,align='right')= book.t3
-            td.M(id=`MF_e3_${book.stud_c_id}`,align='right')= book.e3
-            td.M(id=`MG_pk_${book.stud_c_id}`,align='right')= book.pk
+            +link(1,aot,`MA_t1_${book.stud_c_id}`, book.t1)
+            +link(1,aot,`MB_e1_${book.stud_c_id}`, book.e1)
+            +link(2,aot,`MC_t2_${book.stud_c_id}`, book.t2)
+            +link(2,aot,`MD_e2_${book.stud_c_id}`, book.e2)
+            +link(3,aot,`ME_t3_${book.stud_c_id}`, book.t3)
+            +link(3,aot,`MF_e3_${book.stud_c_id}`, book.e3)
+            +link(3,aot,`MG_pk_${book.stud_c_id}`, book.pk)
   script.
     var fn='!{fn}';
     var PostUrl='marksave.php?aot=!{aot}';    

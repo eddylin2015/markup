@@ -89,3 +89,6 @@ routes/workgrid
 routes/workitsdlc
 routes/worknote
 routes/_kidevalTEST
+*.pyc
+*/config.py
+
