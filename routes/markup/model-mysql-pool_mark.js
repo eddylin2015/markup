@@ -1,50 +1,8 @@
-﻿// attend
-
-'use strict';
+﻿'use strict';
 const mysql = require('mysql');
 const mysqlcfg = require('../mysql250/mysql250config');
 
 const pool = mysqlcfg.esdbPool;
-
-function StatisticsRead(sql, cb) {
-    pool.getConnection(function (err, connection) {
-        if (err) {
-            cb(err);
-            return;
-        }
-        connection.query(
-            sql,
-            [],
-            (err, results) => {
-                if (err) {
-                    cb(err);
-                    return;
-                }
-                cb(null, results);
-                connection.release();
-            });
-    });
-}
-
-function DataReaderQuery(sql, cb) {
-    pool.getConnection(function (err, connection) {
-        if (err) {
-            cb(err);
-            return;
-        }
-        connection.query(
-            sql,
-            [],
-            (err, results) => {
-                if (err) {
-                    cb(err);
-                    return;
-                }
-                cb(null, results);
-                connection.release();
-            });
-    });
-}
 
 function readstudcourse(staf_ref, id, cb) {
     pool.getConnection(function (err, connection) {
@@ -54,7 +12,6 @@ function readstudcourse(staf_ref, id, cb) {
         }
         connection.query(
             'SELECT * FROM `mrs_stud_course` WHERE `course_d_id` = ? order by seat', id, (err, results) => {
-                /*if (!err && !results.length) { err = { code: 404, message: 'Not found' }; }*/
                 if (err) { cb(err); return; }
                 cb(null, results);
                 connection.release();
@@ -79,7 +36,6 @@ function ReadMarksysAuth(staf_ref, cb) {
             });
     });
 }
-
 function read(staf_ref, id, cb) {
     pool.getConnection(function (err, connection) {
         if (err) { cb(err); return; }
@@ -94,7 +50,6 @@ function read(staf_ref, id, cb) {
             });
     });
 }
-
 //Course Sub ITEM END..
 function readclassnostud(id, cb) {
     pool.getConnection(function (err, connection) {
@@ -109,60 +64,54 @@ function readclassnostud(id, cb) {
             });
     });
 }
-//Reg Stud Course Mark
 async function UpdateMark(aObj, cb) {
     pool.getConnection(async function (err, connection) {
         if (err) { cb(err); return; }
         let cnt = 0;
-        if (aObj) {
-            let alist = Object.keys(aObj);
-            for (let i = 0; i < alist.length; i++) {
-                let val = aObj[alist[i]]; if(val.length>3) continue;
-                let ar_ = alist[i].split('_');
-                let fieldname=ar_[1];
-                let stud_c_id=ar_[2];
-                cnt += await new Promise((resolve, reject) => {
-                    connection.query(`update mrs_stud_course set ${fieldname}=? where stud_c_id=?`, [val,stud_c_id], (err, res) => {
-                        if (err) { console.log(err); reject(err); }
-                        resolve(100);
-                    });
+        let alist = Object.keys(aObj);
+        for (let i = 0; i < alist.length; i++) {
+            let val = aObj[alist[i]]; val = val.match(/^[0-9]+[.]*[0-9]*$/); if (val==null) continue; 
+            let ar_ = alist[i].split('_');
+            let fieldname = ar_[1];
+            let stud_c_id = ar_[2];
+            cnt += await new Promise((resolve, reject) => {
+                connection.query(`update mrs_stud_course set ${fieldname}=? where stud_c_id=?`, [val, stud_c_id], (err, res) => {
+                    if (err) { console.log(err); reject(err); }
+                    resolve(100);
                 });
-            }
+            });
         }
         cb(null, Math.floor(cnt / 100));
         connection.release();
     });
 }
-async function UpdateMarkArr( alist,cdids, aot ,cb) {
-    pool.getConnection(async function (err, connection) {
+async function UpdateMarkArr(alist, cdids, aot, cb) {
+    pool.getConnection(async function (err, conn) {
         if (err) { cb(err); return; }
         let cnt = 0;
-        if (alist) {
-            for (let i = 0; i < alist.length; i++) {
-                let ar = alist[i];
-                let sid=ar[0]
-                let cdid = ar[1]; //cdid = cdid.match(/^[0-9]+$/);
-                let std = ar[2];// studref = studref.match(/^[7-9][0-9A-F][0-9]+[A-B]$/);
-                if ( cdids.indexOf(cdid)>-1) {
-                    let mrk = null;
-                    switch (Number(aot)) {
-                        case 1: mrk = { "t1": ar[5], "e1": ar[6] }; break;
-                        case 2: mrk = { "t2": ar[7], "e2": ar[8] }; break;
-                        case 3: mrk = { "t3": ar[9], "e3": ar[10], "pk": ar[11] }; break;
-                    }
+        for (let i = 0; i < alist.length; i++) {
+            let ar = alist[i];
+            let sid = ar[0];
+            let cdid = ar[1]; //cdid = cdid.match(/^[0-9]+$/);
+            let std = ar[2];  //std = std.match(/^[7-9][0-9A-F][0-9]+[A-B]$/);
+            if (cdids.indexOf(cdid) > -1) {
+                let mrk = null;
+                switch (Number(aot)) {
+                    case 1: mrk = { "t1": ar[5], "e1": ar[6] }; break;
+                    case 2: mrk = { "t2": ar[7], "e2": ar[8] }; break;
+                    case 3: mrk = { "t3": ar[9], "e3": ar[10], "pk": ar[11] }; break;
+                }
                 cnt += await new Promise((resolve, reject) => {
-                    connection.query(`update mrs_stud_course set ? where session_id=? and stud_ref=? and course_d_id=?`,
-                     [mrk,sid,std,cdid], (err, res) => {
-                        if (err) { console.log(err); reject(err); }
-                        resolve(100);
-                    });
+                    conn.query(`update mrs_stud_course set ? where session_id=? and stud_ref=? and course_d_id=?`,
+                        [mrk, sid, std, cdid], (err, res) => {
+                            if (err) { console.log(err); reject(err); }
+                            resolve(100);
+                        });
                 });
-            }    
-
             }
         }
         cb(null, Math.floor(cnt / 100));
-        connection.release();
+        conn.release();
     });
 }
 
@@ -170,10 +119,8 @@ module.exports = {
     createSchema: createSchema,
     readstudcourse: readstudcourse,
     UpdateMarkArr: UpdateMarkArr,
-    UpdateMark:UpdateMark,
+    UpdateMark: UpdateMark,
     ReadMarksysAuth: ReadMarksysAuth,
-    StatisticsRead: StatisticsRead,
-    DataReaderQuery: DataReaderQuery,
     read: read,
     readclassnostud: readclassnostud,
 };
@@ -181,11 +128,9 @@ module.exports = {
 if (module === require.main) {
     const prompt = require('prompt');
     prompt.start();
-
     console.log(
         `Running this script directly will allow you to initialize your mysql
     database.\n This script will not modify any existing tables.\n`);
-
     prompt.get(['user', 'password'], (err, result) => {
         if (err) {
             return;
@@ -199,7 +144,6 @@ function createSchema(config) {
     const connection = mysql.createConnection(extend({
         multipleStatements: true
     }, config));
-
     connection.query(
    `CREATE DATABASE IF NOT EXISTS \`deptwork\`
     DEFAULT CHARACTER SET = 'utf8'

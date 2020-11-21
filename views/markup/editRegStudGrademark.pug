@@ -1,5 +1,4 @@
 extends ./base.pug  
-
 block content
   -let class_li=[];
   -class_li.push(["P1A","P1B","P1C","P1D"])
@@ -44,10 +43,8 @@ block content
 
   h3 #{action} 選修課學生登記
   a#OpenClassnoDialog(class="btn btn-primary btn-sm")
-    //href="/internal/markup/studcourse/regstudgradecourse/P1A")
     i(class="glyphicon glyphicon-plus-sign")
       span 登記學生
-
 
   form(method="POST", enctype="multipart/form-data",onSubmit="return AIM.submit(this, {'onStart' : classTablefrm_startCallback, 'onComplete' : classTablefrm_completeCallback})")  
     table
@@ -101,7 +98,6 @@ block content
     function selAll()
     {
       $('#StudList_txtInfo input').each(function() {
-        
           $(this).prop( "checked", true );
       });
     }
@@ -175,15 +171,12 @@ block content
         width:'auto',
         autoOpen: false,
         show: {
-          //effect: "blind",
-          //duration: 1000
+          //effect: "blind",duration: 1000
         },
         hide: {
-          //effect: "explode",
-          //duration: 1000
+          //effect: "explode",duration: 1000
         }
       });
- 
       $( "#OpenClassnoDialog" ).on( "click", function() {
         $( "#dialog" ).dialog( "open" );
       });

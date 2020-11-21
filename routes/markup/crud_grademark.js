@@ -302,38 +302,6 @@ router.post('/studcourse/editgrademark/grademarksavejson.php', images.multer.sin
     }
 });
 
-/*
-router.get('/studcourse/regcondu/:book', (req, Response, next) => {
-    if(!CheckCLASSNO(req,req.params.book)){ res.end("no right");return;}
-    let cdid = req.params.book;
-    let ccno = "";
-    let rurl = encodeURI(req.baseUrl) + `/conduct/${cdid}?r=true&fn=` + encodeURI(req.query.fn);
-    let parm = { cno: cdid, stafref: "", course: req.query.fn, returl: rurl };
-    if (req.user && req.user.marksys_info) parm.stafref = netutils.id2staf(req.user);
-    netutils.HttpGet(PHP_HOST, `/a/markups/mrscourse/condu_grid_stud.php?` + querystring.stringify(parm), Response);
-});
-router.post('/studcourse/regcondu/condu_jsontwolist.php', (req, Response, next) => {
-    req.body.stafref = netutils.id2staf(req.user);
-    netutils.HttpPost(PHP_HOST, '/a/markups/mrscourse/condu_jsontwolist.php', "rawData=" + JSON.stringify(req.body), Response);
-});
-*/
-/*
-router.get('/studcourse/reggrademark/:book', (req, Response, next) => {
-    if(!grp.GRP_R_Pri_OA(req.user)){res.end("no right");return;}
-
-    let cdid = req.params.book;
-    let ccno = "";
-    let rurl = encodeURI(req.baseUrl) + `/grademark/${cdid}?r=true&fn=` + encodeURI(req.query.fn);
-    let parm = { cno: cdid, stafref: "", course: req.query.fn, returl: rurl };
-    if (req.user && req.user.marksys_info) parm.stafref = netutils.id2staf(req.user);
-    netutils.HttpGet(PHP_HOST, `/a/markups/mrscourse/gcourse_grid_stud.php?` + querystring.stringify(parm), Response);
-});
-router.post('/studcourse/reggrademark/gcourse_grid_jsontwolist.php', (req, Response, next) => {
-    req.body.stafref = netutils.id2staf(req.user);
-    netutils.HttpPost(PHP_HOST, '/a/markups/mrscourse/gcourse_grid_jsontwolist.php', "rawData=" + JSON.stringify(req.body), Response);
-});*/
-
-
 /**
  * Errors on "/books/*" routes.
  */

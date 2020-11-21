@@ -165,8 +165,9 @@ router.get('/studcourse/editstudmark/:book', (req, Response, next) => {
 router.post('/studcourse/editstudmark/marksave.php', images.multer.single('image'), (req, Response, next) => {
     let staf = req.user ? req.user.id : null;
     let aot = req.query.aot;
-    if (staf && (aot == 1 || aot == 2 || aot == 3)) {
-        getModel().UpdateMark(JSON.parse(req.body.datajson), (err, entity) => {
+    let data=JSON.parse(req.body.datajson)
+    if (staf && data && (aot == 1 || aot == 2 || aot == 3)) {
+        getModel().UpdateMark(data, (err, entity) => {
             if (err) { next(err); return; }
             Response.end(`第${aot}段, 更新${entity}筆...`);
         });
@@ -178,9 +179,9 @@ router.post('/studcourse/editstudmark/marksave.php', images.multer.single('image
 router.post('/studcourse/editstudmark/marksavejson', images.multer.single('image'), (req, Response, next) => {
     let staf = req.user ? req.user.id : null;
     let aot = req.query.aot?req.query.aot: GetAOT(req);
-    if (staf && (aot == 1 || aot == 2 || aot == 3)) {
+    let data = req.body.data;
+    if ( staf && data && (aot == 1 || aot == 2 || aot == 3)) {
         let cdids = GetCDIDS(req);
-        let data = req.body.data;
         getModel().UpdateMarkArr(data,cdids, aot,(err, entity) => {
             if (err) { next(err); return; }
             Response.end(`第${aot}段, 更新${entity}筆...`);
@@ -191,6 +192,24 @@ router.post('/studcourse/editstudmark/marksavejson', images.multer.single('image
 });
 
 router.get('/studcourse/regstudcourse/:book', (req, Response, next) => {
+    let cdid = req.params.book;
+    let ccno = "";
+    let rurl = encodeURI(req.baseUrl) + `/studcourse/${cdid}?fn=` + encodeURI(req.query.fn);
+    let stafref = netutils.id2staf(req.user);
+    if (req.user && req.user.marksys_info) {
+        for (let i = 0; i < req.user.marksys_info[2].length; i++) {
+            if (req.user.marksys_info[2][i].course_d_id == cdid) {
+                ccno = req.user.marksys_info[2][i].classno;
+                let parm = { ccno: ccno, stafref: req.user.id, cdid, course: req.query.fn, returl: req.baseUrl + `/studcourse/${cdid}`, fn: req.query.fn };
+                netutils.HttpGet(PHP_HOST, `/a/markups/mrscourse/mark_grid_stud.php?` + querystring.stringify(parm), Response);
+                return;
+            }
+        }
+    } else {
+        Response.end("no right");
+    }
+});
+router.get('/studcourse/regstudcourse.php/:book', (req, Response, next) => {
     let cdid = req.params.book;
     let ccno = "";
     let rurl = encodeURI(req.baseUrl) + `/studcourse/${cdid}?fn=` + encodeURI(req.query.fn);
