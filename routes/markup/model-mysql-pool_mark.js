@@ -46,25 +46,24 @@ function DataReaderQuery(sql, cb) {
     });
 }
 
-function readpingyu(staf_ref, id, cb) {
+function readstudcourse(staf_ref, id, cb) {
     pool.getConnection(function (err, connection) {
-        if (err) { cb(err); return; }
+        if (err) {
+            cb(err);
+            return;
+        }
         connection.query(
-            "select stud_ref,classno,seat,c_name,GROUP_CONCAT(pingyu1 ORDER BY Lineno SEPARATOR '') as py1,GROUP_CONCAT(pingyu2 ORDER BY Lineno SEPARATOR '') as py2,GROUP_CONCAT(pingyu3 ORDER BY Lineno SEPARATOR '') as py3 from mrs_pingyu where classno=? group by stud_ref order by seat;",
-            //'SELECT * FROM `mrs_pingyu` WHERE `classno` = ? ',
-            id, (err, results) => {
-                /*if (!err && !results.length) { err = {code: 404,   message: 'Not found'};                }*/
+            'SELECT * FROM `mrs_stud_course` WHERE `course_d_id` = ? order by seat', id, (err, results) => {
+                /*if (!err && !results.length) { err = { code: 404, message: 'Not found' }; }*/
                 if (err) { cb(err); return; }
                 cb(null, results);
                 connection.release();
             });
     });
 }
-
 function pm2g(m) {
     return m >= 95 ? "A " : m >= 90 ? "A-" : m >= 85 ? "B+" : m >= 80 ? "B " : m >= 75 ? "B-" : m >= 70 ? "C+" : m >= 65 ? "C " : m >= 60 ? "C-" : "D "
 }
-
 function ReadMarksysAuth(staf_ref, cb) {
     pool.getConnection(function (err, connection) {
         if (err) { cb(err); return; }
@@ -76,6 +75,21 @@ function ReadMarksysAuth(staf_ref, cb) {
             [staf_ref, staf_ref, staf_ref], (err, results) => {
                 if (err) { cb(err); return; }
                 cb(null, results);
+                connection.release();
+            });
+    });
+}
+
+function read(staf_ref, id, cb) {
+    pool.getConnection(function (err, connection) {
+        if (err) { cb(err); return; }
+        connection.query(
+            'SELECT * FROM `mrs_stud_course` WHERE `course_d_id` = ? ', id, (err, results) => {
+                if (!err && !results.length) {
+                    err = { code: 404, message: 'Not found' };
+                }
+                if (err) { cb(err); return; }
+                cb(null, results[0]);
                 connection.release();
             });
     });
@@ -96,7 +110,9 @@ function readclassnostud(id, cb) {
     });
 }
 
-async function UpdatePingYu( aot, myclass,aObj, cb) {
+//Reg Stud Course Mark
+
+async function UpdateMark( aot,myclass, aObj, cb) {
     pool.getConnection(async function (err, connection) {
         if (err) { cb(err); return; }
         let cnt = 0;
@@ -107,13 +123,13 @@ async function UpdatePingYu( aot, myclass,aObj, cb) {
                 let studref=ar_[2];
                 let fieldname=ar_[1];
                 let pyStmt = aObj[alist[i]];
-                if(aot==1 && fieldname=="pingyu1" ){}
-                else if(aot==2 && fieldname=="pingyu2" ){}
-                else if(aot==3 && fieldname=="pingyu3" ){}
+                if(aot==1 && fieldname=="conduct1" ){}
+                else if(aot==2 && fieldname=="conduct1" ){}
+                else if(aot==3 && fieldname=="conduct1" ){}
                 else{continue;}
                 //console.log(aot,fieldname,pyStmt,studref)
                 cnt += await new Promise((resolve, reject) => {
-                    connection.query(`update mrs_pingyu set ${fieldname}=? where classno=? and lineno=0 and stud_ref=?`, [pyStmt,myclass,studref], (err, res) => {
+                    connection.query(`update mrs_stud_course set ${fieldname}=? where classno=? and stud_ref=?`, [pyStmt,myclass,studref], (err, res) => {
                         if (err) { console.log(err); reject(err); }
                         resolve(100);
                     });
@@ -124,7 +140,7 @@ async function UpdatePingYu( aot, myclass,aObj, cb) {
         connection.release();
     });
 }
-async function UpdatePingYuArr( aot, myclass,alist, cb) {
+async function UpdateMarkArr( aot,myclass, alist, cb) {
     pool.getConnection(async function (err, connection) {
         if (err) { cb(err); return; }
         let cnt = 0;
@@ -134,13 +150,14 @@ async function UpdatePingYuArr( aot, myclass,alist, cb) {
                 if(ar_.length<9 ) continue;
                 let studref=ar_[0];
                 let fieldname=null;
-                let pyStmt = null;
-                if(aot==1){fieldname="pingyu1";pyStmt = ar_[6];} 
-                if(aot==2){fieldname="pingyu2";pyStmt = ar_[7];} 
-                if(aot==3){fieldname="pingyu3";pyStmt = ar_[8];} 
+                let Val = null;
+                if(aot==1){fieldname="1";Val = ar_[9];} 
+                if(aot==2){fieldname="conduct2";Val = ar_[17];} 
+                if(aot==3){fieldname="conduct3";Val = ar_[25];} 
                 if(fieldname==null){continue;}
+                //console.log(aot,fieldname,pyStmt,studref)
                 cnt += await new Promise((resolve, reject) => {
-                    connection.query(`update mrs_pingyu set ${fieldname}=? where classno=? and lineno=0 and stud_ref=?`, [pyStmt,myclass,studref], (err, res) => {
+                    connection.query(`update mrs_stud_course set ${fieldname}=? where classno=? and stud_ref=?`, [Val,myclass,studref], (err, res) => {
                         if (err) { console.log(err); reject(err); }
                         resolve(100);
                     });
@@ -151,17 +168,17 @@ async function UpdatePingYuArr( aot, myclass,alist, cb) {
         connection.release();
     });
 }
-//Reg Stud Grade Course 
 
 module.exports = {
     createSchema: createSchema,
-    readpingyu: readpingyu,
+    readstudcourse: readstudcourse,
+    UpdateMarkArr: UpdateMarkArr,
+    UpdateMark:UpdateMark,
     ReadMarksysAuth: ReadMarksysAuth,
     StatisticsRead: StatisticsRead,
     DataReaderQuery: DataReaderQuery,
+    read: read,
     readclassnostud: readclassnostud,
-    UpdatePingYu:UpdatePingYu,
-    UpdatePingYuArr:UpdatePingYuArr,
 };
 
 if (module === require.main) {

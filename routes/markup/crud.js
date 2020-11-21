@@ -205,6 +205,7 @@ router.get('/myclass', require('connect-ensure-login').ensureLoggedIn(), (req, r
         esess: req.user.marksys_info[0][0],
     });
 });
+
 //myclassWRGTJ
 router.get('/myclassWRGTJ', require('connect-ensure-login').ensureLoggedIn(), (req, res, next) => {
     res.render('markup/WRGTJ/QForm.pug', {
@@ -214,9 +215,11 @@ router.get('/myclassWRGTJ', require('connect-ensure-login').ensureLoggedIn(), (r
         profile: req.user,
     });
 });
+
 router.post('/myclassWRGTJ', require('connect-ensure-login').ensureLoggedIn(), (req, res, next) => {    
     HttpPostMKWrgTotal("127.0.0.1", '/MKWrgTotal?r=random', querystring.stringify(req.body), res);
 });
+
 router.get('/myclassShowWRGTJ', require('connect-ensure-login').ensureLoggedIn(), (req, res, next) => {    
     let data ={
     CalcFlag: false,
@@ -225,9 +228,9 @@ router.get('/myclassShowWRGTJ', require('connect-ensure-login').ensureLoggedIn()
     sdate: '2019/03/27',
     edate: '2019/03/27',
     saveFlag: false};
-    
     HttpPostMKWrgTotal("127.0.0.1", '/MKWrgTotal?r=random', querystring.stringify(data), res);
 });
+
 function HttpPostMKWrgTotal(param_host, param_path, param_postData, respone) {
     let options = {
         hostname: param_host, port: 8082,
@@ -257,6 +260,7 @@ function HttpPostMKWrgTotal(param_host, param_path, param_postData, respone) {
     req.write(param_postData);
     req.end();
 }
+
 /**
  * GET /markup/add
  *
@@ -275,6 +279,7 @@ router.get('/add', (req, res) => {
         action: 'Add'
     });
 });
+
 /**
  * POST /books/add
  * Create a book.
@@ -295,181 +300,7 @@ router.post(
         });
     }
 );
-router.get('/studcourse/:book', (req, res, next) => {
-    if( CheckCDID(req,req.params.book)){}
-    else if(CheckCLASSCDID(req,req.params.book) ){}
-    else { res.end("no right");  return; }
-    let staf_ref = netutils.id2staf(req.user);
-    getModel().readstudcourse(staf_ref, req.params.book, (err, entity) => {
-        if (err) { next(err); return; }
-        res.render('markup/viewStudCourse.pug', {
-            profile: req.user,
-            fn: req.query.fn,
-            course_d_id: req.params.book,
-            books: entity,
-            editable: req.query.r,
-            esess: req.user.marksys_info[0][0],
-            
-        });
-    });
-});
-router.get('/studcourse/:book/xls', (req, res, next) => {
-    if( ! CheckCDID(req,req.params.book) ){ res.end("no right");  return; }
-    let staf_ref = netutils.id2staf(req.user);
-    let fn = req.query.fn + ".xls";
-    res.setHeader("Content-type", "application/vnd.ms-excel");
-    res.setHeader("Content-Disposition", "attachment; filename=" + encodeURI(fn) + ";");
-    res.write('<HTML xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">');
-    res.write('<head><meta http-equiv="content-type" content="application/vndms-excel; charset=utf-8"></head>');
-    res.write('<body><table><tbody>')
-    res.write('<tr><td>編號<td>座號<td>姓名<td>測驗1<td>考試1<td>測驗2<td>考試2<td>測驗3<td>考試3<td>補考')
-    getModel().readstudcourse(staf_ref, req.params.book, (err, entity) => {
-        if (err) { next(err); return; }
-        for (let i = 0; i < entity.length; i++) {
-            res.write("<tr><td>" + entity[i].stud_c_id);
-            res.write("<td>" + entity[i].seat + "<td>" + entity[i].c_name);
-            res.write("<td>" + entity[i].t1 + "<td>" + entity[i].e1);
-            res.write("<td>" + entity[i].t2 + "<td>" + entity[i].e2);
-            res.write("<td>" + entity[i].t3 + "<td>" + entity[i].e3);
-            res.write("<td>" + entity[i].pk + "</tr>");
-        }
-        res.write('</tbody></table></body></html>');
-        res.end();
-    });
-});
-router.get('/studcourse/editstudmark/:book', (req, Response, next) => {
-    if( ! CheckCDID(req,req.params.book) ){ res.end("no right");  return; }
-    let aot=GetAOT(req);
-    let cdid = req.params.book;
-    let staf_ref = netutils.id2staf(req.user);       
-    //let parm = { aot: aot, cdid: cdipingyud, course: req.query.fn, returl: req.baseUrl + `/studcourse/${cdid}`,fn:req.query.fn };
-    //netutils.HttpGet(PHP_HOST, `/a/markups/mrscourse/mark_grid.php?` + querystring.stringify(parm), Response);
-    getModel().readstudcourse(staf_ref, req.params.book, (err, entity) => {
-        if (err) {next(err);return;}
-        Response.render('markup/editStudCourse.pug', {
-            profile: req.user,
-            fn: req.query.fn,
-            course_d_id: req.params.book,
-            books: entity,
-            editable: req.query.r,
-            aot:aot
-        });
-    });   
-});
-router.post('/studcourse/editstudmark/marksave.php', images.multer.single('image'), (req, Response, next) => {    
-    let staf = "null";
-    if (req.user) staf = req.user.id;
-    let aot = req.query.aot;
-    netutils.HttpPost(PHP_HOST, '/a/markups/mrscourse/marksave.php', "aot=" + aot + "&stafref=" + staf + "&datajson=" + req.body.datajson, Response);
-});
-router.post('/studcourse/editstudmark/marksavejson', images.multer.single('image'), (req, Response, next) => {    
-    let saot = GetSAOT(req);
-    let paot = GetPAOT(req);
-    let staf = "null";
-    if (req.user) staf = req.user.id;
-    let jsondata=JSON.stringify( {"saot": saot,"paot": paot, "stafref": staf,"mycrs": req.user.marksys_info[2], "data":req.body.data})
-    netutils.HttpPost(PHP_HOST, '/a/markups/mrscourse/marksavejson.php',jsondata, Response);
-});
-router.get('/studcourse/regstudcourse/:book', (req, Response, next) => {
-    let cdid = req.params.book;
-    let ccno = "";
-    let rurl = encodeURI(req.baseUrl) + `/studcourse/${cdid}?fn=` + encodeURI(req.query.fn);
-    let stafref = netutils.id2staf(req.user);
-    if (req.user && req.user.marksys_info) {        
-        for (let i = 0; i < req.user.marksys_info[2].length; i++) {
-            if (req.user.marksys_info[2][i].course_d_id == cdid) {
-                ccno = req.user.marksys_info[2][i].classno;
-                let parm = { ccno: ccno, stafref: req.user.id, cdid, course: req.query.fn, returl: req.baseUrl + `/studcourse/${cdid}`, fn: req.query.fn };
-                netutils.HttpGet(PHP_HOST, `/a/markups/mrscourse/mark_grid_stud.php?` + querystring.stringify(parm), Response);
-                return;
-            }
-        }
-    } else {
-        Response.end("no right");
-    }
-});
-router.post('/studcourse/regstudcourse/markup_jsontwolist.php', (req, Response, next) => {
-    req.body.stafref = netutils.id2staf(req.user);
-    netutils.HttpPost(PHP_HOST, '/a/markups/mrscourse/markup_jsontwolist.php', "rawData=" + JSON.stringify(req.body), Response);
-});
 
-//CONDUCT
-router.get('/conduct/:book', (req, res, next) => {
-
-    if(!CheckCLASSNO(req,req.params.book)){ res.end("no right");return;}
-    let staf_ref = netutils.id2staf(req.user);
-    getModel().readconduct(staf_ref, req.params.book, (err, entity) => {
-        if (err) { next(err); return; }
-        res.render('markup/viewStudConduct.pug', {
-            profile: req.user,
-            fn: req.params.book + "操行",
-            course_d_id: req.params.book,
-            books: entity,
-            editable: req.query.r,
-            esess: req.user.marksys_info[0][0],
-            OpSect: GetAOTWith( req.params.book,req),
-        });
-    });
-});
-router.get('/studcourse/editcondu/:book', (req, Response, next) => {
-    if(!CheckCLASSNO(req,req.params.book)){ res.end("no right");return;}
-    let cdid = req.params.book;
-    let aot = 10;
-    if (req.user)
-        if (req.user.marksys_info) {
-            if (req.query.fn.startsWith("P")) { aot = req.user.marksys_info[0][0].p_allowOpSect; }
-            if (req.query.fn.startsWith("S")) { aot = req.user.marksys_info[0][0].allowOpSect; }
-        }
-    let parm = {
-        aot: aot,
-        cno: cdid,
-        cdid: cdid,
-        course: req.query.fn,
-        returl: req.baseUrl + `/conduct/${cdid}?r=true`,
-        fn: req.query.fn
-    };
-    Response.setHeader('Content-Type', 'text/html');
-    netutils.HttpGet(PHP_HOST, `/a/markups/mrscourse/condu_grid.php?` + querystring.stringify(parm), Response);
-});
-router.post('/studcourse/editcondu/condusave.php', images.multer.single('image'), (req, Response, next) => {
-    let staf = "null";
-    let stafref = "null";
-    let aot = 10;
-    if (req.user) {
-        staf = req.user.id;
-        stafref = netutils.id2staf(req.user);
-        if (req.user.marksys_info) {
-            if (req.query.fn.startsWith("P")) { aot = req.user.marksys_info[0][0].p_allowOpSect; }
-            if (req.query.fn.startsWith("S")) { aot = req.user.marksys_info[0][0].allowOpSect; }
-        }
-    }
-    let parm = { aot: aot, staf: staf, stafref: stafref, datajson: JSON.stringify(req.body.datajson) }
-    netutils.HttpPost(PHP_HOST, '/a/markups/mrscourse/condu_save.php', querystring.stringify(parm), Response);
-});
-//
-router.post('/studcourse/editcondu/condusavejson', images.multer.single('image'), (req, Response, next) => {    
-    let saot = GetSAOT(req);
-    let paot = GetPAOT(req);
-    let staf = "null";
-    let myclass = GetMyClass(req);
-    if (req.user) staf = req.user.id;
-    let jsondata=JSON.stringify( {myclass:myclass,"saot": saot,"paot": paot, "stafref": staf,"mycrs": req.user.marksys_info[2], "data":req.body.data});
-    netutils.HttpPost(PHP_HOST, '/a/markups/mrscourse/condusavejson.php',jsondata, Response);
-});
-
-router.get('/studcourse/regcondu/:book', (req, Response, next) => {
-    if(!CheckCLASSNO(req,req.params.book)){ res.end("no right");return;}
-    let cdid = req.params.book;
-    let ccno = "";
-    let rurl = encodeURI(req.baseUrl) + `/conduct/${cdid}?r=true&fn=` + encodeURI(req.query.fn);
-    let parm = { cno: cdid, stafref: "", course: req.query.fn, returl: rurl };
-    if (req.user && req.user.marksys_info) parm.stafref = netutils.id2staf(req.user);
-    netutils.HttpGet(PHP_HOST, `/a/markups/mrscourse/condu_grid_stud.php?` + querystring.stringify(parm), Response);
-});
-router.post('/studcourse/regcondu/condu_jsontwolist.php', (req, Response, next) => {
-    req.body.stafref = netutils.id2staf(req.user);
-    netutils.HttpPost(PHP_HOST, '/a/markups/mrscourse/condu_jsontwolist.php', "rawData=" + JSON.stringify(req.body), Response);
-});
 router.get('/marktotal/mrs_class_mark_total_tab_report.php', (req, Response, next) => {
     let param = {
         term: req.query.term,

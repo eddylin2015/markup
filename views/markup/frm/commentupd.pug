@@ -18,11 +18,10 @@ div(title="Basic dialog",style="display:none")#commentupdfrm_res
   div(style="display:block")#commentupdfrm_res_XLSJSON       
 script(type="text/javascript").
   function commentupdfrm_submit_wait(x)  { $('#'+x.id).hide(); setTimeout(()=>{$('#'+x.id).show(); }, 3000);  }    
-
   function OpenCommentupdfrm(sid,classno){
-  $('#commentupdfrmSID').text(sid);
-  $('#commentupdfrmCLASSNO').text(classno);
-  $("#commentupdfrm" ).dialog("open");
+    $('#commentupdfrmSID').text(sid);
+    $('#commentupdfrmCLASSNO').text(classno);
+    $("#commentupdfrm" ).dialog("open");
   }
   $(document).ready(function(){
     $("#commentupdfrm").dialog( { autoOpen: false,height:  $(window).height()*0.9,  width:'90%', });  
@@ -36,11 +35,8 @@ script(type="text/javascript").
             let classno=$('#commentupdfrmCLASSNO').text();
             let json=JSON.parse( document.getElementById('commentupdfrm_res_XLSJSON').innerHTML);
             let postjson=new Array();
-            console.log(json);
             for(i=0;i<json.length;i++)
-            {
-              console.log(sid,classno);
-              console.log( json[i]);
+            { //console.log(sid,classno,json[i]);
               if( sid=='' || ( sid== json[i][1] && classno== json[i][2]  ))
               if(json[i][1].match(/^[0-9]+$/)){
                 json[i][6]=TPingYuPrase_prase(json[i][6]);

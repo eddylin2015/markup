@@ -196,7 +196,8 @@ router.post('/studcourse/editpingyu/pingyusave', images.multer.single('image'),
             if (req.query.fn.startsWith("S")) { aot = req.user.marksys_info[0][0].allowOpSect; }
         }
     }
-    getModel().UpdatePingYu(aot,JSON.parse( req.body.datajson ), (err, entity) => {
+    let myclass = GetMyClass(req);
+    getModel().UpdatePingYu(aot,myclass,JSON.parse( req.body.datajson ), (err, entity) => {
         if (err) { next(err); return; }        
         Response.end( `更新 ${entity} 筆. 完成! `);
     });
@@ -206,8 +207,7 @@ router.post('/studcourse/editpingyu/pingyusavejson', images.multer.single('image
     let myclass = GetMyClass(req);
     //if (req.user) staf = req.user.id;
     let aot =  req.query.aot;
-    console.log(aot)    
-    getModel().UpdatePingYuArr(aot,req.body.data, (err, entity) => {
+    getModel().UpdatePingYuArr(aot,myclass,req.body.data, (err, entity) => {
         if (err) { next(err); return; }        
         Response.write( "Update  Records:" );        
         Response.end( entity.toString());

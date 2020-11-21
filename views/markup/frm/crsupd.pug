@@ -28,7 +28,7 @@ script(type="text/javascript").
           text: "Update Record",  icon: "ui-icon-heart",
           click: function() {
             let json=JSON.parse( document.getElementById('crsupdfrm_res_XLSJSON').innerHTML);
-            let savejsonurl="/internal/markup/studcourse/editstudmark/marksavejson";
+            let savejsonurl="/internal/markup/studcourse/editstudmark/marksavejson?aot=!{aot}";
             SaveJson(json,savejsonurl);
             $( this ).dialog( "close" );
           }

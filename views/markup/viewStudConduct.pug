@@ -1,17 +1,4 @@
-﻿//- Copyright 2017, Google, Inc.
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-
-extends ./base.pug
+﻿extends ./base.pug
 
 block content
   h3
@@ -88,14 +75,12 @@ block content
           td(align='left',style="border: 1px solid grey;") #{book.wrg_later2}<td>#{book.wrg_absence2}<td>#{book.wrg_truancy_s2}節#{book.wrg_truancy_t2}次<td>#{book.WrgMarks2}印<td>#{book.honor2}印 附:#{book.addi_honor2}
           td(align='left',style="border: 1px solid grey;") #{book.wrg_later3}<td>#{book.wrg_absence3}<td>#{book.wrg_truancy_s3}節#{book.wrg_truancy_t3}次<td>#{book.WrgMarks3}印<td>#{book.honor3}印 附:#{book.addi_honor3}
   -var act_link="/internal/PublicAPI/ExpXls.php?charset=utf-8&filename="+fn+".xls"
-  div= act_link
   div#CSVFrm
     div#CSVFrm_Link
       form(id="CSVFrmPOST", method="post", action=act_link, target="xlsdownload")
         input(type="hidden",  id="CSVFrmPOSTVALUE", name="CSVFrmPOSTNAME")
   include frm/conductupd   
   script(src='/javascripts/cool/webtoolkit.aim.js')  
-
     
   div(title="Show Msg",style="display:none")#ShowMsg
     pre#ShowMsgTxt  
@@ -105,28 +90,18 @@ block content
     table{width:120%;}
     td{border: 1px solid grey; margin-left: 10px; margin-right: 10px;padding-left: 10px; padding-right: 10px;}
   script.
-    function ShowMsg(x)
-    {
-      document.getElementById('ShowMsgTxt').innerHTML=x;
-      $( "#ShowMsg" ).dialog("open"); //$("#ShowMsg").dialog( { autoOpen: false, });   
-    }  
-
+    function ShowMsg(x){document.getElementById('ShowMsgTxt').innerHTML=x;$( "#ShowMsg" ).dialog("open"); }  
     $(document).ready(function(){
-    $("#ShowMsg").dialog( { autoOpen: false, });
-
-    var toPrint = document.getElementById('tableContent');
-    $('#prtbtn').click(function(){
-      var popupWin = window.open('', '_blank', 'width=350,height=150,location=no,left=200px');
-      popupWin.document.open();
-      popupWin.document.write('<html><title>prt</title></head><body>');
-      popupWin.document.write('#{fn}');
-      popupWin.document.write(toPrint.innerHTML);
-      popupWin.print();
-      popupWin.document.close();
-    });
-    $('#expxls').click(function(){
-     // exportDataTbl('tbl');
-    });
-
-
+      $("#ShowMsg").dialog( { autoOpen: false, });
+      var toPrint = document.getElementById('tableContent');
+      $('#prtbtn').click(function(){
+        var popupWin = window.open('', '_blank', 'width=350,height=150,location=no,left=200px');
+        popupWin.document.open();
+        popupWin.document.write('<html><title>prt</title></head><body>');
+        popupWin.document.write('#{fn}');
+        popupWin.document.write(toPrint.innerHTML);
+        popupWin.print();
+        popupWin.document.close();
+      });
+      $('#expxls').click(function(){ });
     });      

@@ -14,7 +14,12 @@
 extends ./base.pug
 
 block content
-  h3= fn
+  h3
+    span= fn
+    span (
+    span= aot
+    span )
+
   .btn-group
     if editable=='true' 
       a(href=`/internal/markup/studcourse/editstudmark/${course_d_id}?fn=${fn}`, class='btn btn-primary btn-sm')

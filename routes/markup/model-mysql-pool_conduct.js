@@ -81,7 +81,7 @@ function readclassnostud(id, cb) {
     });
 }
 
-async function UpdateConduct( aot, aObj, cb) {
+async function UpdateConduct( aot,myclass, aObj, cb) {
     pool.getConnection(async function (err, connection) {
         if (err) { cb(err); return; }
         let cnt = 0;
@@ -92,13 +92,13 @@ async function UpdateConduct( aot, aObj, cb) {
                 let studref=ar_[2];
                 let fieldname=ar_[1];
                 let pyStmt = aObj[alist[i]];
-                if(aot==1 && fieldname=="pingyu1" ){}
-                else if(aot==2 && fieldname=="pingyu2" ){}
-                else if(aot==3 && fieldname=="pingyu3" ){}
+                if(aot==1 && fieldname=="conduct1" ){}
+                else if(aot==2 && fieldname=="conduct1" ){}
+                else if(aot==3 && fieldname=="conduct1" ){}
                 else{continue;}
-                console.log(aot,fieldname,pyStmt,studref)
+                //console.log(aot,fieldname,pyStmt,studref)
                 cnt += await new Promise((resolve, reject) => {
-                    connection.query(`update mrs_stud_conduct set ${fieldname}=? where lineno=0 and stud_ref=?`, [pyStmt,studref], (err, res) => {
+                    connection.query(`update mrs_stud_conduct set ${fieldname}=? where classno=? and stud_ref=?`, [pyStmt,myclass,studref], (err, res) => {
                         if (err) { console.log(err); reject(err); }
                         resolve(100);
                     });
@@ -109,25 +109,24 @@ async function UpdateConduct( aot, aObj, cb) {
         connection.release();
     });
 }
-async function UpdateConductArr( aot, alist, cb) {
+async function UpdateConductArr( aot,myclass, alist, cb) {
     pool.getConnection(async function (err, connection) {
         if (err) { cb(err); return; }
         let cnt = 0;
-        //console.log(alist)
         if (alist) {
             for (let i = 0; i < alist.length; i++) {
                 let ar_ = alist[i];
                 if(ar_.length<9 ) continue;
                 let studref=ar_[0];
                 let fieldname=null;
-                let pyStmt = null;
-                if(aot==1){fieldname="pingyu1";pyStmt = ar_[6];} 
-                if(aot==2){fieldname="pingyu2";pyStmt = ar_[7];} 
-                if(aot==3){fieldname="pingyu3";pyStmt = ar_[8];} 
+                let Val = null;
+                if(aot==1){fieldname="conduct1";Val = ar_[9];} 
+                if(aot==2){fieldname="conduct2";Val = ar_[17];} 
+                if(aot==3){fieldname="conduct3";Val = ar_[25];} 
                 if(fieldname==null){continue;}
                 //console.log(aot,fieldname,pyStmt,studref)
                 cnt += await new Promise((resolve, reject) => {
-                    connection.query(`update mrs_stud_conduct set ${fieldname}=? where lineno=0 and stud_ref=?`, [pyStmt,studref], (err, res) => {
+                    connection.query(`update mrs_stud_conduct set ${fieldname}=? where classno=? and stud_ref=?`, [Val,myclass,studref], (err, res) => {
                         if (err) { console.log(err); reject(err); }
                         resolve(100);
                     });

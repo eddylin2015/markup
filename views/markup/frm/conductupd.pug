@@ -15,19 +15,18 @@ div(title="Basic dialog",style="display:none")#conductupdfrm_res
   div#conductupdfrm_res_XLSTable
   div(style="display:none")#conductupdfrm_res_XLSJSON       
 script(type="text/javascript").
-  //let PostUrl='/internal/markup/studcourse/editcondu/condusave.php?fn=I1A操行';
+  let PostUrl='/internal/markup/studcourse/editcondu/condusavejson?fn=!{fn}&aot=!{aot}&classno=!{classno}';
   function conductupdfrm_submit_wait(x)  { $('#'+x.id).hide(); setTimeout(()=>{$('#'+x.id).show(); }, 3000);  }    
-
   function Openconductupdfrm(sid,classno){
-  $('#conductupdfrmSID').text(sid);
-  $('#conductupdfrmCLASSNO').text(classno);
-  $("#conductupdfrm" ).dialog("open");
+    $('#conductupdfrmSID').text(sid);
+    $('#conductupdfrmCLASSNO').text(classno);
+    $("#conductupdfrm" ).dialog("open");
   }
   $(document).ready(function(){
     $("#conductupdfrm").dialog( { autoOpen: false,height:  $(window).height()*0.9,  width:'90%', });  
     $("#conductupdfrm_res").dialog( {
       autoOpen: false,
-      height:  $(window).height()*0.9,
+      height:$(window).height()*0.9,
       width:'90%',
       buttons: [
         {
@@ -38,13 +37,12 @@ script(type="text/javascript").
             let postjson=new Array();
             for(i=0;i<json.length;i++)
             {
-              if(json[i][1].match(/^[0-9]+$/)){
-                postjson.push(json[i].slice(0,28));
-              }
+              if(json[i][1].match(/^[0-9]+$/))
+                if(json[i].length>25) postjson.push(json[i].slice(0,26));
             }
-            $.post( "/internal/markup/studcourse/editcondu/condusavejson",{data: postjson})
+            $.post(PostUrl, {data: postjson})
                .done( function(data) {
-                ShowMsg(data);   
+                ShowMsg(data);
               });
               $( this ).dialog( "close" );
           }
