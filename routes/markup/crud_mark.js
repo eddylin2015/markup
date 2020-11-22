@@ -193,21 +193,40 @@ router.post('/studcourse/editstudmark/marksavejson', images.multer.single('image
 
 router.get('/studcourse/regstudcourse/:book', (req, Response, next) => {
     let cdid = req.params.book;
-    let ccno = "";
-    let rurl = encodeURI(req.baseUrl) + `/studcourse/${cdid}?fn=` + encodeURI(req.query.fn);
-    let stafref = netutils.id2staf(req.user);
+    let rurl = encodeURI(req.baseUrl) + `/studcourse/${cdid}?r=true&fn=` + encodeURI(req.query.fn);
     if (req.user && req.user.marksys_info) {
         for (let i = 0; i < req.user.marksys_info[2].length; i++) {
             if (req.user.marksys_info[2][i].course_d_id == cdid) {
-                ccno = req.user.marksys_info[2][i].classno;
-                let parm = { ccno: ccno, stafref: req.user.id, cdid, course: req.query.fn, returl: req.baseUrl + `/studcourse/${cdid}`, fn: req.query.fn };
-                netutils.HttpGet(PHP_HOST, `/a/markups/mrscourse/mark_grid_stud.php?` + querystring.stringify(parm), Response);
-                return;
+                let ccno = req.user.marksys_info[2][i].classno;
+                getModel().ReadClassStudCourse(cdid,ccno, (err, entity) => {
+                    if (err) { console.log(err);next(err); return; }
+                    Response.render('markup/regstudcourse/studlist_studcourse.pug', {
+                        profile: req.user,
+                        fn: req.query.fn,
+                        classno: ccno,
+                        books: entity,
+                        rurl : rurl,
+                        jsontwolist_php:`markup_jsontwolist?ccno=${ccno}&cdid=${cdid}&fn=${encodeURI(req.query.fn)}`,
+                    });
+                });
             }
         }
     } else {
         Response.end("no right");
     }
+});
+
+router.post('/studcourse/regstudcourse/markup_jsontwolist', (req, Response, next) => {
+    req.body.stafref = netutils.id2staf(req.user);
+    let sid=GetSID(req);
+    let cdid=req.query.cdid;
+    let cno=req.query.ccno;
+    let key1=req.body.aObj? req.body.aObj:null;
+    let key2=req.body.rObj? req.body.rObj:null;
+    getModel().RegStudCourse(sid, cdid, cno, key1, key2 , (err, entity) => {
+        if (err) { next(err); return; }        
+        Response.end( entity.toString());
+    });
 });
 router.get('/studcourse/regstudcourse.php/:book', (req, Response, next) => {
     let cdid = req.params.book;
@@ -227,7 +246,6 @@ router.get('/studcourse/regstudcourse.php/:book', (req, Response, next) => {
         Response.end("no right");
     }
 });
-
 router.post('/studcourse/regstudcourse/markup_jsontwolist.php', (req, Response, next) => {
     req.body.stafref = netutils.id2staf(req.user);
     netutils.HttpPost(PHP_HOST, '/a/markups/mrscourse/markup_jsontwolist.php', "rawData=" + JSON.stringify(req.body), Response);

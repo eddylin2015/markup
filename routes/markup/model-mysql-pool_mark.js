@@ -18,6 +18,7 @@ function readstudcourse(staf_ref, id, cb) {
             });
     });
 }
+
 function pm2g(m) {
     return m >= 95 ? "A " : m >= 90 ? "A-" : m >= 85 ? "B+" : m >= 80 ? "B " : m >= 75 ? "B-" : m >= 70 ? "C+" : m >= 65 ? "C " : m >= 60 ? "C-" : "D "
 }
@@ -115,9 +116,73 @@ async function UpdateMarkArr(alist, cdids, aot, cb) {
     });
 }
 
+function ReadClassStudCourse(cdid,ccno, cb) {
+    pool.getConnection(function (err, connection) {
+        if (err) {
+            cb(err);
+            return;
+        }
+        connection.query(
+            [" select stud_c_id as id,a.stud_ref,a.curr_seat,a.c_name,t1 ",
+            " from ",
+            "  ( select stud_ref,curr_seat,c_name from  studinfo where curr_class=?) as a",
+            "left join",
+            "( select stud_c_id,stud_ref,seat,c_name,t1 from  mrs_stud_course where course_d_id=?) as b",
+            " on a.stud_ref=b.stud_ref",
+            "order by curr_seat"].join(" "),
+            [ccno,cdid], (err, results) => {
+                if (err) { cb(err); return; }
+                cb(null, results);
+                connection.release();
+            });
+    });
+}
+async function RegStudCourse(sid, cdid, cno, aObj, rObj, cb) {
+    pool.getConnection(async function (err, connection) {
+        if (err) { cb(err); return; }
+        let cnt = 0;
+        if (aObj) {
+            let alist = Object.keys(aObj);
+            for (let i = 0; i < alist.length; i++) {
+                let studref = alist[i];
+                let li = aObj[studref].split(':');               
+                let seat = li[0];
+                let name = li[1];
+                let data = { session_id:sid,course_d_id:cdid,stud_ref: studref, classno: cno, seat: seat, c_name: name }
+                cnt += await new Promise((resolve, reject) => {
+                    connection.query('INSERT INTO `mrs_stud_course` SET ?', data, (err, res) => {
+                        if (err) { console.log(err); reject(err); }
+                        resolve(100);
+                    });
+                });
+            }
+        }
+        if (rObj) {
+            let rlist = Object.keys(rObj);
+            for (let i = 0; i < rlist.length; i++) {
+                let studref = rlist[i];
+                let li = rObj[studref].split(':');
+                let seat = li[0];
+                let name = li[1];
+                let scid = li[2];
+                cnt += await new Promise((resolve, reject) => {
+                    connection.query('delete from mrs_stud_course where stud_c_id= ? and course_d_id=? ', [scid,cdid], (err, res) => {
+                        if (err) { console.log(err); reject(err); }
+                        resolve(100);
+                    });
+                });
+            }
+        }
+        cb(null, Math.floor(cnt / 100));
+        connection.release();
+    });
+}
+
 module.exports = {
     createSchema: createSchema,
     readstudcourse: readstudcourse,
+    ReadClassStudCourse:ReadClassStudCourse,
+    RegStudCourse:RegStudCourse,
     UpdateMarkArr: UpdateMarkArr,
     UpdateMark: UpdateMark,
     ReadMarksysAuth: ReadMarksysAuth,

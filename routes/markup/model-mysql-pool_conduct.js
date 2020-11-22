@@ -137,7 +137,69 @@ async function UpdateConductArr( aot,myclass, alist, cb) {
         connection.release();
     });
 }
-//Reg Stud Grade Course 
+//Reg Stud Course 
+function ReadClassStudCondu(ccno, cb) {
+    pool.getConnection(function (err, connection) {
+        if (err) {
+            cb(err);
+            return;
+        }
+        connection.query(
+            [" select conduct1 as id,a.stud_ref,a.curr_seat,a.c_name ",
+            " from ",
+            "  ( select stud_ref,curr_seat,c_name from  studinfo where curr_class=?) as a",
+            "left join",
+            "( select conduct1,stud_ref,seat,c_name from  mrs_stud_conduct where classno=?) as b",
+            " on a.stud_ref=b.stud_ref",
+            "order by curr_seat"].join(" "),
+            [ccno,ccno], (err, results) => {
+                if (err) { cb(err); return; }
+                cb(null, results);
+                connection.release();
+            });
+    });
+}
+async function RegStudCondu(sid, cno, aObj, rObj, cb) {
+    pool.getConnection(async function (err, connection) {
+        console.log(cno)
+        if (err) { cb(err); return; }
+        let cnt = 0;
+        if (aObj) {
+            let alist = Object.keys(aObj);
+            for (let i = 0; i < alist.length; i++) {
+                let studref = alist[i];
+                let li = aObj[studref].split(':');               
+                let seat = li[0];
+                let name = li[1];
+                let data = { session_id:sid,stud_ref: studref, classno: cno, seat: seat, c_name: name }
+                cnt += await new Promise((resolve, reject) => {
+                    connection.query('INSERT INTO `mrs_stud_conduct` SET ?', data, (err, res) => {
+                        if (err) { console.log(err); reject(err); }
+                        resolve(100);
+                    });
+                });
+            }
+        }
+        if (rObj) {
+            let rlist = Object.keys(rObj);
+            for (let i = 0; i < rlist.length; i++) {
+                let studref = rlist[i];
+                let li = rObj[studref].split(':');
+                let seat = li[0];
+                let name = li[1];
+                let scid = li[2];
+                cnt += await new Promise((resolve, reject) => {
+                    connection.query('delete from mrs_stud_conduct where stud_ref= ? and session_id=? ', [studref,sid], (err, res) => {
+                        if (err) { console.log(err); reject(err); }
+                        resolve(100);
+                    });
+                });
+            }
+        }
+        cb(null, Math.floor(cnt / 100));
+        connection.release();
+    });
+}
 
 
 module.exports = {
@@ -148,6 +210,8 @@ module.exports = {
     StatisticsRead: StatisticsRead,
     DataReaderQuery: DataReaderQuery,
     readclassnostud: readclassnostud,
+    ReadClassStudCondu:ReadClassStudCondu,
+    RegStudCondu:RegStudCondu
 };
 
 if (module === require.main) {

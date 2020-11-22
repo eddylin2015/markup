@@ -8,7 +8,7 @@ block content
           div 備選同學
           select#srcList(style="width: 250px;height:500px;" , size=30, multiple)
             each st_ in books
-              if st_.id
+              if st_.id==0
               else
                 option(value=st_.stud_ref)= `${st_.curr_seat}:${st_.c_name}::`
         td
@@ -25,7 +25,7 @@ block content
           div 已選課同學
           select#disList(style="width: 250px;height:500px;" , size=30, multiple)
             each st_ in books
-              if st_.id && st_.t1==0
+              if st_.id ==0
                 option(value=st_.stud_ref)= `${st_.curr_seat}:${st_.c_name}:${st_.id}:`
         td
           div 已登分同學

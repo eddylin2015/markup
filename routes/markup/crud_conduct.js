@@ -256,19 +256,33 @@ router.post('/studcourse/editcondu/condusavejson', images.multer.single('image')
         Response.end( entity.toString());
     });
 });
-
 router.get('/studcourse/regcondu/:book', (req, Response, next) => {
     if(!CheckCLASSNO(req,req.params.book)){ res.end("no right");return;}
-    let cdid = req.params.book;
-    let ccno = "";
-    let rurl = encodeURI(req.baseUrl) + `/conduct/${cdid}?r=true&fn=` + encodeURI(req.query.fn);
-    let parm = { cno: cdid, stafref: "", course: req.query.fn, returl: rurl };
-    if (req.user && req.user.marksys_info) parm.stafref = netutils.id2staf(req.user);
-    netutils.HttpGet(PHP_HOST, `/a/markups/mrscourse/condu_grid_stud.php?` + querystring.stringify(parm), Response);
+    let ccno = req.params.book;
+    let rurl = encodeURI(req.baseUrl) + `/conduct/${ccno}?r=true&fn=` + encodeURI(req.query.fn);
+    getModel().ReadClassStudCondu(ccno, (err, entity) => {
+        if (err) { console.log(err);next(err); return; }
+        Response.render('markup/regstudcourse/studlist_studcondu.pug', {
+            profile: req.user,
+            fn: req.query.fn,
+            classno: ccno,
+            books: entity,
+            rurl : rurl,
+            jsontwolist_php:`condu_jsontwolist?ccno=${ccno}&fn=${encodeURI(req.query.fn)}`,
+        });
+    });
 });
-router.post('/studcourse/regcondu/condu_jsontwolist.php', (req, Response, next) => {
+
+router.post('/studcourse/regcondu/condu_jsontwolist', (req, Response, next) => {
     req.body.stafref = netutils.id2staf(req.user);
-    netutils.HttpPost(PHP_HOST, '/a/markups/mrscourse/condu_jsontwolist.php', "rawData=" + JSON.stringify(req.body), Response);
+    let sid=GetSID(req);
+    let cno=req.query.ccno;
+    let key1=req.body.aObj? req.body.aObj:null;
+    let key2=req.body.rObj? req.body.rObj:null;
+    getModel().RegStudCondu(sid,  cno, key1, key2 , (err, entity) => {
+        if (err) { next(err); return; }        
+        Response.end( entity.toString());
+    });
 });
 
 function ExpArrayToXls(arraydata_str, exportfilename ,respone) {

@@ -213,7 +213,37 @@ router.post('/studcourse/editpingyu/pingyusavejson', images.multer.single('image
         Response.end( entity.toString());
     });
 });
+
 router.get('/studcourse/regpingyu/:book', (req, Response, next) => {
+    if(!CheckCLASSNO(req,req.params.book)){ res.end("no right");return;}
+    let ccno = req.params.book;
+    let rurl = encodeURI(req.baseUrl) + `/pingyu/${ccno}?r=true&fn=` + encodeURI(req.query.fn);
+    getModel().ReadClassStudPingyu(ccno, (err, entity) => {
+        if (err) { console.log(err);next(err); return; }
+        Response.render('markup/regstudcourse/studlist_studpingyu.pug', {
+            profile: req.user,
+            fn: req.query.fn,
+            classno: ccno,
+            books: entity,
+            rurl : rurl,
+            jsontwolist_php:`pingyu_jsontwolist?ccno=${ccno}&fn=${encodeURI(req.query.fn)}`,
+        });
+    });
+});
+
+router.post('/studcourse/regpingyu/pingyu_jsontwolist', (req, Response, next) => {
+    req.body.stafref = netutils.id2staf(req.user);
+    let sid=GetSID(req);
+    let cno=req.query.ccno;
+    let key1=req.body.aObj? req.body.aObj:null;
+    let key2=req.body.rObj? req.body.rObj:null;
+    getModel().RegStudPingyu(sid,  cno, key1, key2 , (err, entity) => {
+        if (err) { next(err); return; }        
+        Response.end( entity.toString());
+    });
+});
+
+router.get('/studcourse/regpingyu.php/:book', (req, Response, next) => {
     if(!CheckCLASSNO(req,req.params.book)){ res.end("no right");return;}
     let cdid = req.params.book;
     let stafref = netutils.id2staf(req.user);
