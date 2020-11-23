@@ -1,5 +1,7 @@
 extends ./base.pug
 block content
+  link(rel='stylesheet', href='/stylesheets/bootstrap-combobox.css')
+  script(src='/javascripts/bootstrap-combobox.js')    
   style.
     input[type=radio] {
         width: 20px;
@@ -36,21 +38,28 @@ block content
         td 
           .form-group                
             input.form-control(type="text", name="ce_SectNo", id="ce_SectNo", value=book.ce_SectNo)
+      tr        
+        td 班別 :	
+        td 
+          .form-group                
+            select.form-control.combobox( name="ce_CNo", id="ce_CNo", value=book.ce_CNo)
+              <option value="" selected="selected">Select </option>
+              <option value="AL">Alabama</option>
+              <option value="AK">Alaska</option>
+              <option value="AZ">Arizona</option>
+              <option value="AR">Arkansas</option>
+              <option value="CA">California</option>                    
       tr  
         td 科目:	
         td 
           .form-group                
             input.form-control(type="text", name="ce_Subject", id="ce_Subject", value=book.ce_Subject)
+     
       tr  
         td 教師:	
         td
           .form-group        
             input.form-control(type="text", name="ce_Teacher", id="ce_Teacher", value=book.ce_Teacher)
-      tr        
-        td 班別 :	
-        td 
-          .form-group                
-            input.form-control(type="text", name="ce_CNo", id="ce_CNo", value=book.ce_CNo)
       tr        
         td 地點 :	
         td 
@@ -231,6 +240,7 @@ block content
   script.
     //CKEDITOR.replace('ce_Note',{ filebrowserUploadUrl: "imageUploader" } );   
     $(function() {
+      $('.combobox').combobox()
       $('#inputseatno_dlg').dialog(
         {	autoOpen:false,	
           width:"360px"	,

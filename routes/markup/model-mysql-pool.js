@@ -5,66 +5,6 @@ const mysql = require('mysql');
 const mysqlcfg = require('../mysql250/mysql250config');
 
 const pool = mysqlcfg.esdbPool;
-function list(userId, cb) {
-    pool.getConnection(function (err, connection) {
-        if (err) { cb(err); return; }
-        connection.query(
-            'SELECT * FROM `ans` order by datet DESC ', [],
-            (err, results) => {
-                if (err) {
-                    cb(err);
-                    return;
-                }
-                cb(null, results);
-                connection.release();
-            }
-        );
-    });
-}
-function listMore(limit, datestr, token, cb) {
-    token = token ? parseInt(token, 10) : 0;
-    pool.getConnection(function (err, connection) {
-        if (err) {
-            cb(err);
-            return;
-        }
-        connection.query(
-            'SELECT *  FROM `ans` order by datet DESC LIMIT ? OFFSET ?', //, DAYOFWEEK(logDate)-1 dw
-            [limit, token],
-            (err, results) => {
-                if (err) {
-                    cb(err);
-                    return;
-                }
-                const hasMore = results.length === limit ? token + results.length : false;
-                cb(null, results, hasMore);
-                connection.release();
-
-            });
-    });
-}
-function listBy(limit, token, cb) {
-    token = token ? parseInt(token, 10) : 0;
-    pool.getConnection(function (err, connection) {
-        if (err) {
-            cb(err);
-            return;
-        }
-        connection.query(
-            'SELECT * FROM `watchguard`  LIMIT ? OFFSET ?',
-            [limit, token],
-            (err, results) => {
-                if (err) {
-                    cb(err);
-                    return;
-                }
-                const hasMore = results.length === limit ? token + results.length : false;
-                cb(null, results, hasMore);
-                connection.release();
-
-            });
-    });
-}
 
 function listCourseBy(staf_ref, userid, limit, token, cb) {
     token = token ? parseInt(token, 10) : 0;

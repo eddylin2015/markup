@@ -1,42 +1,28 @@
-﻿// Copyright 2017, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-'use strict';
+﻿'use strict';
 
 const mysql = require('mysql');
-
+const config = require('../../config');
 const options = {
-    host: '192.168.115.114',
-    user: 'deptwork',
-    password: 'dw2018',
-    database: 'deptwork',
-    encoding:'utf8',
-    charset:'utf8mb4'
+  host: config.get('MYSQL_INFO_host'),
+  user: config.get('MYSQL_INFO_user'),
+  password: config.get('MYSQL_INFO_password'),
+  database: config.get('MYSQL_INFO_db'),
+  encoding:'utf8',
+  charset:'utf8mb4'  ,
+  multipleStatements: true,
+  acquireTimeout: 50000
 };
-
 const pool = mysql.createPool(options);
 
 function list(userId, limit, token, cb) {
     token = token ? parseInt(token, 10) : 0;
     pool.getConnection(function (err, connection) {
         if(err){cb(err);return;}
-        // Use the connection
         connection.query(
             'SELECT * FROM `classeval` where createdById=? order by id DESC LIMIT ? OFFSET ?', [userId,limit, token],
             (err, results) => {
                 if (err) {
-                    cb(err);
-                    return;
+                    cb(err); return;
                 }
                 const hasMore = results.length === limit ? token + results.length : false;
                 cb(null, results, hasMore);
@@ -55,20 +41,19 @@ function listBy(userId, limit, token, cb) {
             [userId, limit, token],
             (err, results) => {
                 if (err) {
-                    cb(err);
-                    return;
+                    cb(err); return;
                 }
                 const hasMore = results.length === limit ? token + results.length : false;
                 cb(null, results, hasMore);
                 connection.release();
-
             });
     });
 }
+
 function listToNote(userid,limit,token,cb){
     token = token ? parseInt(token, 10) : 0;
     pool.getConnection(function (err, connection) {
-        if(err){cb(err);return;}
+        if(err){ cb(err); return;}
         connection.query(
             'SELECT * FROM `classeval` WHERE topNote=1 order by id DESC LIMIT ? OFFSET ?  ;',
             [limit, token],
@@ -83,6 +68,7 @@ function listToNote(userid,limit,token,cb){
             });
     });
 }
+
 function listTimestampStatusBy(createdById, sdate,edate, limit, token, cb)
 {
     token = token ? parseInt(token, limit) : 0;  //limit 60
@@ -103,9 +89,9 @@ function listTimestampStatusBy(createdById, sdate,edate, limit, token, cb)
             });
     });
 }
+
 function listTimestampBy(userId, author, sdate,edate, limit, token, cb) {
     token = token ? parseInt(token, 10) : 0;
-
     pool.getConnection(function (err, connection) {
         if(err){cb(err);return;}
         connection.query(
@@ -119,7 +105,6 @@ function listTimestampBy(userId, author, sdate,edate, limit, token, cb) {
                 const hasMore = results.length === limit ? token + results.length : false;
                 cb(null, results, hasMore);
                 connection.release();
-
             });
     });
 }
@@ -127,7 +112,6 @@ function listTimestampBy(userId, author, sdate,edate, limit, token, cb) {
 function listByKW( kw, jobtype,sdate, edate, deptlog, limit, token, cb) {
     token = token ? parseInt(token, 10) : 0;
     if(deptlog==1){
-
         pool.getConnection(function (err, connection) {
             if(err){cb(err);return;}
             connection.query(
@@ -170,9 +154,9 @@ function listByKW( kw, jobtype,sdate, edate, deptlog, limit, token, cb) {
         });
     }
 }
+
 function listByParentid(userId, rootid, limit, token, cb) {
     token = token ? parseInt(token, 10) : 0;
-
     pool.getConnection(function (err, connection) {
         if(err){cb(err);return;}
         connection.query(
@@ -190,8 +174,8 @@ function listByParentid(userId, rootid, limit, token, cb) {
             });
     });
 }
+
 function create(userId, data, cb) {
-       
     pool.getConnection(function (err, connection) {
         if(err){cb(err);return;}
         connection.query('INSERT INTO `classeval` SET ?', data, (err, res) => {
@@ -206,7 +190,6 @@ function create(userId, data, cb) {
 }
 
 function read(userId, id, cb) {
-
     pool.getConnection(function (err, connection) {
         if(err){cb(err);return;}
         connection.query(
@@ -241,6 +224,7 @@ function update(userId, id, data, cb) {
             });
     });
 }
+
 function updateGroupStatus(rootid, status) {
     pool.getConnection(function (err, connection) {
         if(err){cb(err);return;}
@@ -254,6 +238,7 @@ function updateGroupStatus(rootid, status) {
             });
     });
 }
+
 function _delete(userId,id, cb) {
     pool.getConnection(function (err, connection) {
         if(err){cb(err);return;}
@@ -298,9 +283,9 @@ function createSchema(config) {
     }, config));
     connection.query(
     `CREATE DATABASE IF NOT EXISTS \`deptwork\`
-    DEFAULT CHARACTER SET = 'utf8mb4'
-    DEFAULT COLLATE 'utf8mb4_bin';
-    USE \`deptwork\`;
+     DEFAULT CHARACTER SET = 'utf8mb4'
+     DEFAULT COLLATE 'utf8mb4_bin';
+     USE \`deptwork\`;
         CREATE TABLE classeval (
             id int(11) NOT NULL AUTO_INCREMENT,
             ce_Date varchar(10) COLLATE utf8mb4_bin DEFAULT NULL,
@@ -311,7 +296,6 @@ function createSchema(config) {
             ce_CNo varchar(45) COLLATE utf8mb4_bin DEFAULT NULL,
             ce_Room varchar(45) COLLATE utf8mb4_bin DEFAULT NULL,
             ce_Status varchar(45) COLLATE utf8mb4_bin DEFAULT NULL,
-
             # 學生表現Listen to Perform
             ce_StdPerform varchar(45) COLLATE utf8mb4_bin DEFAULT NULL,
             ce_CMStatus varchar(45) COLLATE utf8mb4_bin DEFAULT NULL,
