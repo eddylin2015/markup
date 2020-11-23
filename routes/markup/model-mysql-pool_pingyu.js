@@ -204,7 +204,7 @@ async function RegStudPingyu(sid, cno, aObj, rObj, cb) {
                 let name = li[1];
                 let scid = li[2];
                 cnt += await new Promise((resolve, reject) => {
-                    connection.query('delete from mrs_pingyu where stud_ref= ? and session_id=? ', [studref,sid], (err, res) => {
+                    connection.query("delete from mrs_pingyu where pingyu1=' ' and  stud_ref= ? and session_id=? ", [studref,sid], (err, res) => {
                         if (err) { console.log(err); reject(err); }
                         resolve(100);
                     });

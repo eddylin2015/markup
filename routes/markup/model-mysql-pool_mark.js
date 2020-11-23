@@ -166,7 +166,7 @@ async function RegStudCourse(sid, cdid, cno, aObj, rObj, cb) {
                 let name = li[1];
                 let scid = li[2];
                 cnt += await new Promise((resolve, reject) => {
-                    connection.query('delete from mrs_stud_course where stud_c_id= ? and course_d_id=? ', [scid,cdid], (err, res) => {
+                    connection.query('delete from mrs_stud_course where t1=0 and stud_c_id= ? and course_d_id=? ', [scid,cdid], (err, res) => {
                         if (err) { console.log(err); reject(err); }
                         resolve(100);
                     });

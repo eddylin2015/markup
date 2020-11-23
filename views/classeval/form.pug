@@ -1,0 +1,288 @@
+extends ./base.pug
+block content
+  style.
+    input[type=radio] {
+        width: 20px;
+        height: 20px;
+        border: 1px solid black;
+        border-radius: 3px;
+    }
+  script(src='/ckeditor/ckeditor.js')
+  //h3 #{title_act} #{action} 
+  form(method="POST", enctype="multipart/form-data")
+    .form-group.hidden
+      label(for="title") 標題
+      input.form-control(type="text", name="title", id="title", value=book.title)
+    table#tbl
+      if book.id
+        tr
+          td 編號:	
+          td 
+            span= book.id
+      tr  
+        td 日期:	
+        td 
+          .form-group                
+            input.form-control(type="text", name="ce_Date", id="ce_Date", value=book.ce_Date)
+      tr
+        td        
+          .form-group.hidden                
+            span 學部DEPT:	
+        td
+          .form-group.hidden                
+            input.form-control(type="text", name="ce_Dept", id="ce_Dept", value=book.ce_Dept)
+      tr  
+        td 節:	
+        td 
+          .form-group                
+            input.form-control(type="text", name="ce_SectNo", id="ce_SectNo", value=book.ce_SectNo)
+      tr  
+        td 科目:	
+        td 
+          .form-group                
+            input.form-control(type="text", name="ce_Subject", id="ce_Subject", value=book.ce_Subject)
+      tr  
+        td 教師:	
+        td
+          .form-group        
+            input.form-control(type="text", name="ce_Teacher", id="ce_Teacher", value=book.ce_Teacher)
+      tr        
+        td 班別 :	
+        td 
+          .form-group                
+            input.form-control(type="text", name="ce_CNo", id="ce_CNo", value=book.ce_CNo)
+      tr        
+        td 地點 :	
+        td 
+          .form-group        
+            input.form-control(type="text", name="ce_Room", id="ce_Room", value=book.ce_Room)
+      tr        
+        td 
+          .form-group
+            label(for="ce_Status") 課堂狀況:	
+        td 
+          .form-group        
+            input.form-control(type="text", name="ce_Status", id="ce_Status", value=book.ce_Status)
+      tr
+        td
+          .form-group.hidden                
+            label(for="logDate") 日期
+        td  
+          .form-group.hidden                
+            input.form-control(type="text", name="logDate", id="logDate", value=book.logDate)
+      tr
+        td    
+          .form-group
+            label(for="ce_Mng") 巡堂人員:
+        td
+          .form-group
+            input.form-control(type="text", name="ce_Mng", id="ce_Mng", value=book.ce_Mng) 
+    h3 學生表現 
+    -let s_v=["","很好","好","一般","差","很差"];
+    -let s_s=["","__","____","__","____","__"];
+    table
+      tr  
+        td 
+          .form-group
+            label(for="StdPerform",style="width:88px") 學習表現
+        td 
+          .form-group
+            each val in [1,2,3,4,5]
+              span
+                label(class="radio-inline")=  s_v[val] + s_s[val]
+                  input(type="radio", name="ce_StdPerform",id= ("ce_StdPerform"+val), value= (s_v[val]), checked= ( book.ce_StdPerform == s_v[val] ? true : false )  )
+      tr                  
+        td 
+          .form-group
+            label(for="ce_CMStatus",style="width:88px") 課堂秩序
+        td 
+          .form-group
+            each val in [1,2,3,4,5]
+              span
+                label(class="radio-inline")=  s_v[val] + s_s[val]
+                  input(type="radio", name="ce_CMStatus",id= ("ce_CMStatus"+val), value= (s_v[val]), checked= ( book.ce_CMStatus == s_v[val] ? true : false )  )
+      tr                  
+        td
+          .form-group
+            label(for="title",style="width:88px") 課堂整潔
+        td 
+          .form-group
+            each val in [1,2,3,4,5]
+              span
+                label(class="radio-inline")=  s_v[val] + s_s[val]
+                  input(type="radio", name="ce_CMTidy",id= ("ce_CMTidy"+val), value= (s_v[val]), checked= ( book.ce_CMTidy == s_v[val] ? true : false )  )
+    .form-group
+      label(for="ce_CMNote") 學生表現事項:    
+      textarea.form-control(rows=3,  style="color: white;background-color:black; ",name="ce_CMNote", id="ce_CMNote", value=book.ce_CMNote)= book.ce_CMNote
+    
+    h3 學生常規
+    table
+      tr  
+        td
+          <span>睡覺學生學號</span>
+          input#ce_WrgSleep(name="ce_WrgSleep",value=book.ce_WrgSleep)
+          <span id="btn_ce_WrgSleep" class=BTNINPUTNO>編輯</span><br>
+          <span>開小差學生學號</span>
+          input#ce_WrgConcent(name="ce_WrgConcent",value=book.ce_WrgConcent )
+          <span id="btn_ce_WrgConcent" class=BTNINPUTNO >編輯</span><br>
+          <span>破坏課堂秩序學號</span>
+          input#ce_WrgClOrder( name="ce_WrgClOrder", value=book.ce_WrgClOrder)  
+          <span id="btn_ce_WrgClOrder", class=BTNINPUTNO , >編輯</span><br>
+          <span>儀容違規學號</span>
+          input#ce_WrgManner(name="ce_WrgManner", value=book.ce_WrgManner)  
+          <span id="btn_ce_WrgManner" class=BTNINPUTNO >編輯</span><br>
+          <span>其他違規</span>
+          input#ce_WrgOtherDesc(name='ce_WrgOtherDesc', value=book.ce_WrgOtherDesc, size=8)
+          <span>學號</span>
+          input#ce_WrgOther(name="ce_WrgOther", value=book.ce_WrgOther)
+          <span id="btn_ce_WrgOther" class=BTNINPUTNO >編輯</span>
+
+    h3 老師表現
+    table
+      tr
+        td
+          .form-group
+            label(for="title",style="width:88px") 教學管理
+        td
+          .form-group
+       
+            each val in [1,2,3,4,5]
+              span
+                label(class="radio-inline")=  s_v[val]+ s_s[val]
+                  input(type="radio", name="ce_TchTeach",id= ("ce_TchTeach"+val), value= (s_v[val]), checked= ( book.ce_TchTeach == s_v[val] ? true : false )  )
+      tr
+        td
+          .form-group
+            label(for="title",style="width:88px") 教學器材<br>充足
+        td
+          .form-group
+            each val in [1,2,3,4,5]
+              span
+                label(class="radio-inline")=  s_v[val] + s_s[val]
+                  input(type="radio", name="ce_TchMaterial",id= ("ce_TchMaterial"+val), value= (s_v[val]), checked= ( book.ce_TchMaterial == s_v[val] ? true : false )  )
+      tr
+        td
+          .form-group
+            label(for="ce_TchITWrit",style="width:88px") 擅用版書及<br>資訊科技
+        td
+          .form-group
+
+            each val in [1,2,3,4,5]
+              span
+                label(class="radio-inline")=  s_v[val] + s_s[val]
+                  input(type="radio", name="ce_TchITWrit",id= ("ce_TchITWrit"+val), value= (s_v[val]), checked= ( book.ce_TchWriting == s_v[val] ? true : false )  )
+      tr
+        td
+          .form-group
+            label(for="title",style="width:88px") 師生互動
+        td
+          .form-group
+            each val in [1,2,3,4,5]
+              span
+                label(class="radio-inline")=  s_v[val] + s_s[val]
+                  input(type="radio", name="ce_TchCommu",id= ("ce_TchCommu"+val), value= (s_v[val]), checked= ( book.ce_TchCommu == s_v[val] ? true : false )  )
+    .form-group
+      label(for="ce_TchNote") 老師表現事項:    
+      textarea.form-control(rows=3,  style="color: white;background-color:black; ",name="ce_TchNote", id="ce_TchNote", value=book.ce_TchNote)= book.ce_TchNote
+    h3 校園環境
+    .form-group
+      label(for="description") 需跟進事項:    
+      textarea.form-control(rows=3,  style="color: white;background-color:black; ",name="ce_Note", id="ce_Note", value=book.ce_Note)= book.ce_Note
+    //.form-group
+      label(for="description") 工作內容:
+      textarea.form-control(rows=10,  style="color: white;background-color:black; ",name="description", id="description", value=book.description)= book.description
+    //.form-group
+      label(for="topNote") 置頂
+      input.form-control(type="radio", name="topNote", id="topNote", value=1, checked= book.topNote == 1 ? true: false )          
+      input.form-control(type="radio", name="topNote", id="topNote", value=0, checked= book.topNote == 1 ? false: true )          
+    //.form-group
+      label(for="jobtype") 支援類別
+      select.form-control(type="text", name="jobtype", id="jobtype", value=book.jobtype)
+        each val in ["","設備更换","設備外借","課室硬件","課室支援","老師支援","印表機支援","MSAD支援","軟件支援","內部軟件支援"]
+          option(value=val, selected=  book.jobtype == val ? true : false)= val
+    .form-group.hidden
+       label(for="createdById") Created by ID
+       input.form-control(type="text", name="createdById", id="createdById", value=book.createdById)
+    button.btn.btn-success(type="submit") Save
+
+    div#inputseatno_dlg(title="Basic dialog")
+      table
+        tr
+          each _id in  [1,2,3,4,5,6,7,8,9,10]
+            td(style="padding:5px;")
+              input(type="checkbox", id=`ck${_id}`, name=`ck${_id}`)
+              span= _id
+        tr
+          each _id in  [11,12,13,14,15,16,17,18,19,20]
+            td(style="padding:5px;")
+              input(type="checkbox", id=`ck${_id}`, name=`ck${_id}`)
+              span= _id
+        tr
+          each _id in  [21,22,23,24,25,26,27,28,29,30]
+            td(style="padding:5px;")
+              input(type="checkbox", id=`ck${_id}`, name=`ck${_id}`)
+              span= _id
+        tr
+          each _id in  [31,32,33,34,35,36,37,38,39,40]
+            td(style="padding:5px;")
+              input(type="checkbox", id=`ck${_id}`, name=`ck${_id}`)
+              span= _id
+
+  script.
+    //CKEDITOR.replace('ce_Note',{ filebrowserUploadUrl: "imageUploader" } );   
+    $(function() {
+      $('#inputseatno_dlg').dialog(
+        {	autoOpen:false,	
+          width:"360px"	,
+        open: function()
+        {
+          let title=$(this).dialog( "option", "title" );
+          console.log(title);
+          let val=$("#"+title).val();
+          for(let i=1;i<41;i++)
+            $('#ck'+i).prop('checked', false);
+          var regex = /\d+/g;
+          console.log(val);
+          let found = val.match(regex)
+          console.log("f",found);
+          if(found==null) return;
+          
+          found.forEach((item,index)=>{ 
+            $('#ck'+item).prop('checked', true);
+          })
+          
+        },
+             modal: true,
+      buttons: {
+        "Ok": function() {
+          let title=$(this).dialog( "option", "title" );
+          let val=$("#"+title).val();
+          var regex = /([a-zA-Z]+|\W+)/g;
+          console.log(val);
+          let found = val.match(regex);
+          var res_res="";
+          if( found != null ) {
+            res_res=found.join("");
+          }
+          res_res=res_res.replace(/^[,]+/,"");
+          let res=[];
+          for(let i=1;i<41;i++)
+            if($('#ck'+i).prop('checked')) res.push(i) ;
+
+          $("#"+title).val((res.join(",")+","+res_res))  ;
+
+          $( this ).dialog( "close" );
+        }
+      }
+      });      
+      let _old=$( "#ce_Date" ).val();
+      $( "#ce_Date" ).datepicker();
+      $( "#ce_Date" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+      $( "#ce_Date" ).val(_old);
+   	  $('.BTNINPUTNO').click(function(){
+         
+         let title=this.id.replace("btn_","");
+         console.log(title);
+         $( "#inputseatno_dlg" ).dialog({ title:title});
+         $('#inputseatno_dlg').dialog('open');  });      
+    });

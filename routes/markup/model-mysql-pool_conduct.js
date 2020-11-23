@@ -145,11 +145,11 @@ function ReadClassStudCondu(ccno, cb) {
             return;
         }
         connection.query(
-            [" select conduct1 as id,a.stud_ref,a.curr_seat,a.c_name ",
+            [" select r_cond1 as id,a.stud_ref,a.curr_seat,a.c_name ",
             " from ",
             "  ( select stud_ref,curr_seat,c_name from  studinfo where curr_class=?) as a",
             "left join",
-            "( select conduct1,stud_ref,seat,c_name from  mrs_stud_conduct where classno=?) as b",
+            "( select r_cond1,stud_ref,seat,c_name from  mrs_stud_conduct where classno=?) as b",
             " on a.stud_ref=b.stud_ref",
             "order by curr_seat"].join(" "),
             [ccno,ccno], (err, results) => {
@@ -189,7 +189,7 @@ async function RegStudCondu(sid, cno, aObj, rObj, cb) {
                 let name = li[1];
                 let scid = li[2];
                 cnt += await new Promise((resolve, reject) => {
-                    connection.query('delete from mrs_stud_conduct where stud_ref= ? and session_id=? ', [studref,sid], (err, res) => {
+                    connection.query("delete from mrs_stud_conduct where r_cond1='___' and stud_ref= ? and session_id=? ;", [studref,sid], (err, res) => {
                         if (err) { console.log(err); reject(err); }
                         resolve(100);
                     });

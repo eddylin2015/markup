@@ -1,0 +1,56 @@
+//- Copyright 2017, Google, Inc.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+doctype html
+html
+  head
+    title 評課系統
+    meta(charset='utf-8')
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/main.css')
+    script(src='/javascripts/jquery.js')    
+    script(src='/jquery-ui-dist/jquery-ui.min.js')  
+    link(rel='stylesheet', href='/jquery-ui-dist/jquery-ui.min.css')
+    jquery-ui.min
+    
+  body
+    .navbar.navbar-default
+      .container
+        .navbar-header
+          .navbar-brand 評課系統
+        ul.nav.navbar-nav
+          li
+            a(href="/internal/") 
+              span(class="glyphicon") &#xe021
+          li
+            a(href="/internal/classeval") 評課
+          //li
+            a(href="/internal/classeval/top") 置頂           
+          //li
+            a(href="/internal/classeval/mine") 我的
+          li
+            a(href="/internal/classeval/searchform") 按時間查
+          //li
+            a(href='/internal/classeval/searchforKW')
+              span(class="glyphicon glyphicon-search")
+        p.navbar-text.navbar-right
+          if profile
+            if profile.image
+              img.img-circle(src=profile.image, width=24)
+            span #{profile.displayName} &nbsp;
+              a(href='/logout') (logout)
+          else
+            a(href='/login') Login
+    .container
+      block content

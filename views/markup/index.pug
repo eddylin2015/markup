@@ -381,9 +381,13 @@ block content
     }
     function ShowMrsCourseTotal(x,cid){
       let url  ="/internal/markup/markstatisrawdata/"+x.replace(/[ ]+/g,'')+"/json"
+      console.log(url)
       $.get( url, function( data ) {
         $( "#ShowMsg" ).dialog( "option", "width", 1024 );
+        console.log(`respone:${data}`);
+        if(data=="")  {alert("no data");return;}
         data = data.toString().replace(/\w+:/g, function (x) { return '"' + x.replace(":", '":'); });        
+        
         let json=JSON.parse(data);
         let ctxt="<table><tr><td>class<td>seat<td>name<td>課程名<td>總分<td>補考<td>PX<td>Status"  ;
         for(let i=0;i<json.length;i++){

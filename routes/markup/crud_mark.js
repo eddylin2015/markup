@@ -75,6 +75,17 @@ function GetMyClass(req) {
 function GetSID(req) {
     return (req.user && req.user.marksys_info) ? req.user.marksys_info[0][0].session_id : null;
 }
+function CheckCLASSCDID(req,cdid)
+{    
+    if(!req.user.marksys_info[3]) return false;
+    let right=false;
+    for (let i = 0; i < req.user.marksys_info[3].length; i++) {
+        if (req.user.marksys_info[3][i].course_d_id == cdid) {
+            right = true;
+        }
+    }
+    return right;
+}
 
 function showMarksysInfo(req, res) {
     if (true) {

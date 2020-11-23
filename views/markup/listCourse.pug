@@ -4,8 +4,6 @@ block content
   style.
     div.container{ margin:0px; }
     td{border: 1px solid grey; margin-left: 10px; margin-right: 10px;padding-left: 10px; padding-right: 10px;}
-
-
   if editable  
     table#SessSetting
       tr
@@ -86,8 +84,10 @@ block content
   script(src='/javascripts/cool/webtoolkit.aim.js')   
   div(title="Show Msg",style="display:none")#ShowMsg
     pre#ShowMsgTxt  
+
   script.   
-    function SetObserver(x,A,B){
+    function SetObserver(x,A,B)
+    {
       var person = prompt("Please enter STAFREF(00000000) for " + A + " Observer ("+ B+")", "0000000");
       if (person != null) {
         x.innerHTML = person ;
@@ -115,9 +115,10 @@ block content
       $( "#crsupdfrm" ).dialog("open"); 
     }
     function ShowMrsCourseTotal(x,cid){
-      let url  ="/internal/markup/markstatisrawdata/"+x+"/json"
+      let url  ="/internal/markup/markstatisrawdata/"+x.replace(/[ ]+/g,'')+"/json"
       $.get( url, function( data ) {
         $( "#ShowMsg" ).dialog( "option", "width", 1024 );
+        console.log(url,data)
         data = data.toString().replace(/\w+:/g, function (x) { return '"' + x.replace(":", '":'); });        
         let json=JSON.parse(data);
         let ctxt="<table><tr><td>class<td>seat<td>name<td>課程名<td>總分<td>補考<td>PX<td>Status"  ;
@@ -184,7 +185,6 @@ block content
         $('#CrsSubItemListCRSINFO').text(JSON.stringify(tdtxt))
         $("#CrsSubItemListFrm").dialog("open"); 
         CrsSubItemListRefresh();
-        //alert(tdtxt);
       });
       
     });

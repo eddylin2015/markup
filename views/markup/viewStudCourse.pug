@@ -31,9 +31,10 @@ block content
     a(href=`/internal/markup/markcrsxls/${course_d_id}`, class='btn btn-primary btn-sm')
       i.glyphicon.glyphicon-edit
         span 下載 
-    a(href='#',onclick='mrscrsupload();', class='btn btn-primary btn-sm')
-      i.glyphicon.glyphicon-upload
-      span 上載                          
+    if editable=='true'     
+      a(href='#',onclick='mrscrsupload();', class='btn btn-primary btn-sm')
+        i.glyphicon.glyphicon-upload
+        span 上載                          
     //a(href=`/internal/markup/studcourse/${course_d_id}/xls?fn=${fn}`, class='btn btn-primary btn-sm')
       i.glyphicon.glyphicon-download-alt
       span  匯出Xls
