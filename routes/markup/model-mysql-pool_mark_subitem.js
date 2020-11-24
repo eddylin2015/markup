@@ -1,26 +1,17 @@
-﻿// attend
+﻿'use strict';
 
-'use strict';
 const mysql = require('mysql');
 const mysqlcfg = require('../mysql250/mysql250config');
-
 const pool = mysqlcfg.esdbPool;
 
 function listCourseBy(staf_ref, userid, limit, token, cb) {
     token = token ? parseInt(token, 10) : 0;
     pool.getConnection(function (err, connection) {
-        if (err) {
-            cb(err);
-            return;
-        }
+        if (err) { cb(err); return; }
         connection.query(
             'SELECT * FROM `mrs_course_detail` Where `staf_ref`=?  LIMIT ? OFFSET ?',
-            [staf_ref, limit, token],
-            (err, results) => {
-                if (err) {
-                    cb(err);
-                    return;
-                }
+            [staf_ref, limit, token], (err, results) => {
+                if (err) { cb(err); return; }
                 const hasMore = results.length === limit ? token + results.length : false;
                 cb(null, results, hasMore);
                 connection.release();
@@ -28,20 +19,13 @@ function listCourseBy(staf_ref, userid, limit, token, cb) {
             });
     });
 }
+
 function StatisticsRead(sql, cb) {
     pool.getConnection(function (err, connection) {
-        if (err) {
-            cb(err);
-            return;
-        }
+        if (err) { cb(err); return; }
         connection.query(
-            sql,
-            [],
-            (err, results) => {
-                if (err) {
-                    cb(err);
-                    return;
-                }
+            sql, [], (err, results) => {
+                if (err) { cb(err); return; }
                 cb(null, results);
                 connection.release();
             });
@@ -50,65 +34,48 @@ function StatisticsRead(sql, cb) {
 
 function DataReaderQuery(sql, cb) {
     pool.getConnection(function (err, connection) {
-        if (err) {
-            cb(err);
-            return;
-        }
+        if (err) { cb(err); return; }
         connection.query(
-            sql,
-            [],
-            (err, results) => {
-                if (err) {
-                    cb(err);
-                    return;
-                }
-                cb(null, results);
-                connection.release();
-            });
-    });
-}
-
-
-
-function readstudcourse(staf_ref, id, cb) {
-    pool.getConnection(function (err, connection) {
-        if (err) {
-            cb(err);
-            return;
-        }
-        connection.query(
-            'SELECT * FROM `mrs_stud_course` WHERE `course_d_id` = ? order by seat', id, (err, results) => {
-                /*if (!err && !results.length) { err = { code: 404, message: 'Not found' }; }*/
+            sql, [], (err, results) => {
                 if (err) { cb(err); return; }
                 cb(null, results);
                 connection.release();
             });
     });
 }
+
+function readstudcourse(staf_ref, id, cb) {
+    pool.getConnection(function (err, connection) {
+        if (err) { cb(err); return; }
+        connection.query(
+            'SELECT * FROM `mrs_stud_course` WHERE `course_d_id` = ? order by seat', id, (err, results) => {
+                if (err) { cb(err); return; }
+                cb(null, results);
+                connection.release();
+            });
+    });
+}
+
 function readpingyu(staf_ref, id, cb) {
     pool.getConnection(function (err, connection) {
         if (err) { cb(err); return; }
         connection.query(
             "select stud_ref,classno,seat,c_name,GROUP_CONCAT(pingyu1 ORDER BY Lineno SEPARATOR '') as py1,GROUP_CONCAT(pingyu2 ORDER BY Lineno SEPARATOR '') as py2,GROUP_CONCAT(pingyu3 ORDER BY Lineno SEPARATOR '') as py3 from mrs_pingyu where classno=? group by stud_ref order by seat;",
-            //'SELECT * FROM `mrs_pingyu` WHERE `classno` = ? ',
             id, (err, results) => {
-                /*if (!err && !results.length) { err = {code: 404,   message: 'Not found'};                }*/
                 if (err) { cb(err); return; }
                 cb(null, results);
                 connection.release();
             });
     });
 }
+
 function readconduct(staf_ref, id, cb) {
     pool.getConnection(function (err, connection) {
-        if (err) {
-            cb(err);
-            return;
-        }
+        if (err) { cb(err); return; }
         connection.query(
             'SELECT * FROM `mrs_stud_conduct` WHERE `classno` = ? order by seat ', id, (err, results) => {
-                //if (!err && ! results.length) { err = { code: 404, message: 'Not found' }; }
                 if (err) { cb(err); return; }
+                //if (!err && ! results.length) { err = { code: 404, message: 'Not found' }; }
                 cb(null, results);
                 connection.release();
             });
@@ -116,9 +83,9 @@ function readconduct(staf_ref, id, cb) {
 }
 
 function readgrademark(staf_ref, id, cb) {
-    let sql='SELECT * FROM `mrs_stud_grade_course` WHERE `classno` = ? ';
-    if( id.indexOf('P')==0 ||id.indexOf('S')==0){}
-    else{sql='SELECT * FROM `mrs_stud_grade_course` WHERE `GC_Name` = ? ';}
+    let sql = 'SELECT * FROM `mrs_stud_grade_course` WHERE `classno` = ? ';
+    if (id.indexOf('P') == 0 || id.indexOf('S') == 0) { }
+    else { sql = 'SELECT * FROM `mrs_stud_grade_course` WHERE `GC_Name` = ? '; }
     pool.getConnection(function (err, connection) {
         if (err) { cb(err); return; }
         connection.query(
@@ -130,16 +97,13 @@ function readgrademark(staf_ref, id, cb) {
     });
 }
 
-function RegObserver(staf_ref,userid,csid,obsid,cb){
+function RegObserver(staf_ref, userid, csid, obsid, cb) {
     pool.getConnection(function (err, connection) {
-        if (err) {
-            cb(err);
-            return;
-        }
+        if (err) { cb(err); return; }
         connection.query(
-            `UPDATE mrs_course_detail SET observer${obsid}=? WHERE course_d_id=? and staf_ref =?  `, [userid,csid,staf_ref], (err,results) => {   
+            `UPDATE mrs_course_detail SET observer${obsid}=? WHERE course_d_id=? and staf_ref =?  `, [userid, csid, staf_ref], (err, results) => {
                 if (err) { console.log(err); return; }
-                cb(null, results.affectedRows);    
+                cb(null, results.affectedRows);
                 connection.release();
             });
     });
@@ -154,139 +118,6 @@ function updateGradeMark(connection, sql, v_arr) {
 }
 function pm2g(m) {
     return m >= 95 ? "A " : m >= 90 ? "A-" : m >= 85 ? "B+" : m >= 80 ? "B " : m >= 75 ? "B-" : m >= 70 ? "C+" : m >= 65 ? "C " : m >= 60 ? "C-" : "D "
-}
-function savegrademark(staf_ref, json, cb) {
-    pool.getConnection(function (err, connection) {
-        if (err) { cb(err); return; }
-        let arrkeys = Object.keys(json);
-        let cnt = 0;
-        for (let i = 0; i < arrkeys.length; i++) {
-            let x = arrkeys[i];
-            let v = json[x];
-            let a = x.split("_");
-            let k = a[2];
-            let fieldn = a[1].replace("-", "_");
-
-            let sql = 'UPDATE `mrs_stud_grade_course` SET ' + fieldn + '= ? WHERE `sgcid` =?  ';
-            let v_arr = [v, k];
-            if (fieldn.indexOf("mgrade") > -1) {
-                let f1 = fieldn.replace("mgrade", "grade");
-                let res = v.match(/^\d+[.\d+]*$/);
-                if (res) {
-                    sql = `UPDATE mrs_stud_grade_course SET ${f1}=?, ${fieldn}= ? WHERE sgcid =?  `;
-                    let grade = pm2g(Number(res));
-                    v_arr = [grade, v, k];
-                }
-            }
-
-            updateGradeMark(connection, sql, v_arr).then(function (response) {
-                cnt += response;
-                if ((i + 1) == arrkeys.length) {
-                    cb(null, cnt);
-                    connection.release();
-                }
-            });
-        }
-    });
-}
-
-
-function updateGradeMarkarray(connection, sql, gcname, grade, mgrade, studref) {
-    return new Promise(function (resolve, reject) {
-        connection.query(sql, [gcname, grade, mgrade, studref], (err, result) => {
-            if (err) { console.log(err); reject(err); }
-            resolve(100 + result.affectedRows);
-        });
-    });
-}
-function savegrademarkarray(fieldn, data, cb) {
-    pool.getConnection(function (err, connection) {
-        if (err) { cb(err); return; }
-        let cnt = 0;
-        let STUD_REF_index = 0;
-        let GC_NAME_index = 0;
-        let GRADE_index = 0;
-        if (data.length > 0 && data[0][0].toUpperCase() == "STUD_REF") {
-            for (let i = 0; i < data[0].length; i++) {
-                if (!data[0][i]) continue;
-                if (data[0][i].toUpperCase().indexOf("STUD_REF")>-1) { STUD_REF_index = i; }
-                if (data[0][i].toUpperCase().indexOf("GC_NAME")>-1) { GC_NAME_index = i; }
-                if (data[0][i].toUpperCase().indexOf(fieldn.toUpperCase())>-1) { GRADE_index = i; }
-            }
-        }
-        if (!(GC_NAME_index > 0 && GRADE_index > 0)) cb("error format!");
-        for (let i = 0; i < data.length; i++) {
-            if (data[i][0] == "stud_ref" || data[i][0] == "STUD_REF") continue;
-            let studref = data[i][STUD_REF_index];
-            let gcname = data[i][GC_NAME_index];
-            let grade = data[i][GRADE_index] ? data[i][GRADE_index] : '';     //.substring(0,2)
-            let mgrade = 0;
-            let numpatt = /^\d+[.\d+]*$/;
-            let res = grade.match(numpatt);
-            if (res) {
-                mgrade = Number(res);
-                grade = pm2g(mgrade);
-            }
-            let sql = 'UPDATE `mrs_stud_grade_course` SET gc_name= ? ,' + fieldn + '= ?,m' + fieldn + '= ? WHERE `stud_ref` = ? ; ';
-            updateGradeMarkarray(connection, sql, gcname, grade, mgrade, studref).then(function (response) {
-                cnt += response;
-                if ((i + 1) == data.length) {
-                    cb(null, Math.floor(cnt / 100));
-                    connection.release();
-                }
-            });
-        }
-    });
-}
-function updateGCNameCMD(connection, sql, gcname, studref) {
-    return new Promise(function (resolve, reject) {
-        connection.query(sql, [gcname, studref], (err, result) => {
-            if (err) { console.log(err); reject(err); }
-            resolve(100 + result.affectedRows);
-        });
-    });
-}
-function updateGCNameArray(GCName, data, cb) {
-    pool.getConnection(function (err, connection) {
-        if (err) { cb(err); return; }
-        let cnt = 0;
-        for (let i = 0; i < data.length; i++) {
-            let li=data[i].split('_');
-            let studref = li[0];
-            let gcname = GCName;
-            let sql = 'UPDATE `mrs_stud_grade_course` SET gc_name= ?  WHERE `stud_ref` = ? ; ';
-            updateGCNameCMD(connection, sql, gcname, studref).then(function (response) {
-                cnt += response;
-                if ((i + 1) == data.length) {
-                    cb(null, Math.floor(cnt / 100));
-                    connection.release();
-                }
-            });
-        }
-    });
-}
-function updateMrkPubDate(data) {
-    pool.getConnection(function (err, connection) {
-        if (err) {
-            cb(err);
-            return;
-        }
-        connection.query(
-            'UPDATE `mrs_session_def` SET ? WHERE `curr_flag` =1  ', [data], (err) => {   //and `createdById` = ?
-                if (err) { console.log(err); return; }
-                connection.release();
-            });
-    });
-}
-function updateMrsMrkSavaJson(data, checkstr) {
-    pool.getConnection(function (err, connection) {
-        if (err) { cb(err); return; }
-        connection.query(
-            'UPDATE `mrs_session_def` SET ? WHERE `curr_flag` =1  ', [data], (err) => {   //and `createdById` = ?
-                if (err) { console.log(err); return; }
-                connection.release();
-            });
-    });
 }
 function ReadMarksysAuth(staf_ref, cb) {
     pool.getConnection(function (err, connection) {
@@ -303,6 +134,7 @@ function ReadMarksysAuth(staf_ref, cb) {
             });
     });
 }
+
 function read(staf_ref, id, cb) {
     pool.getConnection(function (err, connection) {
         if (err) { cb(err); return; }
@@ -333,32 +165,29 @@ function listcoursesubitem(staf, cdid, cb) {
             });
     });
 }
+
 function addcoursesubitem(data, cb) {
     pool.getConnection(function (err, connection) {
         connection.query('INSERT INTO `mrs_course_detail_subitem` SET ?', data, (err, res) => {
             console.log(err, res);
-            if (err) {
-                cb(err);
-                return;
-            }
+            if (err) { cb(err); return; }
             readcoursesubitem(res.insertId, cb);
             connection.release();
         });
     });
 }
+
 function savecoursesubitem(data, cb) {
     pool.getConnection(function (err, connection) {
         connection.query('update `mrs_course_detail_subitem` set subitem=?, marktype=?, regdate=? where c_sid= ?',
             [data.subitem, data.marktype, data.regdate, data.c_sid], (err, res) => {
-                if (err) {
-                    cb(err);
-                    return;
-                }
+                if (err) { cb(err); return; }
                 readcoursesubitem(data.c_sid, cb);
                 connection.release();
             });
     });
 }
+
 function readcoursesubitem(id, cb) {
     pool.getConnection(function (err, connection) {
         connection.query(
@@ -372,6 +201,7 @@ function readcoursesubitem(id, cb) {
             });
     });
 }
+
 function updateCoursesubitemDataJson(csid, cdid, DataJson, cb) {
     pool.getConnection(function (err, connection) {
         connection.query(
@@ -382,7 +212,8 @@ function updateCoursesubitemDataJson(csid, cdid, DataJson, cb) {
             });
     });
 }
-function ObserveListCourseSubitemByStaf(staf,  cb) {
+
+function ObserveListCourseSubitemByStaf(staf, cb) {
     pool.getConnection(function (err, connection) {
         if (err) { cb(err); return; }
         connection.query(
@@ -396,7 +227,8 @@ function ObserveListCourseSubitemByStaf(staf,  cb) {
             });
     });
 }
-function ObserveListCourseSubitemBySCID(staf,  cb) {
+
+function ObserveListCourseSubitemBySCID(staf, cb) {
     pool.getConnection(function (err, connection) {
         if (err) { cb(err); return; }
         connection.query(
@@ -411,14 +243,12 @@ function ObserveListCourseSubitemBySCID(staf,  cb) {
     });
 }
 
-function listObserveListSCID(staf,cb){
+function listObserveListSCID(staf, cb) {
     pool.getConnection(function (err, connection) {
         if (err) { cb(err); return; }
         connection.query(
-            'SELECT * FROM `mrs_course_detail` WHERE observer1 = ? or observer2 =  ? ', [staf,staf], (err, results) => {
-                if (!err && !results.length) {
-                    err = { code: 404, message: 'Not found' };
-                }
+            'SELECT * FROM `mrs_course_detail` WHERE observer1 = ? or observer2 =  ? ', [staf, staf], (err, results) => {
+                if (!err && !results.length) { err = { code: 404, message: 'Not found' }; }
                 if (err) { cb(err); return; }
                 cb(null, results);
                 connection.release();
@@ -426,13 +256,12 @@ function listObserveListSCID(staf,cb){
     });
 }
 
+//Course Sub ITEM END..
 function readclassnostud(id, cb) {
     pool.getConnection(function (err, connection) {
         connection.query(
             'SELECT stud_ref,curr_class,curr_seat,c_name,e_name FROM  studinfo  where curr_class= ? ', id, (err, res) => {
-                if (!err && !res.length) {
-                    err = { code: 404, message: 'Not found' };
-                }
+                if (!err && !res.length) { err = { code: 404, message: 'Not found' }; }
                 if (err) { cb(err); return; }
                 cb(null, res);
                 connection.release();
@@ -447,10 +276,6 @@ module.exports = {
     readpingyu: readpingyu,
     readconduct: readconduct,
     readgrademark: readgrademark,
-    savegrademark: savegrademark,
-    savegrademarkarray: savegrademarkarray,
-    updateGCNameArray:updateGCNameArray,
-    updateMrkPubDate: updateMrkPubDate,
     ReadMarksysAuth: ReadMarksysAuth,
     StatisticsRead: StatisticsRead,
     DataReaderQuery: DataReaderQuery,
@@ -461,24 +286,19 @@ module.exports = {
     readclassnostud: readclassnostud,
     updateCoursesubitemDataJson: updateCoursesubitemDataJson,
     savecoursesubitem: savecoursesubitem,
-    ObserveListCourseSubitemByStaf:ObserveListCourseSubitemByStaf,
-    ObserveListCourseSubitemBySCID:ObserveListCourseSubitemBySCID,
-    RegObserver:RegObserver,
-    listObserveListSCID:listObserveListSCID,
+    ObserveListCourseSubitemByStaf: ObserveListCourseSubitemByStaf,
+    ObserveListCourseSubitemBySCID: ObserveListCourseSubitemBySCID,
+    RegObserver: RegObserver,
+    listObserveListSCID: listObserveListSCID,
 };
 
 if (module === require.main) {
     const prompt = require('prompt');
     prompt.start();
-
     console.log(
-        `Running this script directly will allow you to initialize your mysql
-    database.\n This script will not modify any existing tables.\n`);
-
+        `Running this script directly will allow you to initialize your mysql database.\n This script will not modify any existing tables.\n`);
     prompt.get(['user', 'password'], (err, result) => {
-        if (err) {
-            return;
-        }
+        if (err) { return; }
         createSchema(result);
     });
 }
@@ -488,7 +308,6 @@ function createSchema(config) {
     const connection = mysql.createConnection(extend({
         multipleStatements: true
     }, config));
-
     connection.query(
    `CREATE DATABASE IF NOT EXISTS \`deptwork\`
     DEFAULT CHARACTER SET = 'utf8'

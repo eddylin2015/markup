@@ -1,7 +1,6 @@
 extends ./base.pug
 block content
-  link(rel='stylesheet', href='/stylesheets/bootstrap-combobox.css')
-  script(src='/javascripts/bootstrap-combobox.js')    
+
   style.
     input[type=radio] {
         width: 20px;
@@ -9,6 +8,23 @@ block content
         border: 1px solid black;
         border-radius: 3px;
     }
+    select, option {color: black;}
+    .custom-combobox {
+      position: relative;
+      display: inline-block;
+    }
+    .custom-combobox-toggle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      margin-left: -1px;
+      padding: 0;
+    }
+    .custom-combobox-input {
+      margin: 0;
+      padding: 5px 10px;
+    }        
+  include ./inc/mixinFormControl    
   script(src='/ckeditor/ckeditor.js')
   //h3 #{title_act} #{action} 
   form(method="POST", enctype="multipart/form-data")
@@ -26,29 +42,23 @@ block content
         td 
           .form-group                
             input.form-control(type="text", name="ce_Date", id="ce_Date", value=book.ce_Date)
-      tr
+      //tr
         td        
           .form-group.hidden                
             span 學部DEPT:	
         td
           .form-group.hidden                
             input.form-control(type="text", name="ce_Dept", id="ce_Dept", value=book.ce_Dept)
-      tr  
+      tr(style="padding:20px;margin:20px;")   
         td 節:	
-        td 
-          .form-group                
-            input.form-control(type="text", name="ce_SectNo", id="ce_SectNo", value=book.ce_SectNo)
-      tr        
+        td
+          +inputSectNo("ce_SectNo",book.ce_SectNo)            
+          br
+      tr(style="padding:20px;margin:20px;")            
         td 班別 :	
-        td 
-          .form-group                
-            select.form-control.combobox( name="ce_CNo", id="ce_CNo", value=book.ce_CNo)
-              <option value="" selected="selected">Select </option>
-              <option value="AL">Alabama</option>
-              <option value="AK">Alaska</option>
-              <option value="AZ">Arizona</option>
-              <option value="AR">Arkansas</option>
-              <option value="CA">California</option>                    
+        td
+          +inputClassNo("ce_CNo",book.ce_CNo)            
+          br
       tr  
         td 科目:	
         td 
@@ -240,7 +250,6 @@ block content
   script.
     //CKEDITOR.replace('ce_Note',{ filebrowserUploadUrl: "imageUploader" } );   
     $(function() {
-      $('.combobox').combobox()
       $('#inputseatno_dlg').dialog(
         {	autoOpen:false,	
           width:"360px"	,
@@ -295,4 +304,132 @@ block content
          console.log(title);
          $( "#inputseatno_dlg" ).dialog({ title:title});
          $('#inputseatno_dlg').dialog('open');  });      
-    });
+    //});
+    //$( function() {
+      $.widget( "custom.combobox", {
+        _create: function() {
+          this.wrapper = $( "<span>" )
+            .addClass( "custom-combobox" )
+            .insertAfter( this.element );
+          this.element.hide();
+          this._createAutocomplete();
+          this._createShowAllButton();
+        },
+    
+        _createAutocomplete: function() {
+          var selected = this.element.children( ":selected" ),
+            value = selected.val() ? selected.text() : "";
+    
+          this.input = $( "<input>" )
+            .appendTo( this.wrapper )
+            .val( value )
+            .attr( "title", "" )
+            .addClass( "custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left" )
+            .autocomplete({
+              delay: 0,
+              minLength: 0,
+              source: $.proxy( this, "_source" )
+            })
+            .tooltip({
+              classes: {
+                "ui-tooltip": "ui-state-highlight"
+              }
+            });
+    
+          this._on( this.input, {
+            autocompleteselect: function( event, ui ) {
+              ui.item.option.selected = true;
+              this._trigger( "select", event, {
+                item: ui.item.option
+              });
+            },
+    
+            autocompletechange: "_removeIfInvalid"
+          });
+        },
+    
+        _createShowAllButton: function() {
+          var input = this.input,
+            wasOpen = false;
+    
+          $( "<a>" )
+            .attr( "tabIndex", -1 )
+            .attr( "title", "Show All Items" )
+            .tooltip()
+            .appendTo( this.wrapper )
+            .button({
+              icons: {
+                primary: "ui-icon-triangle-1-s"
+              },
+              text: false
+            })
+            .removeClass( "ui-corner-all" )
+            .addClass( "custom-combobox-toggle ui-corner-right" )
+            .on( "mousedown", function() {
+              wasOpen = input.autocomplete( "widget" ).is( ":visible" );
+            })
+            .on( "click", function() {
+              input.trigger( "focus" );
+    
+              // Close if already visible
+              if ( wasOpen ) {
+                return;
+              }
+    
+              // Pass empty string as value to search for, displaying all results
+              input.autocomplete( "search", "" );
+            });
+        },
+    
+        _source: function( request, response ) {
+          var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
+          response( this.element.children( "option" ).map(function() {
+            var text = $( this ).text();
+            if ( this.value && ( !request.term || matcher.test(text) ) )
+              return {
+                label: text,
+                value: text,
+                option: this
+              };
+          }) );
+        },
+    
+        _removeIfInvalid: function( event, ui ) {
+    
+          // Selected an item, nothing to do
+          if ( ui.item ) {
+            return;
+          }
+          // Search for a match (case-insensitive)
+          var value = this.input.val(),
+            valueLowerCase = value.toLowerCase(),
+            valid = false;
+          this.element.children( "option" ).each(function() {
+            if ( $( this ).text().toLowerCase() === valueLowerCase ) {
+              this.selected = valid = true;
+              return false;
+            }
+          });
+          // Found a match, nothing to do
+          if ( valid ) {
+            return;
+          }
+          // Remove invalid value
+          this.input
+            .val( "" )
+            .attr( "title", value + " didn't match any item" )
+            .tooltip( "open" );
+          this.element.val( "" );
+          this._delay(function() {
+            this.input.tooltip( "close" ).attr( "title", "" );
+          }, 2500 );
+          this.input.autocomplete( "instance" ).term = "";
+        },
+        _destroy: function() {
+          this.wrapper.remove();
+          this.element.show();
+        }
+      });
+      $( "#ce_SectNocbx" ).combobox();
+      $( "#ce_CNocbx" ).combobox();
+    } );
