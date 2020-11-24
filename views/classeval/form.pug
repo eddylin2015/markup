@@ -26,6 +26,15 @@ block content
     }        
   include ./inc/mixinFormControl    
   script(src='/ckeditor/ckeditor.js')
+  script.
+    function mathcTimeTable()
+    {
+      let date_str=$("#ce_Date").val();
+      var d = new Date(date_str);
+      var weekday = d.getDay()
+      let key=$("#ce_CNocbx").val()+$("#ce_SectNocbx").val();
+      console.log(weekday,key);
+    }
   //h3 #{title_act} #{action} 
   form(method="POST", enctype="multipart/form-data")
     .form-group.hidden
@@ -43,22 +52,26 @@ block content
           .form-group                
             input.form-control(type="text", name="ce_Date", id="ce_Date", value=book.ce_Date)
       //tr
-        td        
           .form-group.hidden                
             span 學部DEPT:	
-        td
           .form-group.hidden                
             input.form-control(type="text", name="ce_Dept", id="ce_Dept", value=book.ce_Dept)
       tr(style="padding:20px;margin:20px;")   
         td 節:	
         td
-          +inputSectNo("ce_SectNo",book.ce_SectNo)            
-          br
+          .form-group         
+            +inputSectNo("ce_SectNo",book.ce_SectNo)            
       tr(style="padding:20px;margin:20px;")            
-        td 班別 :	
         td
-          +inputClassNo("ce_CNo",book.ce_CNo)            
-          br
+          span#mathcTimeTable(onclick="mathcTimeTable();") 班別 :	
+        td
+          .form-group 
+            +inputClassNo("ce_CNo",book.ce_CNo)   
+      tr
+        td /地點
+        td
+          .form-group 
+            input.form-control(type="text", name="ce_Room", id="ce_Room", value=book.ce_Room)          
       tr  
         td 科目:	
         td 
@@ -70,11 +83,7 @@ block content
         td
           .form-group        
             input.form-control(type="text", name="ce_Teacher", id="ce_Teacher", value=book.ce_Teacher)
-      tr        
-        td 地點 :	
-        td 
-          .form-group        
-            input.form-control(type="text", name="ce_Room", id="ce_Room", value=book.ce_Room)
+
       tr        
         td 
           .form-group

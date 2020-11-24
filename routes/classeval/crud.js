@@ -54,13 +54,26 @@ router.get('/', require('connect-ensure-login').ensureLoggedIn(), (req, res, nex
  * GET /books/add
  * Display a form for creating a book.
  */
+function getSectNo(){
+  let d = new Date();
+  let h = d.getHours();
+  let m = d.getMinutes();
+  let time_str=(h<10?"0":"")+h+":"+(m<10?"0":"")+m
+  const time_sectno=["08:30","09:30","10:15","11:05","11:50","14:10","14:55","15:50","16:30"]
+  const sectno=["一","二","三","四","五","六","七","八",""]
+  for(let i=0;i<time_sectno.length;i++)
+    if(time_str<time_sectno[i]) return i==0?"":sectno[i-1]
+  return "";
+}
 router.get('/add', (req, res) => {
+  let sectno=req.query.sectno?req.query.sectno:getSectNo();
   res.render('classeval/form.pug', {
       profile: req.user,
       book: {
           author: req.user.username,
           authorname: req.user.displayName,
           ce_Mng:req.user.username,
+          ce_SectNo:sectno,
           id:0,
           title: fmt_title(req.user.username, netutils.fmt_now(0), 'CE_log'),
           logDate: netutils.fmt_now(0),
