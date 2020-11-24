@@ -17,28 +17,25 @@ const express = require('express');
 const images = require('./images');
 const mc = require('../../lib/mailrelay.js');
 const netutils=require('../../lib/net_utils.js');
+
 function getModel () {
     return require(`./model-mysql-pool`);
 }
+
 function fmt_title(username, datestr, description) {
     //description = description.split("\n")[0];
     //description = description.length > 10 ? description.substring(0, 10) : description;
     //datestr = datestr.length > 10 ? datestr.substring(0, 10) : datestr;
     return username + ":" + datestr + ":" + description;
 }
+
 const router = express.Router();
-// Use the oauth middleware to automatically get the user's profile
-// information and expose login/logout URLs to templates.
-// Set Content-Type for all responses for these routes
+
 //router.use((req, res, next) => {
  // res.set('Content-Type', 'text/html');
  // next();
 //});
-/**
- * GET /books/add
- *
- * Display a page of books (up to ten at a time).
- */
+
 router.get('/', require('connect-ensure-login').ensureLoggedIn(), (req, res, next) => {
     getModel().list(req.user.id, 10, req.query.pageToken, (err, entities, cursor) => {
     if (err) {
@@ -99,8 +96,6 @@ router.post(
         }
         res.redirect(`${req.baseUrl}/${savedData.id}`);
     });
-    //if(data.mailto && data.mailto.length>0)
-    //mc.relaymail(25,'ASPMX.L.GOOGLE.COM', "it@mail.mbc.edu.mo", data.mailto+"@mail.mbc.edu.mo", data.title,data.description);
   }
 );
 // Use the oauth2.required middleware to ensure that only logged-in users
