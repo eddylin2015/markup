@@ -17,6 +17,7 @@ const express = require('express');
 const images = require('./images');
 const mc = require('../../lib/mailrelay.js');
 const netutils=require('../../lib/net_utils.js');
+const fs = require("fs");
 
 function getModel () {
     return require(`./model-mysql-pool`);
@@ -65,6 +66,11 @@ function getSectNo(){
     if(time_str<time_sectno[i]) return i==0?"":sectno[i-1]
   return "";
 }
+router.get('/api/timetable.json',require('connect-ensure-login').ensureLoggedIn(),  (req, res) => {
+  res.type('application/json'); 
+  var readStream = fs.createReadStream(process.cwd() + "\\db\\tabletime.json");
+  readStream.pipe(res);
+});
 router.get('/add', (req, res) => {
   let sectno=req.query.sectno?req.query.sectno:getSectNo();
   res.render('classeval/form.pug', {

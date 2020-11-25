@@ -1,3 +1,12 @@
+mixin inputStatus(n,v)
+  div(class="ui-widget")
+    select(id=(n+"cbx"),name=n)
+      option(value="") Select one...
+      option(value="很好",selected=v=="很好"?true:false) 很好
+      option(value="好",selected=v=="好"?true:false) 好
+      option(value="一般",selected=v=="一般"?true:false) 一般
+      option(value="差",selected=v=="差"?true:false) 差
+      option(value="很差",selected=v=="很差"?true:false) 很差
 mixin inputSectNo(n,v)
   div(class="ui-widget")
     select(id=(n+"cbx"),name=n)

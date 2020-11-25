@@ -3,6 +3,7 @@ extends ./base.pug
 block content
   style.
     .container{
+      width:98%;
       margin-left:10px;
     }
     table{width:100%;}
@@ -22,14 +23,19 @@ block content
       th(width="100em;",padding="1em") ID
       th(width="100em;",padding="1em") 日期
       th(width="100em;",padding="1em") 節
+      th(width="100em;",padding="1em") 班別      
+      th(width="100em;",padding="1em") 地點
       th(width="100em;",padding="1em") 科目
       th(width="100em;",padding="1em") 教師
-      th(width="100em;",padding="1em") 班別 
-      th(width="100em;",padding="1em") 地點
       th(width="100em;",padding="1em") 課堂狀況
       th(width="100em;",padding="1em") 學生學習表現
       th(width="100em;",padding="1em") 學生課堂秩序
       th(width="100em;",padding="1em") 學生課堂整潔
+      th(width="100em;",padding="1em") 附註
+      th(width="100em;",padding="1em") 教學管理
+      th(width="100em;",padding="1em") 教學器材充足
+      th(width="100em;",padding="1em") 教學版書及資訊科技
+      th(width="100em;",padding="1em") 師生互動
       th(width="100em;",padding="1em") 附註
       th(width="100em;",padding="1em") 睡覺同學
       th(width="100em;",padding="1em") 開小差同學
@@ -37,11 +43,6 @@ block content
       th(width="100em;",padding="1em") 儀容違規
       th(width="100em;",padding="1em") 其他違規
       th(width="100em;",padding="1em") 其他違規同學
-      th(width="100em;",padding="1em") 教學管理
-      th(width="100em;",padding="1em") 教學器材充足
-      th(width="100em;",padding="1em") 教學版書及資訊科技
-      th(width="100em;",padding="1em") 師生互動
-      th(width="100em;",padding="1em") 附註
       th(width="100em;",padding="1em") 需跟進事項
       th(width="100em;",padding="1em") 人員
       th(width="100em;",padding="1em") 記錄日期
@@ -52,26 +53,26 @@ block content
         td= book.id
         td= book.ce_Date
         td= book.ce_SectNo
-        td= book.ce_Subject
-        td= book.ce_Teacher
         td= book.ce_CNo
         td= book.ce_Room
+        td= book.ce_Subject
+        td= book.ce_Teacher
         td= book.ce_Status
         td= book.ce_StdPerform
         td= book.ce_CMStatus
         td= book.ce_CMTidy
         td= book.ce_CMNote
+        td= book.ce_TchTeach
+        td= book.ce_TchMaterial
+        td= book.ce_TchITWrit
+        td= book.ce_TchCommu
+        td= book.ce_TchNote
         td= book.ce_WrgSleep
         td= book.ce_WrgConcent 
         td= book.ce_WrgClOrder
         td= book.ce_WrgManner
         td= book.ce_WrgOtherDesc
         td= book.ce_WrgOther
-        td= book.ce_TchTeach
-        td= book.ce_TchMaterial
-        td= book.ce_TchITWrit
-        td= book.ce_TchCommu
-        td= book.ce_TchNote
         td= book.ce_Note
         td= book.createdById
         td= book.logDate

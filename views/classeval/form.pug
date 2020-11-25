@@ -27,16 +27,39 @@ block content
   include ./inc/mixinFormControl    
   script(src='/ckeditor/ckeditor.js')
   script.
+    var data=null;
+    function Save(){
+       document.getElementById('ActForm').submit();
+    }
     function mathcTimeTable()
     {
       let date_str=$("#ce_Date").val();
       var d = new Date(date_str);
       var weekday = d.getDay()
       let key=$("#ce_CNocbx").val()+$("#ce_SectNocbx").val();
-      console.log(weekday,key);
+      if(data){
+        console.log(data)
+        for(let i=0;i<data.length;i++)
+        {
+          console.log(data[i])
+          if(key==data[i][0])
+          {
+            let cm=data[i][1]
+            let coursename=data[i][2+weekday]
+            let teacher=data[i][7+weekday]
+            //if($("#ce_Teacher").val()=="" && $("#ce_Subject").val()=="" )
+            {
+               $("#ce_Teacher").val(teacher);
+               $("#ce_Subject").val(coursename);
+            }
+            break;
+          }
+        }
+      }
+      
     }
   //h3 #{title_act} #{action} 
-  form(method="POST", enctype="multipart/form-data")
+  form(method="POST", enctype="multipart/form-data")#ActForm
     .form-group.hidden
       label(for="title") 標題
       input.form-control(type="text", name="title", id="title", value=book.title)
@@ -47,7 +70,7 @@ block content
           td 
             span= book.id
       tr  
-        td 日期:	
+        td 日期*:	
         td 
           .form-group                
             input.form-control(type="text", name="ce_Date", id="ce_Date", value=book.ce_Date)
@@ -57,13 +80,13 @@ block content
           .form-group.hidden                
             input.form-control(type="text", name="ce_Dept", id="ce_Dept", value=book.ce_Dept)
       tr(style="padding:20px;margin:20px;")   
-        td 節:	
+        td 節*:	
         td
           .form-group         
             +inputSectNo("ce_SectNo",book.ce_SectNo)            
       tr(style="padding:20px;margin:20px;")            
         td
-          span#mathcTimeTable(onclick="mathcTimeTable();") 班別 :	
+          span#mathcTimeTable(onclick="mathcTimeTable();") 【班別】*:	
         td
           .form-group 
             +inputClassNo("ce_CNo",book.ce_CNo)   
@@ -72,7 +95,7 @@ block content
         td
           .form-group 
             input.form-control(type="text", name="ce_Room", id="ce_Room", value=book.ce_Room)          
-      tr  
+      tr 
         td 科目:	
         td 
           .form-group                
@@ -90,7 +113,8 @@ block content
             label(for="ce_Status") 課堂狀況:	
         td 
           .form-group        
-            input.form-control(type="text", name="ce_Status", id="ce_Status", value=book.ce_Status)
+            //+inputStatus("ce_Status",book.ce_Status)             
+            input.form-control(type="text", name="ce_Status", id="ce_Statuscbx", value=book.ce_Status)
       tr
         td
           .form-group.hidden                
@@ -139,31 +163,10 @@ block content
               span
                 label(class="radio-inline")=  s_v[val] + s_s[val]
                   input(type="radio", name="ce_CMTidy",id= ("ce_CMTidy"+val), value= (s_v[val]), checked= ( book.ce_CMTidy == s_v[val] ? true : false )  )
-    .form-group
+    //.form-group
       label(for="ce_CMNote") 學生表現事項:    
       textarea.form-control(rows=3,  style="color: white;background-color:black; ",name="ce_CMNote", id="ce_CMNote", value=book.ce_CMNote)= book.ce_CMNote
     
-    h3 學生常規
-    table
-      tr  
-        td
-          <span>睡覺學生學號</span>
-          input#ce_WrgSleep(name="ce_WrgSleep",value=book.ce_WrgSleep)
-          <span id="btn_ce_WrgSleep" class=BTNINPUTNO>編輯</span><br>
-          <span>開小差學生學號</span>
-          input#ce_WrgConcent(name="ce_WrgConcent",value=book.ce_WrgConcent )
-          <span id="btn_ce_WrgConcent" class=BTNINPUTNO >編輯</span><br>
-          <span>破坏課堂秩序學號</span>
-          input#ce_WrgClOrder( name="ce_WrgClOrder", value=book.ce_WrgClOrder)  
-          <span id="btn_ce_WrgClOrder", class=BTNINPUTNO , >編輯</span><br>
-          <span>儀容違規學號</span>
-          input#ce_WrgManner(name="ce_WrgManner", value=book.ce_WrgManner)  
-          <span id="btn_ce_WrgManner" class=BTNINPUTNO >編輯</span><br>
-          <span>其他違規</span>
-          input#ce_WrgOtherDesc(name='ce_WrgOtherDesc', value=book.ce_WrgOtherDesc, size=8)
-          <span>學號</span>
-          input#ce_WrgOther(name="ce_WrgOther", value=book.ce_WrgOther)
-          <span id="btn_ce_WrgOther" class=BTNINPUTNO >編輯</span>
 
     h3 老師表現
     table
@@ -209,8 +212,31 @@ block content
               span
                 label(class="radio-inline")=  s_v[val] + s_s[val]
                   input(type="radio", name="ce_TchCommu",id= ("ce_TchCommu"+val), value= (s_v[val]), checked= ( book.ce_TchCommu == s_v[val] ? true : false )  )
+
+    h3 學生常規
+    table
+      tr  
+        td
+          <span>睡覺學生學號</span>
+          input#ce_WrgSleep(name="ce_WrgSleep",value=book.ce_WrgSleep)
+          <span id="btn_ce_WrgSleep" class=BTNINPUTNO>編輯</span><br>
+          <span>開小差的學生</span>
+          input#ce_WrgConcent(name="ce_WrgConcent",value=book.ce_WrgConcent )
+          <span id="btn_ce_WrgConcent" class=BTNINPUTNO >編輯</span><br>
+          <span>破坏課堂秩序</span>
+          input#ce_WrgClOrder( name="ce_WrgClOrder", value=book.ce_WrgClOrder)  
+          <span id="btn_ce_WrgClOrder", class=BTNINPUTNO , >編輯</span><br>
+          <span>儀容違規學號</span>
+          input#ce_WrgManner(name="ce_WrgManner", value=book.ce_WrgManner)  
+          <span id="btn_ce_WrgManner" class=BTNINPUTNO >編輯</span><br>
+          <span>其他違規描述</span>
+          input#ce_WrgOtherDesc(name='ce_WrgOtherDesc', value=book.ce_WrgOtherDesc, size=8)
+          <span>學號</span>
+          input#ce_WrgOther(name="ce_WrgOther", value=book.ce_WrgOther)
+          <span id="btn_ce_WrgOther" class=BTNINPUTNO >編輯</span>
+
     .form-group
-      label(for="ce_TchNote") 老師表現事項:    
+      label(for="ce_TchNote") 補充事項:    
       textarea.form-control(rows=3,  style="color: white;background-color:black; ",name="ce_TchNote", id="ce_TchNote", value=book.ce_TchNote)= book.ce_TchNote
     h3 校園環境
     .form-group
@@ -231,7 +257,8 @@ block content
     .form-group.hidden
        label(for="createdById") Created by ID
        input.form-control(type="text", name="createdById", id="createdById", value=book.createdById)
-    button.btn.btn-success(type="submit") Save
+    button.btn.btn-success(type="button",onclick="Save();") Save
+    //button.btn.btn-success(type="submit") Save
 
     div#inputseatno_dlg(title="Basic dialog")
       table
@@ -259,34 +286,35 @@ block content
   script.
     //CKEDITOR.replace('ce_Note',{ filebrowserUploadUrl: "imageUploader" } );   
     $(function() {
+      if(data==null){
+        $.getJSON( "/internal/classeval/api/timetable.json", function( data_ ) {
+          data=data_
+          console.log(data);
+        });
+      }
       $('#inputseatno_dlg').dialog(
         {	autoOpen:false,	
           width:"360px"	,
         open: function()
         {
           let title=$(this).dialog( "option", "title" );
-          console.log(title);
           let val=$("#"+title).val();
           for(let i=1;i<41;i++)
             $('#ck'+i).prop('checked', false);
           var regex = /\d+/g;
-          console.log(val);
           let found = val.match(regex)
-          console.log("f",found);
           if(found==null) return;
-          
           found.forEach((item,index)=>{ 
             $('#ck'+item).prop('checked', true);
           })
           
         },
-             modal: true,
+        modal: true,
       buttons: {
         "Ok": function() {
           let title=$(this).dialog( "option", "title" );
           let val=$("#"+title).val();
           var regex = /([a-zA-Z]+|\W+)/g;
-          console.log(val);
           let found = val.match(regex);
           var res_res="";
           if( found != null ) {
@@ -296,9 +324,7 @@ block content
           let res=[];
           for(let i=1;i<41;i++)
             if($('#ck'+i).prop('checked')) res.push(i) ;
-
           $("#"+title).val((res.join(",")+","+res_res))  ;
-
           $( this ).dialog( "close" );
         }
       }
@@ -308,13 +334,10 @@ block content
       $( "#ce_Date" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
       $( "#ce_Date" ).val(_old);
    	  $('.BTNINPUTNO').click(function(){
-         
          let title=this.id.replace("btn_","");
-         console.log(title);
          $( "#inputseatno_dlg" ).dialog({ title:title});
-         $('#inputseatno_dlg').dialog('open');  });      
-    //});
-    //$( function() {
+         $('#inputseatno_dlg').dialog('open'); 
+      });      
       $.widget( "custom.combobox", {
         _create: function() {
           this.wrapper = $( "<span>" )
@@ -324,11 +347,9 @@ block content
           this._createAutocomplete();
           this._createShowAllButton();
         },
-    
         _createAutocomplete: function() {
           var selected = this.element.children( ":selected" ),
             value = selected.val() ? selected.text() : "";
-    
           this.input = $( "<input>" )
             .appendTo( this.wrapper )
             .val( value )
@@ -344,7 +365,6 @@ block content
                 "ui-tooltip": "ui-state-highlight"
               }
             });
-    
           this._on( this.input, {
             autocompleteselect: function( event, ui ) {
               ui.item.option.selected = true;
@@ -352,7 +372,6 @@ block content
                 item: ui.item.option
               });
             },
-    
             autocompletechange: "_removeIfInvalid"
           });
         },
@@ -394,12 +413,13 @@ block content
           var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
           response( this.element.children( "option" ).map(function() {
             var text = $( this ).text();
-            if ( this.value && ( !request.term || matcher.test(text) ) )
+            if ( this.value && ( !request.term || matcher.test(text) ) ){
               return {
                 label: text,
                 value: text,
                 option: this
               };
+            }
           }) );
         },
     
@@ -411,8 +431,7 @@ block content
           }
           // Search for a match (case-insensitive)
           var value = this.input.val(),
-            valueLowerCase = value.toLowerCase(),
-            valid = false;
+            valueLowerCase = value.toLowerCase(),            valid = false;
           this.element.children( "option" ).each(function() {
             if ( $( this ).text().toLowerCase() === valueLowerCase ) {
               this.selected = valid = true;
@@ -439,6 +458,86 @@ block content
           this.element.show();
         }
       });
-      $( "#ce_SectNocbx" ).combobox();
-      $( "#ce_CNocbx" ).combobox();
+
+      $.widget( "custom.CustCombobox", {
+        options: {
+        source: 0
+        },
+        _create: function(source) {
+          this.source=this.options.source;
+          this.wrapper = $( "<span>" )
+            .addClass( "custom-combobox" )
+            .insertAfter( this.element );
+          this.element.hide();
+          this._createAutocomplete();
+          this._createShowAllButton();
+        },
+        _createAutocomplete: function() {
+          value=this.element.val();
+          this.input = $( "<input>" )
+            .appendTo( this.wrapper )
+            .val( value )
+            .attr( "title", "" )
+            .addClass( "custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left" )
+            .autocomplete({
+               minLength: 0,
+               source: $.proxy( this, "_source" )
+            })
+            .tooltip({
+              classes: {
+                "ui-tooltip": "ui-state-highlight"
+              }
+            });
+          this._on( this.input, {
+            autocompleteselect: function( event, ui ) { },
+            autocompletechange: "_removeIfInvalid"
+          });
+        },
+        _createShowAllButton: function() {
+          var input = this.input,
+            wasOpen = false;
+            $( "<a>" )
+            .attr( "tabIndex", -1 )
+            .attr( "title", "Show All Items" )
+            .tooltip()
+            .appendTo( this.wrapper )
+            .button({
+              icons: {
+                primary: "ui-icon-triangle-1-s"
+              },
+              text: false
+            })
+            .removeClass( "ui-corner-all" )
+            .addClass( "custom-combobox-toggle ui-corner-right" )
+            .on( "mousedown", function() {
+              wasOpen = input.autocomplete( "widget" ).is( ":visible" );
+            })
+            .on( "click", function() {
+              console.log("aaaa")
+              input.trigger( "focus" );
+              // Close if already visible
+              if ( wasOpen ) { return; }
+              // Pass empty string as value to search for, displaying all results
+              input.autocomplete( "search", "" );
+            });
+        },
+        _source: function( request, response ) {
+          response( this.source.filter(word => word.indexOf(request.term)>-1));
+        },
+        _removeIfInvalid: function( event, ui ) {
+          var value = this.input.val()
+          this.element.val( this.input.val() )
+          return;
+        },
+        _destroy: function() {
+          this.wrapper.remove();
+          this.element.show();
+        }
+      });
+
+      $("#ce_SectNocbx" ).combobox();
+      $("#ce_CNocbx" ).combobox();
+      $("#ce_Statuscbx").CustCombobox({ source: ["很好","好","一般","差","很差"] });
+      
+      //$("#ce_Statuscbx" ).autocomplete({ source: ["AA","AB","C","D"] });
     } );
