@@ -12,19 +12,14 @@ const router = express.Router();
 // Use the oauth middleware to automatically get the user's profile
 // information and expose login/logout URLs to templates.
 // Set Content-Type for all responses for these routes
-
 // router.use((req, res, next) => {
 //   res.set('Content-Type', 'text/html');
 //   next();
 // });
 
-/**
- * GET /books/add
- *
- * Display a page of books (up to ten at a time).
- */
+
 router.get('/', require('connect-ensure-login').ensureLoggedIn(), (req, res, next) => {
-  getModel().list(req.user.id, 10, req.query.pageToken, (err, entities, cursor) => {
+  getModel().list(req.user.id, 100, req.query.pageToken, (err, entities, cursor) => {
     if (err) {
       next(err);
       return;
@@ -293,8 +288,6 @@ router.post(
       }
       res.redirect(`${req.baseUrl}/${savedData.id}`);
     });
-    if (data.mailto && data.mailto.length > 0)
-      mc.relaymail(25, 'ASPMX.L.GOOGLE.COM', "it@mail.mbc.edu.mo", data.mailto + "@mail.mbc.edu.mo", data.title, data.description);
   }
 );
 
@@ -322,8 +315,6 @@ router.post(
       }
       res.redirect(`${req.baseUrl}/${savedData.id}`);
     });
-    if (data.mailto && data.mailto.length > 0)
-      mc.relaymail(25, 'ASPMX.L.GOOGLE.COM', "it@mail.mbc.edu.mo", data.mailto + "@mail.mbc.edu.mo", data.title, data.description);
   }
 );
 // [END add]
@@ -416,14 +407,10 @@ router.post(
       if (err) { next(err); return; }
       res.redirect(`${req.baseUrl}/${savedData.id}`);
     });
-    if (data.mailto && data.mailto.length > 0)
-      mc.relaymail(25, 'ASPMX.L.GOOGLE.COM', "it@mail.mbc.edu.mo", data.mailto + "@mail.mbc.edu.mo", data.title, data.description);
   }
 );
-
 /**
  * GET /books/:id
- *
  * Display a book.
  */
 router.get('/:book', (req, res, next) => {
@@ -441,7 +428,6 @@ router.get('/:book', (req, res, next) => {
 
 /**
  * GET /books/:id/delete
- *
  * Delete a book.
  */
 router.get('/:book/delete', (req, res, next) => {
