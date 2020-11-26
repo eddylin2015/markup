@@ -1,0 +1,68 @@
+div(title=" 輸入操行 Conduct dialog",style="display:none;background-color:black;color:white;")#conductupdfrm
+  p 用戶: #{profile.id} 上傳操行
+  span#conductupdfrmSID
+  span _
+  span#conductupdfrmCLASSNO
+  span 操行  
+  form(enctype="multipart/form-data",action="/internal/dashboard/sharefiles/mrsMarkXls", method="post",onSubmit="return AIM.submit(this, {'onStart' : conductupdfrm_startCallback, 'onComplete' : conductupdfrm_completeCallback})")
+    input(type="hidden",name="title")
+    input(type="file" name="upload" multiple="multiple")
+    input(type="submit" value="提交",style="color:black;",onclick="conductupdfrm_submit_wait(this)")#conductupdfrm_submit
+  p
+    span#conductupdfrm_nr 0
+    span#conductupdfrm_json
+div(title="Basic dialog",style="display:none")#conductupdfrm_res
+  div#conductupdfrm_res_XLSTable
+  div(style="display:none")#conductupdfrm_res_XLSJSON       
+script(type="text/javascript").
+  let PostUrl='/internal/markup/studcourse/editcondu/condusavejson?fn=!{fn}&aot=!{aot}&classno=!{classno}';
+  function conductupdfrm_submit_wait(x)  { $('#'+x.id).hide(); setTimeout(()=>{$('#'+x.id).show(); }, 3000);  }    
+  function Openconductupdfrm(sid,classno){
+    $('#conductupdfrmSID').text(sid);
+    $('#conductupdfrmCLASSNO').text(classno);
+    $("#conductupdfrm" ).dialog("open");
+  }
+  $(document).ready(function(){
+    $("#conductupdfrm").dialog( { autoOpen: false,height:  $(window).height()*0.9,  width:'90%', });  
+    $("#conductupdfrm_res").dialog( {
+      autoOpen: false,
+      height:$(window).height()*0.9,
+      width:'90%',
+      buttons: [
+        {
+          text: "Update Record",  icon: "ui-icon-heart",
+          click: function() {
+            let json=JSON.parse( document.getElementById('conductupdfrm_res_XLSJSON').innerHTML);
+            ShowMsg("Loading ... ");
+            let postjson=new Array();
+            for(i=0;i<json.length;i++)
+            {
+              if(json[i][1].match(/^[0-9]+$/))
+                if(json[i].length>25) postjson.push(json[i].slice(0,26));
+            }
+            $.post(PostUrl, {data: postjson})
+               .done( function(data) {
+                ShowMsg(data);
+              });
+              $( this ).dialog( "close" );
+          }
+        }
+      ]
+    });
+  });  
+  function conductupdfrm_startCallback() { return true; }
+  function conductupdfrm_completeCallback(response) {
+    response=response.replace('<pre style="word-wrap: break-word; white-space: pre-wrap;">', "").replace("</pre>", "");
+    document.getElementById('conductupdfrm_nr').innerHTML = parseInt(document.getElementById('conductupdfrm_nr').innerHTML) + 1;
+    document.getElementById('conductupdfrm_res_XLSJSON').innerHTML = response;
+    let json=JSON.parse( response);
+    let tbl="<table>";
+    for(let i=0;i<json.length;i++){
+      tbl+="<tr>"; for(let j=0;j<json[i].length;j++){ tbl+="<td>"+json[i][j]+"</td>"; } tbl+="</tr>";
+    }
+    tbl+="</table>";
+    document.getElementById('conductupdfrm_res_XLSTable').innerHTML=tbl;
+    $( "#conductupdfrm_res" ).dialog("open");
+  }
+  
+ 

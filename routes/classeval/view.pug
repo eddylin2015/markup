@@ -1,0 +1,88 @@
+extends ./base.pug
+
+block content
+  //h3 Work Log
+    small
+  .btn-group
+    a(href=`/internal/classeval/${book.id}/edit`, class='btn btn-primary btn-sm')
+      i.glyphicon.glyphicon-edit
+      span  Edit
+    //a(href=`/internal/classeval/${book.id}/edittext`, class='btn btn-primary btn-sm')
+      i.glyphicon.glyphicon-edit
+      span  Edit_Work      
+    a(href=`/internal/classeval/${book.id}/delete`, class='btn btn-danger btn-sm')
+      i.glyphicon.glyphicon-trash
+      span  Delete
+  .media
+    //.media-left
+      img(src=book.imageUrl || "/images/deptworklog.jpg")
+    .media-body
+      h4= book.title
+        | &nbsp;
+        small= book.logDate
+      h5 By #{book.ce_Mng||'unknown'}
+      //div(class="pre-scrollable;", style="color: white;background-color:black; ") !{book.ce_Note}
+      small Added by #{book.createdById}
+      -let flds=[];
+      -flds.push("id");
+      -flds.push("ce_Date"); 
+      -flds.push("ce_SectNo"); 
+      -flds.push("ce_CNo");       
+      -flds.push("ce_Room");       
+      -flds.push("ce_Subject"); 
+      -flds.push("ce_Teacher"); 
+      -flds.push("ce_Status"); 
+      -flds.push("ce_StdPerform"); 
+      -flds.push("ce_CMStatus"); 
+      -flds.push("ce_CMTidy"); 
+      -flds.push("ce_CMNote"); 
+      -flds.push("ce_TchTeach"); 
+      -flds.push("ce_TchMaterial"); 
+      -flds.push("ce_TchITWrit"); 
+      -flds.push("ce_TchCommu"); 
+      -flds.push("ce_TchNote"); 
+      -flds.push("ce_WrgSleep"); 
+      -flds.push("ce_WrgConcent"); 
+      -flds.push("ce_WrgClOrder"); 
+      -flds.push("ce_WrgManner"); 
+      -flds.push("ce_WrgOtherDesc"); 
+      -flds.push("ce_WrgOther"); 
+      -flds.push("ce_Note"); 
+      -flds.push("createdById"); 
+      -flds.push("logDate"); 
+      -flds.push("title"); 
+      -flds.push("ce_Mng"); 
+      -let flds_desc=new Map();
+      -flds_desc["id"]="記錄編號";
+      -flds_desc["ce_Date"]="日期";
+      -flds_desc["ce_SectNo"]="節";
+      -flds_desc["ce_CNo"]="班別 ";
+      -flds_desc["ce_Room"]="地點";      
+      -flds_desc["ce_Subject"]="科目";
+      -flds_desc["ce_Teacher"]="教師";
+      -flds_desc["ce_Status"]="課堂狀況";
+      -flds_desc["ce_StdPerform"]="學生學習表現";
+      -flds_desc["ce_CMStatus"]="學生課堂秩序";
+      -flds_desc["ce_CMTidy"]="學生課堂整潔";
+      -flds_desc["ce_CMNote"]="附註";
+      -flds_desc["ce_TchTeach"]="教學管理";
+      -flds_desc["ce_TchMaterial"]="教學器材充足";
+      -flds_desc["ce_TchITWrit"]="擅用版書資訊科技";
+      -flds_desc["ce_TchCommu"]="師生互動";
+      -flds_desc["ce_TchNote"]="附註";
+      -flds_desc["ce_WrgSleep"]="睡覺同學";
+      -flds_desc["ce_WrgConcent"]="開小差同學";
+      -flds_desc["ce_WrgClOrder"]="破坏課堂秩序同學";
+      -flds_desc["ce_WrgManner"]="儀容違規同學";
+      -flds_desc["ce_WrgOtherDesc"]="其他違規";
+      -flds_desc["ce_WrgOther"]="違規同學";
+      -flds_desc["ce_Note"]="需跟進事項";
+      -flds_desc["createdById"]="createdById";
+      -flds_desc["logDate"]="logDate";
+      -flds_desc["title"]="標題";
+      -flds_desc["ce_Mng"]="巡堂人員";
+      table
+        each _fn in flds
+          tr
+            td= flds_desc[_fn]
+            td= book[_fn]

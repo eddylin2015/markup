@@ -1,0 +1,234 @@
+﻿//- Copyright 2017, Google, Inc.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+extends ../base.pug
+
+block content
+  style.
+    div.container{ margin:0px; }
+  script(src='/javascripts/cool/grid_export.js')
+  -var fn= cfield + "學部學生總分資料表";
+  form(method="POST", enctype="multipart/form-data",action=`/internal/PublicAPI/ExpXls.php?charset=utf-8&filename=${fn}.xls`)#CSVFrmPOST
+    .form-group.hidden
+      input.form-control(type="text", name="CSVFrmPOSTNAME", id="CSVFrmPOSTVALUE")
+  h3= fn 
+  .btn-group
+    a(href='#', class='btn btn-primary btn-sm')#exportbtn
+      i.glyphicon.glyphicon-download-alt
+      span  匯出Xls
+    a(href='#', class='btn btn-primary btn-sm')#prtbtn
+      i.glyphicon.glyphicon-print
+      span Print 
+    a(href=`/internal/markup/statisticsmarktotal?cfield=${cfield}&dt=json`, class='btn btn-primary btn-sm')#prtbtn
+      i.glyphicon.glyphicon-print
+      span JSON 
+    a(href="#", class='btn btn-primary btn-sm')#sortbtn
+      i.glyphicon.glyphicon-print
+      span Sort       
+    a(href="#", class='btn btn-primary btn-sm')#sortABCDEbtn
+      i.glyphicon.glyphicon-print
+      span Sort by ABCDE       
+    a(href="#", class='btn btn-primary btn-sm')#sortABbtn
+      i.glyphicon.glyphicon-print
+      span Sort by AB       
+    a(href="#", class='btn btn-primary btn-sm')#sortCDbtn
+      i.glyphicon.glyphicon-print
+      span Sort by CD       
+  div#tableContent
+    table(width="120%")#tableCT
+      tr
+        td 班別
+        td(width=30) 座
+        td(width=80) 姓名
+        td mark1
+        td ran1
+        td ran1
+        td mark2
+        td ran2
+        td ran2
+        td mark3
+        td ran3
+        td ran3
+        td mark
+        td rank
+        td rank
+        td(mm="total_crs_ncp") 扣減
+        td AP1
+        td AP2
+        td AP3
+        td 級別
+        td (ABCDE)
+        td Rank
+        td (AB)
+        td Rank        
+        td (CD)
+        td Rank        
+        td (E)
+        td Rank        
+        td 學部
+        td Rank      
+
+      each book in books
+        tr
+          td= book.classno
+          td(align="center")= book.seat
+          td= book.c_name
+          td(align='right',class=`${book.classno}`,width=40)= book.mark1
+          td(align='center',width=40)
+          td(align='center',width=40)= book.ran1
+          td(align='right',class=`${book.classno}`,width=40)= book.mark2
+          td(align='center',width=40)
+          td(align='center',width=40)= book.ran2
+          td(align='right',class=`${book.classno}`,width=40)= book.mark3
+          td(align='center',width=40)
+          td(align='center',width=40)= book.ran3
+          td(align='right',class=`${book.classno}`,width=40)= book.mark
+          td(align='center',width=40)
+          td(align='center',width=40)= book.ran
+          td(align='right',width=40)= book.total_crs_ncp
+          td(align='right',width=20)= book.allpass1
+          td(align='right',width=20)= book.allpass2
+          td(align='right',width=20)= book.allpass3
+          -let cutGrade = (book.classno.indexOf('S')>-1 ? 3 : 2)          
+          td(align='right',width=40)= book.classno.substring(0,cutGrade)
+          td(align='right',class=`${book.classno.substring(0,cutGrade)}`,width=40)= book.mark  
+          td(align='center')  
+          -let F0= book.classno.indexOf('A')>0 || book.classno.indexOf('B')>0 
+          if F0
+            td(align='right',class=`AB${book.classno.substring(0,cutGrade)}`,width=40)= book.mark
+          else 
+            td(class="")
+          td(align='center')  
+          -let F1=  book.classno.indexOf('C',2)>1 || book.classno.indexOf('D')>0 
+          if F1
+            td(align='right',class=`CD${book.classno.substring(0,cutGrade)}`,width=40)= book.mark            
+          else
+            td(class="")
+          td(align='center')   
+          if book.classno.indexOf('E',2)>2
+            td(align='right',class=`E${book.classno.substring(0,cutGrade)}`,width=40)= book.mark                       
+          else
+            td(class="")
+          td(align='center')   
+          td(align='right',width=40)= book.mark             
+          td(align='center')
+  script(type="text/javascript").
+    var delbtnflag=false
+    function groupby(x){
+      let tbl="tableCT";
+      let table = document.getElementById(tbl);
+      let group=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+      let tempg=table.rows[1][0].innerHTML.substring(0,x);
+      let groupindex=0;
+      for (let i = 1; i<table.rows.length;  i++) {
+        let row = table.rows[i];
+        if(tempg!=table.rows[1][0].innerHTML.substring(0,x)){
+          group[groupindex]=i;
+          groupindex++ 
+          tempg=table.rows[i][0].innerHTML.substring(0,x);
+        }
+      }
+      group[groupindex]=table.rows.length;
+      for (let i = 1; i<table.rows.length;  i++) {
+        let row = table.rows[i];
+      }
+    }
+    const g_arr=['SC1','SC2','SC3','SG1','SG2','SG3','P1','P2','P3','P4','P5','P6'];
+    const ab_arr=['ABSC1','ABSC2','ABSC3','ABSG1','ABSG2','ABSG3','ABP1','ABP2','ABP3','ABP4','ABP5','ABP6'];
+    const cd_arr=['CDSC1','CDSC2','CDSC3','CDSG1','CDSG2','CDSG3','CDP1','CDP2','CDP3','CDP4','CDP5','CDP6'];        
+    const e_arr=['ESC1','ESC2','ESC3','EP1','EP2','EP3','EP4','EP5','EP6'];   
+    const allclass_arr=["SC1A","SC1B","SC1C","SC1D","SC1E","SC2A","SC2B","SC2C","SC2D","SC2E","SC3A","SC3B","SC3C","SC3D","SC3E",
+       "SG1A","SG1B","SG1C","SG1D","SG2A","SG2B","SG2C","SG2D","SG3A","SG3B","SG3C","SG3D",
+       "P1A","P1B","P1C","P1D","P2A","P2B","P2C","P2D","P3A","P3B","P3C","P3D","P4A","P4B",
+       "P4C","P4D","P5A","P5B","P5C","P5D","P6A","P6B","P6C","P6D"];    
+    function SortRank(g_arr,mindex,rindex){
+      let tbl="tableCT";
+      let table = document.getElementById(tbl);     
+      for(let gi=0;gi<g_arr.length;gi++){
+         let sc1m=new Array();
+         for (let i = 1; i<table.rows.length;  i++) {
+           let row = table.rows[i].childNodes;
+           if(row[mindex].className==g_arr[gi])
+              sc1m.push(Number(row[mindex].innerHTML));
+         }
+         sc1m.sort();
+         sc1m.reverse();
+         for (let i = 1; i<table.rows.length;  i++) {
+           let row = table.rows[i].childNodes;
+           if(row[mindex].className==g_arr[gi])
+           {
+              let nm=Number(row[mindex].innerHTML);
+              let rank=0;
+              for(let n=0;n<sc1m.length;n++)
+                if(nm==sc1m[n]) {rank=(n+1);break;}           
+              row[rindex].innerHTML=rank;
+           }           
+         }
+      }
+    }
+    function SortRankArr(mindex,rindex){
+      let tbl="tableCT";
+      let table = document.getElementById(tbl);     
+      for(let gi=0;gi<g_arr.length;gi++){
+        let sc1m=new Array();
+        for (let i = 1; i<table.rows.length;  i++) {
+          let row = table.rows[i].childNodes;
+          
+          sc1m.push(Number(row[mindex].innerHTML));
+        }
+        //let crow = table.rows[1].childNodes;
+        //for(let i=0;i<crow.length;i++)  console.log(i,        crow[i].innerHTML);        
+        sc1m.sort();
+        sc1m.reverse();
+        for (let i = 1; i<table.rows.length;  i++) {
+          let row = table.rows[i].childNodes;
+          let nm=Number(row[mindex].innerHTML);
+          let rank=0;
+          for(let n=0;n<sc1m.length;n++)
+            if(nm==sc1m[n]) {rank=(n+1);break;}
+          row[rindex].innerHTML=rank;
+        }
+      }
+    }    
+    $(document).ready(function(){
+      $('#prtbtn').click(function(){
+        var divid= document.getElementById('tableContent');
+        var popupWin = window.open('', '_blank', 'width=350,height=150,location=no,left=200px');
+        popupWin.document.open();
+        popupWin.document.write('<html><title>prt</title></head><body>');
+        popupWin.document.write('#{fn}');
+        popupWin.document.write(divid.innerHTML);
+        popupWin.print();
+        popupWin.document.close();
+      });
+      $('#exportbtn').click(function(){
+        var txt= document.getElementById('tableContent').innerHTML;
+        document.getElementById('CSVFrmPOSTVALUE').value = txt;
+        document.getElementById('CSVFrmPOST').submit();
+      });
+      $('#sortABCDEbtn').click(function(){ SortRank(g_arr,16,17); });
+      $('#sortABbtn').click(function(){    SortRank(ab_arr,18,19);});
+      $('#sortCDbtn').click(function(){    SortRank(cd_arr,20,21);});
+      $('#sortbtn').click(function(){
+          
+          SortRank(allclass_arr,3,4);
+          SortRank(allclass_arr,6,7);
+          SortRank(allclass_arr,9,10);
+          SortRank(allclass_arr,12,13);
+          SortRank(g_arr,20,21);
+          SortRank(ab_arr,22,23);        
+          SortRank(cd_arr,24,25);
+          SortRank(e_arr,26,27);         
+          SortRankArr(28,29);
+      });
+    });      

@@ -1,0 +1,121 @@
+﻿extends ./base.pug
+
+block content
+  script(src='/javascripts/cool/webtoolkit.aim.js')
+  h3= fn
+  .btn-group
+    if editable==true
+      a(href=`/internal/markup/studcourse/editgrademark/${course_d_id}?fn=${fn}&cno=${cno}`, class='btn btn-primary btn-sm')
+        i.glyphicon.glyphicon-edit
+        span  編輯
+      a(href=`/internal/markup/studcourse/reggrademark/${course_d_id}?fn=${fn}&cno=${cno}`, class='btn btn-primary btn-sm')
+        i.glyphicon.glyphicon-plus-sign
+        span  登記學生
+    a(href=`#`, class='btn btn-primary btn-sm')#expxls
+      i.glyphicon.glyphicon-download-alt
+      span  匯出Xls
+    a(href='#', class='btn btn-primary btn-sm')#prtbtn
+      i.glyphicon.glyphicon-print
+      span Print 
+    //a(href=`#`, class='btn btn-primary btn-sm')#expxls1
+      i.glyphicon.glyphicon-download-alt
+      span  第一段表格Xls
+      span(class="glyphicon") &#xe026;
+    //a(href=`#`, class='btn btn-primary btn-sm')#expxls2
+      i.glyphicon.glyphicon-download-alt
+      span  第二段表格Xls      
+      span(class="glyphicon") &#xe026;
+    //a(href=`#`, class='btn btn-primary btn-sm')#expxls3
+      i.glyphicon.glyphicon-download-alt
+      span  第三段表格Xls      
+      span(class="glyphicon") &#xe026;
+    a(href=`#`, class='btn btn-primary btn-sm')#btnGCrs_upd      
+      span  upXls      
+      span(class="glyphicon") &#xe027;
+
+
+  div#tableContent
+    table#tbl
+      tr
+        td(align='left',style="border: 1px solid grey;") STUD_REF
+        td(align='left',style="border: 1px solid grey;") CLASSNO
+        td(align='left',style="border: 1px solid grey;") SEAT
+        td(align='left',style="border: 1px solid grey;") C_NAME
+        td(align='left',style="border: 1px solid grey;") GC_NAME
+        td(align='left',style="border: 1px solid grey;") GRADE1
+        td(align='left',style="border: 1px solid grey;") GRADE2
+        td(align='left',style="border: 1px solid grey;") GRADE3
+          td(align='right',style="border: 1px solid grey;")
+            small sgcid        
+      each book in books
+        tr
+          td(align='left',style="border: 1px solid grey;")= book.stud_ref
+          td(align='left',style="border: 1px solid grey;")= book.classno
+          td(align='left',style="border: 1px solid grey;")= book.seat
+          td(align='left',style="border: 1px solid grey;")= book.c_name
+          td(align='left',style="border: 1px solid grey;")= book.GC_Name
+          td(align='left',style="border: 1px solid grey;")= book.grade1
+          td(align='left',style="border: 1px solid grey;")= book.grade2
+          td(align='left',style="border: 1px solid grey;")= book.grade3
+          td(align='right',style="border: 1px solid grey;font-size:5px")= book.sgcid
+
+  -var act_link="/internal/PublicAPI/ExpXls.php?charset=utf-8&filename="+fn+".xls"
+  -act_link="/internal/GridStafEval/expfilexls/gradecrs_1"
+  -act_link="#"
+  div= act_link
+  div#CSVFrm
+    div#CSVFrm_Link
+      form(id="CSVFrmPOST", method="post", action=act_link, target="xlsdownload")
+        input(type="hidden",  id="CSVFrmPOSTVALUE", name="CSVFrmPOSTNAME")
+
+  style.
+    td{border: 1px solid grey;}
+  include frm/gcrsupd     
+  include frm/showmsg     
+  script.
+    fn=`!{fn}`;
+    fn=`#{fn}`;
+    $(document).ready(function(){
+    var toPrint = document.getElementById('tableContent');
+    $('#prtbtn').click(function(){
+      var popupWin = window.open('', '_blank', 'width=350,height=150,location=no,left=200px');
+      popupWin.document.open();
+      popupWin.document.write('<html><title>prt</title></head><body>');
+      popupWin.document.write('#{fn}');
+      popupWin.document.write(toPrint.innerHTML);
+      popupWin.print();
+      popupWin.document.close();
+    });
+    $('#expxls').click(function(){exportData(0);});     //exportDataTbl('tbl');}
+    $('#expxls1').click(function(){exportData(1);});
+    $('#expxls2').click(function(){exportData(2);});
+    $('#expxls3').click(function(){exportData(3);});
+    $('#btnGCrs_upd').click(function(){ $( "#gcrsupdfrm" ).dialog("open");  });
+    });      
+    function exportData(id) {
+      var arr=new Array();      
+      if(id==0){
+      $('#tbl tr').each(function () {
+         var arritem=new Array();
+         $(this).find('td').each(function () {
+            var cellinnerHTML = $(this).text();
+            arritem.push(cellinnerHTML);
+          })
+          arr.push(arritem)
+      })}else{
+        let rows=document.getElementById("tbl").rows;
+        for(let i=0;i<rows.length;i++)
+        {
+          var arritem=new Array();
+          let tds=rows[i].childNodes;
+          for(let j=0;j<tds.length;j++){
+            if(j<5) arritem.push(tds[j].innerHTML);
+            if(j== (4+id) ) arritem.push(tds[j].innerHTML);
+          }
+          arr.push(arritem)
+        }
+      }
+      document.getElementById('CSVFrmPOSTVALUE').value = JSON.stringify(arr);
+      document.getElementById('CSVFrmPOST').action = "/internal/GridStafEval/expxlsfile/"+fn+"_"+id;
+      document.getElementById('CSVFrmPOST').submit();
+    }    

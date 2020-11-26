@@ -1,0 +1,123 @@
+extends ./baseEditStudCourse.pug
+mixin link(aotid,aot, idname, grade)
+  if aot==3 && aotid==2
+    td.M(id=idname,style='width:60px;text-align:center;')= grade
+  else if aotid==aot
+    td.M(id=idname,style='width:60px;text-align:center;')= grade
+  else 
+    td(style='width:60px;text-align:center;')= grade
+block content
+  style.
+    textarea
+    {
+    text-align:left;
+    display:block;
+    margin-top:0px;
+    margin-left:0px;
+    margin-right:0px;
+    margin-bottom:0px;
+    padding:0;
+    background-color:#EFFBFB;
+    }
+    input[type="text"]
+    {
+    width:50px;
+    display:block;
+    margin-bottom:1px;
+    background-color:yellow;
+    }
+    td.M
+    {
+    width:50px;
+    height:25px;
+    }  
+  div#tableContent
+    table#EDUTBL
+      tbody
+        tr.even
+          td 
+          td
+          td
+
+          td#MA_H(style='min-width:40px;text-align:center;border: 1px solid green;') 第一段
+          td#MB_H(style='min-width:40px;text-align:center;border: 1px solid green;') 第二段
+          td#MC_H(style='min-width:40px;text-align:center;border: 1px solid green;') 學年
+          td(colspan=7,style="text-align:center;")= `第${aot}段數據`
+        tr.even
+          td(class="ID_EDU_TD") ID
+          td(class="ID_EDU_TD") 座
+          td(class="ID_EDU_TD") 姓名
+          td 操行
+          td 操行
+          td 操行
+          td 遲到
+          td 缺席
+          td 曠課(節)
+          td 曠課(次)
+          td 違紀
+          td 褒獎
+          td 參考
+        each book in books
+          tr
+            td.ID_EDU_TD(style='max-width:5px;font-size:1em;')
+              p(style="overflow-y: scroll;height:1px;width: 1px; word-break: break-all;")= book.stud_ref
+            td= book.seat
+            td= book.c_name
+            +link(aot,1,`MA_conduct1_${book.stud_ref}`,book.conduct1)
+            +link(aot,2,`MB_conduct2_${book.stud_ref}`,book.conduct2)
+            +link(aot,3,`MC_conduct3_${book.stud_ref}`,book.conduct3)
+            case aot
+              when 1
+                td= book.wrg_later1
+                td= book.wrg_absence1
+                td= book.wrg_truancy_t1
+                td= book.wrg_truancy_s1
+                td= book.WrgMarks1
+                td= book.honor1
+                td= book.r_cond1
+              when 2
+                td= book.wrg_later2
+                td= book.wrg_absence2
+                td= book.wrg_truancy_t2
+                td= book.wrg_truancy_s2
+                td= book.WrgMarks2
+                td= book.honor2
+                td= book.r_cond2
+              when 3
+                td= book.wrg_later3
+                td= book.wrg_absence3
+                td= book.wrg_truancy_t3
+                td= book.wrg_truancy_s3
+                td= book.WrgMarks3
+                td= book.honor3
+                td= book.r_cond3
+              default
+                td .
+
+  script(language="javascript", src="/javascripts/cool/pycode.txt.js")
+  script.
+    var fn='!{fn}';
+    var PostUrl='condusave?aot=!{aot}&fn=!{fn}';    
+    var returnUrl='/internal/markup/conduct/!{course_d_id}?r=true&fn=!{fn}';
+    var CGIExpXlsUrl='/internal/PublicAPI/ExpXls.php?charset=utf-8&filename=pingyu_!{fn}.xls';
+    $('#returnUrlBtn').attr("href", returnUrl);
+    $('#CSVFrmPOST').attr("action", CGIExpXlsUrl);
+    $(document).ready(function(){
+      BindingPastFrm("PastFrm","PastFrmText","EDUTBL");
+      BindingCSVFrm('CSVFrm','CSVFrm_Link','tableContent','data.xls');
+      BindingFunctions("editbtn","savebtn","pastbtn","exportbtn",'readmodebtn');
+      BindingHead_EditMode(['MA_H','MB_H','MC_H']); //BindingFieldDefsIntegerFields({'MA':'INT','MB':'INT','MC':'INT','MG':'DEC'});
+      GenOriginalData();
+      $('#prtbtn').click(function(){
+            var toPrint = document.getElementById('tableContent');
+            var popupWin = window.open('', '_blank', 'width=350,height=150,location=no,left=200px');
+            popupWin.document.open();
+            popupWin.document.write('<html><title>'+"prt"+'</title><link rel="stylesheet" type="text/css" href="../print.css" /></head><body onload="window.print()">')
+            popupWin.document.write('<h4>'+fn+'</h4>');
+            popupWin.document.write(toPrint.innerHTML);
+            popupWin.document.write('</html>');
+            popupWin.document.close();
+      });
+    });  
+
+

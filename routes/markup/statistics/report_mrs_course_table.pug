@@ -1,0 +1,97 @@
+mixin list(colA,colB,colC,colD,colE)
+  tr
+    td(valign="top")
+      table  !{colA}
+    td(valign="top")
+      table  !{colB}
+    td(valign="top")
+      table  !{colC}
+    td(valign="top")
+      table  !{colD}
+    td(valign="top") 
+      table  !{colE}
+ 
+
+doctype html
+html
+  head
+    title MarkSi
+    meta(charset='utf-8')
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/main.css')
+  body
+    script.
+      function exportDataTbl() {
+        var txt= document.getElementById('tableContent').innerHTML;
+        document.getElementById('CSVFrmPOSTVALUE').value = txt;
+        document.getElementById('CSVFrmPOST').submit();        
+      }
+      function PrntDataTbl() {
+          var txt= document.getElementById('tableContent').innerHTML;
+          var popupWin = window.open('', '_blank', 'width=350,height=150,location=no,left=200px');
+          popupWin.document.open();
+          popupWin.document.write('<html><title>prt</title></head><body>');
+          popupWin.document.write(txt);
+          popupWin.print();
+          //popupWin.document.close();     
+      }      
+    style.
+      td{font-size:15px;}    
+    form(method="POST", enctype="multipart/form-data",action=`/internal/PublicAPI/ExpXls.php?charset=utf-8&filename=MRSCOURSENAME.xls`)#CSVFrmPOST
+      .form-group.hidden
+        input.form-control(type="text", name="CSVFrmPOSTNAME", id="CSVFrmPOSTVALUE")
+    h3= fn 
+    .btn-group
+      a(href='#', class='btn btn-primary btn-sm',onclick="exportDataTbl();")#exportbtn
+        i.glyphicon.glyphicon-download-alt
+        span  匯出Xls
+      a(href='#', class='btn btn-primary btn-sm',onclick="PrntDataTbl()")#prtbtn
+        i.glyphicon.glyphicon-print
+        span Print 
+      a(href='#', class='btn btn-primary btn-sm',onclick="window.history.back();")
+        i.glyphicon.glyphicon-backward
+        span  go back
+
+    div#tableContent
+      table(border=1)
+        tr
+          td A
+          td B
+          td C
+          td D
+          td E
+        -var lastc=''
+        -var lchar=''
+        -var trflag=0
+        -var colA=""
+        -var colB=''
+        -var colC=''
+        -var colD=''
+        -var colE=''
+        each book in books
+          -lchar=book.classno.trim().substring( book.classno.trim().length-1)
+          if lastc != lchar 
+            -trflag++
+            -lastc=lchar
+          if lchar=='A' && trflag > 2
+            +list(colA,colB,colC,colD,colE)
+            -colA=""
+            -colB=""
+            -colC=""
+            -colD=""
+            -colE=""
+            -trflag=0
+          
+          case lchar
+            when "A"
+              -colA+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2)+"<td>. "+book.c_section_total 
+            when "B" 
+              -colB+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2)+"<td>. "+book.c_section_total     
+            when "C"
+              -colC+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2) +"<td>. "+book.c_section_total                   
+            when "D" 
+              -colD+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2) +"<td>. "+book.c_section_total                  
+            when "E"
+              -colE+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2) +"<td>. "+book.c_section_total     
+        +list(colA,colB,colC,colD,colE)

@@ -1,0 +1,107 @@
+﻿extends ./base.pug
+
+block content
+  h3
+    span= fn
+    span (
+    span=  OpSect
+    span )  
+  .btn-group
+    if editable=='true'
+      a(href=`/internal/markup/studcourse/editcondu/${course_d_id}?fn=${fn}`, class='btn btn-primary btn-sm')
+        i.glyphicon.glyphicon-edit
+        span  編輯
+      a(href=`/internal/markup/studcourse/regcondu/${course_d_id}?fn=${fn}`, class='btn btn-primary btn-sm')
+        i.glyphicon.glyphicon-plus-sign
+        span  登記學生
+    a(href=`/internal/markup/markconductxls/${course_d_id}`, class='btn btn-primary btn-sm')#expxls
+      i.glyphicon.glyphicon-download
+      span  下載Xls
+    a(href=`#`, class='btn btn-primary btn-sm',onclick=`Openconductupdfrm(${esess.session_id},"${course_d_id}");`)#upxls
+      i.glyphicon.glyphicon-upload
+      span  上傳Xls
+    a(href='#', class='btn btn-primary btn-sm')#prtbtn
+      i.glyphicon.glyphicon-print
+      span Print 
+  div#tableContent
+    table#tbl
+      tr
+        td
+        td
+        td
+        td
+        td
+        td
+        td
+        td
+        td(colspan=5) 第一段
+        td(colspan=5) 第二段
+        td(colspan=5) 第三段
+      tr
+        td(align='left',style="border: 1px solid grey;") 座
+        td(align='left',style="border: 1px solid grey;") 姓名
+        td(align='left',style="border: 1px solid grey;") 操行1
+        td(align='left',style="border: 1px solid grey;") 操行2
+        td(align='left',style="border: 1px solid grey;") 操行3
+        td(align='left',style="border: 1px solid grey;") 參考1
+        td(align='left',style="border: 1px solid grey;") 參考2
+        td(align='left',style="border: 1px solid grey;") 參考3
+        td(align='left',style="border: 1px solid grey;") 遲
+        td(align='left',style="border: 1px solid grey;") 缺
+        td(align='left',style="border: 1px solid grey;") 曠      
+        td(align='left',style="border: 1px solid grey;") 違
+        td(align='left',style="border: 1px solid grey;") 褒
+        td(align='left',style="border: 1px solid grey;") 遲
+        td(align='left',style="border: 1px solid grey;") 缺
+        td(align='left',style="border: 1px solid grey;") 曠
+        td(align='left',style="border: 1px solid grey;") 違
+        td(align='left',style="border: 1px solid grey;") 褒
+        td(align='left',style="border: 1px solid grey;") 遲
+        td(align='left',style="border: 1px solid grey;") 缺
+        td(align='left',style="border: 1px solid grey;") 曠
+        td(align='left',style="border: 1px solid grey;") 違
+        td(align='left',style="border: 1px solid grey;") 褒
+      each book in books
+        tr
+          td(align='left',style="border: 1px solid grey;")= book.seat
+          td(align='left',style="border: 1px solid grey;")= book.c_name
+          td(align='left',style="border: 1px solid grey;")= book.conduct1
+          td(align='left',style="border: 1px solid grey;")= book.conduct2
+          td(align='left',style="border: 1px solid grey;")= book.conduct3
+          td(align='left',style="border: 1px solid grey;")= book.r_cond1
+          td(align='left',style="border: 1px solid grey;")= book.r_cond2
+          td(align='left',style="border: 1px solid grey;")= book.r_cond3
+          td(align='left',style="border: 1px solid grey;") #{book.wrg_later1}<td>#{book.wrg_absence1}<td>#{book.wrg_truancy_s1}節#{book.wrg_truancy_t1}次<td>#{book.WrgMarks1}印<td>#{book.honor1}印 附:#{book.addi_honor1}
+          td(align='left',style="border: 1px solid grey;") #{book.wrg_later2}<td>#{book.wrg_absence2}<td>#{book.wrg_truancy_s2}節#{book.wrg_truancy_t2}次<td>#{book.WrgMarks2}印<td>#{book.honor2}印 附:#{book.addi_honor2}
+          td(align='left',style="border: 1px solid grey;") #{book.wrg_later3}<td>#{book.wrg_absence3}<td>#{book.wrg_truancy_s3}節#{book.wrg_truancy_t3}次<td>#{book.WrgMarks3}印<td>#{book.honor3}印 附:#{book.addi_honor3}
+  -var act_link="/internal/PublicAPI/ExpXls.php?charset=utf-8&filename="+fn+".xls"
+  div#CSVFrm
+    div#CSVFrm_Link
+      form(id="CSVFrmPOST", method="post", action=act_link, target="xlsdownload")
+        input(type="hidden",  id="CSVFrmPOSTVALUE", name="CSVFrmPOSTNAME")
+  include frm/conductupd   
+  script(src='/javascripts/cool/webtoolkit.aim.js')  
+    
+  div(title="Show Msg",style="display:none")#ShowMsg
+    pre#ShowMsgTxt  
+
+  style.
+    div.container{ margin:0px; }
+    table{width:120%;}
+    td{border: 1px solid grey; margin-left: 10px; margin-right: 10px;padding-left: 10px; padding-right: 10px;}
+  script.
+    function ShowMsg(x){document.getElementById('ShowMsgTxt').innerHTML=x;$( "#ShowMsg" ).dialog("open"); }  
+    $(document).ready(function(){
+      $("#ShowMsg").dialog( { autoOpen: false, });
+      var toPrint = document.getElementById('tableContent');
+      $('#prtbtn').click(function(){
+        var popupWin = window.open('', '_blank', 'width=350,height=150,location=no,left=200px');
+        popupWin.document.open();
+        popupWin.document.write('<html><title>prt</title></head><body>');
+        popupWin.document.write('#{fn}');
+        popupWin.document.write(toPrint.innerHTML);
+        popupWin.print();
+        popupWin.document.close();
+      });
+      $('#expxls').click(function(){ });
+    });      

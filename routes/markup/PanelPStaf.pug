@@ -1,0 +1,259 @@
+//-- Markup System ..
+
+extends ./base.pug
+block content
+  mixin accor_li(link, itemName,ico,btnid)
+    tr
+      td(width=200,style='color:white;background:black')
+        a(href=link,id=btnid) 
+          img(src=`/images/markicon/${ico}`)
+          span(style='color:white;background:black')= itemName        
+          //span(class="glyphicon") &#xe026;
+          //span(class="glyphicon") &#xe027;
+  mixin accor_li0(link,dlink,itemName,ico,btnid)
+    tr
+      td(width=200,style='color:white;background:black')
+        img(src=`/images/markicon/${ico}`)
+        a(href=link,id=btnid) 
+          span(style='color:white;background:black')= itemName        
+        a(href=dlink)           
+          span(class="glyphicon",style='color:white;background:black') &#xe026;
+        a(href='#',id=`${btnid}Upd`)             
+          span(class="glyphicon",style='color:white;background:black') &#xe027;
+  mixin accor_li1(link, itemName, ico, btnid)
+    tr
+      td(width=200,style='color:white;background:black')
+        img(src=`/images/markicon/${ico}`)
+        a(href=link,id=btnid) 
+          span(style='color:white;background:black')= itemName        
+        //a(href=link)           
+          span(class="glyphicon",style='color:white;background:black') &#xe026;
+        a(href='#',id=`${btnid}_upd`) 
+          span(class="glyphicon",style='color:white;background:black') &#xe027;          
+  script(src='/javascripts/cool/webtoolkit.aim.js')
+  style.
+    div.container{ margin:0px; }
+
+  .row
+    .col-lg-2
+      div#accordion
+        div
+          h3
+            a(href='#') 成績系統 
+          table
+            +accor_li1("#","音藝Grade分數","2Programs.ico","btnGCrs")
+            //+accor_li1("/internal/dashboard/sharefiles/mrsMarkXls","成績表格","2Programs.ico","btnCrs")
+            //if euser.classno
+              +accor_li0(`/internal/markup/pingyu/${euser.classno}?r=true&`,`/internal/markup/markcommentxls/${euser.classno}`,`${euser.classno}評語`,"2Programs.ico","btnComme")
+              +accor_li0(`/internal/markup/conduct/${euser.classno}?r=true&`,`/internal/markup/markconductxls/${euser.classno}`,`${euser.classno}操行`,"2Programs.ico","btnCondu")
+              //+accor_li(`/internal/markup/grademark/${euser.classno}?r=true&fn=${euser.classno}_grademark`,`${euser.classno}等級課程`,"2Programs.ico","btnCrsTJ")
+              +accor_li(`/internal/markup/markstatisxls/${euser.classno}?term=1`,`${euser.classno}第1段總表`,"2Programs.ico","btnCrsTJ1")
+              +accor_li(`/internal/markup/markstatisxls/${euser.classno}?term=2`,`${euser.classno}第2段總表`,"2Programs.ico","btnCrsTJ2")
+              +accor_li(`/internal/markup/markstatisxls/${euser.classno}?term=3`,`${euser.classno}第3段總表`,"2Programs.ico","btnCrsTJ3")
+              +accor_li(`/internal/markup/markstatisxls/${euser.classno}`,`${euser.classno}學年總表`,"2Programs.ico","btnCrsTJ")
+              //http://d8.mbc.edu.mo/internal/markup/marksummaryxls/P1A?stafref=2002024&term=1
+              //http://d8.mbc.edu.mo/internal/markup/markconductxls/P1A
+              //http://d8.mbc.edu.mo/internal/markup/markcommentxls/P1A
+              //+accor_li(`#`,`${euser.classno}學年總表`,"2Programs.ico","btnCrs")
+              //+accor_li(`#`,`${euser.classno}學段成績單`,"2Programs.ico","btnCrs")              
+              //+accor_li(`#`,`${euser.classno}成績表`,"2Programs.ico","btnCrs")              
+            +accor_li("#","關於","fat.ico","btnInfo")
+      ul(class="nav nav-pills nav-stacked")
+        //if euser.classno 
+          //li(class="dropdown")
+            a(class="dropdown-toggle", data-toggle="dropdown", href="#") 資料輸入
+              span( class="caret")
+            ul(class="dropdown-menu", id="_mnu")
+              li
+                a(href=`/internal/markup/pingyu/${euser.classno}?r=true&`) 
+                  span=  `${euser.classno}評語`
+              li    
+                a(href=`/internal/markup/conduct/${euser.classno}?r=true&`)
+                  span=  `${euser.classno}操行`      
+              li    
+                a(href=`/internal/markup/grademark/${euser.classno}?r=true&fn=${euser.classno}_grademark`)
+                  span=  `${euser.classno}grademark`                        
+          li(class="dropdown")
+            a(class="dropdown-toggle", data-toggle="dropdown", href="#") 成績表
+              span( class="caret")  
+            ul(class="dropdown-menu", id="_mnu0")   
+              li
+                a(href=`/internal/markup/InputMarkNoticParam`) 打印段成績通知單
+              if profile.id=="2002024" || profile.id=="1989002" || profile.id=="2006011"  
+                li             
+                  a(href=`/internal/markup/InputMarkReportParam`) 打印段成績
+    .col-lg-8
+      div(align="right")
+        iframe(src="https://www.dsej.gov.mo/~webdsej/www/tvshow/ppt/weather-pic-dsej.php", height="30", width="400", frameborder=0, scrolling="no", marginheight="0", marginwidth="0", allowtransparency="true")
+      table
+        tr 
+          td 當前控制學段為
+          if euser.spk == '1'
+            td= esess.allowOpSect
+            td= esess.allowOpSectForStatement
+          else 
+            td= esess.p_allowOpSect
+            td= esess.p_allowOpSectForStatement
+
+      div(title="Info Dialog",style="display:none")#InfoDialog
+        p 用戶設定
+        table#UserSetting
+          tr
+            td ID
+            td USERNAME
+            td ROLE
+            td STAF_REF
+            td CLASS
+            td SPK
+          tr
+            td= euser.userID
+            td= euser.userName
+            td= euser.roleID
+            td= euser.staf_ref
+            td= euser.classno
+            td= euser.spk
+  
+        p 學校設定
+        table#SessSetting
+          tr
+            td ID
+            td SESSION
+            td SESS
+            td OpSe
+            td OpSt
+            td POpSe
+            td POpSt
+            td Date1
+            td Date2
+            td Date3
+          tr
+            td= esess.session_id
+            td= esess.session
+            td= esess.session_desc
+            td= esess.allowOpSect
+            td= esess.allowOpSectForStatement
+            td= esess.p_allowOpSect
+            td= esess.p_allowOpSectForStatement
+            td= esess.date1
+            td= esess.date2
+            td= esess.date3
+        P .                  
+        -var fff= profile.id == '2002024'  
+        if fff 
+          P Administrator
+          a(href=`/internal/markup/markstatisrawdatalistclass`, class='btn btn-primary btn-sm')
+            i.glyphicon.glyphicon-edit
+                    span 檢視listclass
+          a(href=`/internal/markup/statisticsengtotal`, class='btn btn-primary btn-sm')
+            i.glyphicon.glyphicon-edit
+                    span 中英數總表
+          a(href=`/internal/markup/statisticsmarktotal`, class='btn btn-primary btn-sm')
+            i.glyphicon.glyphicon-edit
+                    span 總表名次表    
+          a(href=`/internal/markup/mark_report_mrs_course_table?c=S&orderby=classno,tab`, class='btn btn-primary btn-sm')
+            i.glyphicon.glyphicon-edit
+                    span 課程表S    
+          a(href=`/internal/markup/mark_report_mrs_course_table?c=P&orderby=classno,tab`, class='btn btn-primary btn-sm')
+            i.glyphicon.glyphicon-edit
+                    span 課程表P    
+          a(href=`/internal/markup/mark_report_mrs_course_list?r=S&orderby=classno,tab`, class='btn btn-primary btn-sm')
+            i.glyphicon.glyphicon-edit
+                    span 課程列   
+
+      if ecourse
+        p 課程
+        table#ecourses
+          tr
+            td cdid
+            td classno
+            td courseName
+            td view
+            td downlad
+                    
+          each c in ecourse
+            tr
+              td 
+                a(href=`/internal/markup/studcourse/${c.course_d_id}?r=true&fn=${c.classno}${c.courseName}`, style="color: black;")
+                   h4(class="bg-success")= (c.course_d_id  )
+              td= c.classno
+              td= c.courseName
+              td
+                a(href=`/internal/markup/studcourse/${c.course_d_id}?r=true&fn=${c.classno}${c.courseName}`, class='btn btn-primary btn-sm')
+                  i.glyphicon.glyphicon-edit
+                  span 檢視
+              td
+                a(href=`/internal/markup/markcrsxls/${c.course_d_id}?r=true&fn=${c.classno}${c.courseName}`, class='btn btn-primary btn-sm')
+                  i.glyphicon.glyphicon-edit
+                  span 下載                  
+                
+
+                //a(href=`/internal/markup/markcrsxls/${c.course_d_id}?r=true&fn=${c.classno}${c.courseName}`, class='btn btn-primary btn-sm')
+                  i.glyphicon.glyphicon-edit
+                  span 下載                  
+                         
+  style.
+    td{border: 1px solid grey; margin-left: 10px; margin-right: 10px;padding-left: 10px; padding-right: 10px;}
+  footer
+    p( class="float-right")
+      a( href="#") Back to top
+    p 澳門浸信中學 &nbsp;版權所有&nbsp;Copyright&nbsp;&#169; 1999 Macau Baptist College.All Rights Reserved
+
+  - classli=  ["P1A","P1B","P1C","P1D","P2A","P2B","P2C","P3A","P3B","P3C","P4A","P4B","P4C","P5A","P5B","P5C","P6A","P6B","P6C",]                 
+  div(title="Info Dialog",style="display:none")#ClassDialog
+    form(action="/internal/markup/grademarkSelect")
+      div
+        input#sDate(type="date", name="sDate", value=`${sDate}`)
+      div 
+        input#eDate(type="date", name="eDate", value=`${eDate}`)
+      div
+        Select#ClassDialogItem(name="classno")
+          each classN in classli
+            Option(value=classN)= classN
+      div
+        input(type="submit",value="submit")
+
+  div(title="Show Msg",style="display:none")#ShowMsg
+    pre#ShowMsgTxt  
+
+  include frm/crsupd 
+  include frm/gcrsupd 
+  include frm/commentupd 
+  include frm/conductupd 
+  script.   
+    function ShowMsg(x)
+    {
+      document.getElementById('ShowMsgTxt').innerHTML=x;
+      $( "#ShowMsg" ).dialog("open");   
+      // $("#ShowMsg").dialog( { autoOpen: false, });   
+    }
+    $(document).ready(function(){
+      $("#accordion").accordion({ header: "h3" });
+      $("#ShowMsg").dialog( { autoOpen: false, });
+      $("#InfoDialog").dialog( {
+        autoOpen: false,
+        height: 400,
+        width:900,
+        buttons: [
+          {
+            text: "close",
+            icon: "ui-icon-heart",
+            click: function() { $( this ).dialog( "close" ); }
+          }
+        ]
+      });     
+      $('#btnInfo').click(function(){
+        $( "#InfoDialog" ).css("background", "black");
+        $( "#InfoDialog" ).css("color", "white");
+        $( "#InfoDialog" ).dialog("open");  
+      });
+      $('#btnCrs_upd').click(function(){ $( "#crsupdfrm" ).dialog("open");  });
+      $('#btnGCrs_upd').click(function(){ $( "#gcrsupdfrm" ).dialog("open");  });
+      $('#btnCommeUpd').click(function(){ $( "#commentupdfrm" ).dialog("open");  });
+      $('#btnConduUpd').click(function(){ $( "#conductupdfrm" ).dialog("open");  });
+      $("#ClassDialog").dialog({
+        autoOpen: false,
+      });
+      $('#btnGCrs').click(function(){
+        $("#ClassDialog").dialog("open");
+      });      
+    });

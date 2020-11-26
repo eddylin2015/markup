@@ -1,0 +1,70 @@
+﻿extends ./baseEditStudCourse.pug
+
+mixin link(aotid,aot, idname, grade)
+  if aotid==aot
+    td.M(id=idname,style='width:80px;text-align:right;')= grade
+  else 
+    td(style='width:80px;text-align:right;')= grade
+
+block content
+
+  div#tableContent
+    table#EDUTBL
+      tbody
+        tr
+          td ID
+          td _NO_
+          td _姓名_
+          td#MA_H _平時分1_
+          td#MB_H _考試分1_
+          td#MC_H _平時分2_
+          td#MD_H _考試分2_
+          td#ME_H _平時分3_
+          td#MF_H _考試分3_
+          td#MG_H _補考_
+        each book in books
+          tr
+            td.ID_EDU_TD= book.stud_c_id
+            td= book.seat
+            td= book.c_name
+            +link(1,aot,`MA_t1_${book.stud_c_id}`, book.t1)
+            +link(1,aot,`MB_e1_${book.stud_c_id}`, book.e1)
+            +link(2,aot,`MC_t2_${book.stud_c_id}`, book.t2)
+            +link(2,aot,`MD_e2_${book.stud_c_id}`, book.e2)
+            +link(3,aot,`ME_t3_${book.stud_c_id}`, book.t3)
+            +link(3,aot,`MF_e3_${book.stud_c_id}`, book.e3)
+            +link(3,aot,`MG_pk_${book.stud_c_id}`, book.pk)
+  script.
+    var fn='!{fn}';
+    var PostUrl='marksave.php?aot=!{aot}';    
+    var returnUrl='/internal/markup/studcourse/!{course_d_id}?r=true&fn=!{fn}';
+    var CGIExpXlsUrl='/internal/PublicAPI/ExpXls.php?charset=utf-8&filename=mark_!{fn}.xls';
+    $('#returnUrlBtn').attr("href", returnUrl);
+    $('#CSVFrmPOST').attr("action", CGIExpXlsUrl);
+
+    $(document).ready(function(){
+    	BindingPastFrm("PastFrm","PastFrmText","EDUTBL");
+    	BindingCSVFrm('CSVFrm','CSVFrm_Link','tableContent','data.xls');
+    	BindingFunctions("editbtn","savebtn","pastbtn","exportbtn",'readmodebtn');
+    	BindingHead_EditMode(['MA_H','MB_H','MC_H','MD_H','ME_H','MF_H','MG_H']);
+    	BindingFieldDefsIntegerFields({'MA':'INT','MB':'INT','MC':'INT','MD':'INT',
+    					'ME':'INT','MF':'INT','MG':'DEC'});
+    	GenOriginalData();
+    	
+    	$('#prtbtn').click(function(){
+            var toPrint = document.getElementById('tableContent');
+            var popupWin = window.open('', '_blank', 'width=350,height=150,location=no,left=200px');
+            popupWin.document.open();
+            popupWin.document.write('<html><title>'+"prt"+'</title><link rel="stylesheet" type="text/css" href="../print.css" /></head><body onload="window.print()">')
+    		    popupWin.document.write('<h4>'+fn+'</h4>');
+            popupWin.document.write(toPrint.innerHTML);
+            popupWin.document.write('</html>');
+            popupWin.document.close();
+    	});
+    });  
+   
+
+
+
+
+  

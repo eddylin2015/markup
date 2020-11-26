@@ -1,0 +1,320 @@
+mixin inputStatus(n,v)
+  div(class="ui-widget")
+    select(id=(n+"cbx"),name=n)
+      option(value="") Select one...
+      option(value="很好",selected=v=="很好"?true:false) 很好
+      option(value="好",selected=v=="好"?true:false) 好
+      option(value="一般",selected=v=="一般"?true:false) 一般
+      option(value="差",selected=v=="差"?true:false) 差
+      option(value="很差",selected=v=="很差"?true:false) 很差
+mixin inputSectNo(n,v)
+  div(class="ui-widget")
+    select(id=(n+"cbx"),name=n)
+      option(value="") Select one...
+      option(value="一",selected=v=="一"?true:false) 1 08:35
+      option(value="二",selected=v=="二"?true:false) 2 09:25
+      option(value="三",selected=v=="三"?true:false) 3 10:10
+      option(value="四",selected=v=="四"?true:false) 4 11:00
+      option(value="五",selected=v=="五"?true:false) 5 11:45
+      option(value="六",selected=v=="六"?true:false) 6 14:15
+      option(value="七",selected=v=="七"?true:false) 7 15:00
+      option(value="八",selected=v=="八"?true:false) 8 15:50
+mixin inputClassNo(n,v)
+  div(class="ui-widget")
+    select(id=(n+"cbx"),name=n)
+      option(value="") Select one...
+      option(value="初一信",selected=v=="初一信"?true:false) SG1A 初一信
+      option(value="初一望",selected=v=="初一望"?true:false) SG1B 初一望
+      option(value="初一愛",selected=v=="初一愛"?true:false) SG1C 初一愛
+      option(value="初一善",selected=v=="初一善"?true:false) SG1D 初一善
+      option(value="初二信",selected=v=="初二信"?true:false) SG2A 初二信
+      option(value="初二望",selected=v=="初二望"?true:false) SG2B 初二望
+      option(value="初二愛",selected=v=="初二愛"?true:false) SG2C 初二愛
+      option(value="初二善",selected=v=="初二善"?true:false) SG2D 初二善
+      option(value="初三信",selected=v=="初三信"?true:false) SG3A 初三信
+      option(value="初三望",selected=v=="初三望"?true:false) SG3B 初三望
+      option(value="初三愛",selected=v=="初三愛"?true:false) SG3C 初三愛
+      option(value="初三善",selected=v=="初三善"?true:false) SG3D 初三善
+      option(value="高一信",selected=v=="高一信"?true:false) SC1A 高一信
+      option(value="高一望",selected=v=="高一望"?true:false) SC1B 高一望
+      option(value="高一愛",selected=v=="高一愛"?true:false) SC1C 高一愛
+      option(value="高一善",selected=v=="高一善"?true:false) SC1D 高一善
+      option(value="高一樂",selected=v=="高一樂"?true:false) SC1E 高一樂
+      option(value="高二信",selected=v=="高二信"?true:false) SC2A 高二信
+      option(value="高二望",selected=v=="高二望"?true:false) SC2B 高二望
+      option(value="高二愛",selected=v=="高二愛"?true:false) SC2C 高二愛
+      option(value="高二善",selected=v=="高二善"?true:false) SC2D 高二善
+      option(value="高二樂",selected=v=="高二樂"?true:false) SC2E 高二樂
+      option(value="高三信",selected=v=="高三信"?true:false) SC3A 高三信
+      option(value="高三望",selected=v=="高三望"?true:false) SC3B 高三望
+      option(value="高三愛",selected=v=="高三愛"?true:false) SC3C 高三愛
+      option(value="高三善",selected=v=="高三善"?true:false) SC3D 高三善
+      option(value="高三樂",selected=v=="高三樂"?true:false) SC3E 高三樂
+
+mixin inputDate(n,v)
+  input(name=n,value=FDate(v),placeholder="YYYY/MM/DD", pattern="([0-9]{4}/[0-9]{2}/[0-9]{2})|()", title="Enter a date in this format YYYY/MM/DD")
+mixin inputAREAT1(n,v)
+  div(class="ui-widget")
+    select(id=(n+"cbx"),name=n)
+      option(value="") Select one...
+      option(value="M",selected=v=="M"?true:false) 澳門
+      option(value="T",selected=v=="T"?true:false) 氹仔
+      option(value="C",selected=v=="C"?true:false) 路環
+      option(value="L",selected=v=="L"?true:false) 內地(填寫郵編) 
+      option(value="O",selected=v=="O"?true:false) 其他
+mixin inputAREAT2(n,v)
+  div(class="ui-widget")
+    select(id=(n+"cbx"),name=n)
+      option(value="") Select one...
+      option(value="M",selected=v=="M"?true:false) 澳門
+      option(value="T",selected=v=="T"?true:false) 氹仔
+      option(value="C",selected=v=="C"?true:false) 路環
+      option(value="ZH",selected=v=="ZH"?true:false) 珠海 
+      option(value="ZS",selected=v=="ZS"?true:false) 中山 
+      option(value="O",selected=v=="O"?true:false) 其他
+mixin inputPlace(n,v)
+  div(class="ui-widget")
+    select(id=(n+"cbx"),name=n)
+      option(value="") Select one...
+      option(value=0,selected=v==0?true:false) 空 Vazio
+      option(value=1,selected=v==1?true:false) 澳門 MACAU
+      option(value=2,selected=v==2?true:false) 內地 CHINA CONTINENTAL
+      option(value=3,selected=v==3?true:false) 葡國 PORTUGAL
+      option(value=4,selected=v==4?true:false) 香港 HONG KONG
+      option(value=5,selected=v==5?true:false) 美國 ESTADOS UNIDOS
+      option(value=6,selected=v==6?true:false) 緬甸 BIRMANIA
+      option(value=7,selected=v==7?true:false) 菲律賓 FILIPINA
+      option(value=8,selected=v==8?true:false) 加拿大 CANADA
+      option(value=9,selected=v==9?true:false) 泰國 TAILANDIA
+      option(value=10,selected=v==10?true:false) 巴西 BRASIL
+      option(value=11,selected=v==11?true:false) 哥斯達黎加 COSTA RICA
+      option(value=12,selected=v==12?true:false) 澳洲 AUSTRALIA
+      option(value=13,selected=v==13?true:false) 委內瑞拉 VENEZUELA
+      option(value=14,selected=v==14?true:false) 莫桑比克 MOCAMBIQUE
+      option(value=15,selected=v==15?true:false) 馬達加斯加 MADAGASCAR
+      option(value=16,selected=v==16?true:false) 英國 INGLATERRA
+      option(value=17,selected=v==17?true:false) 秘魯 PERU
+      option(value=18,selected=v==18?true:false) 韓國 COREIA DO SUL
+      option(value=19,selected=v==19?true:false) 印尼 INDONESIA
+      option(value=20,selected=v==20?true:false) 安哥拉 ANGOLA
+      option(value=21,selected=v==21?true:false) 馬來西亞 MALASIA
+      option(value=22,selected=v==22?true:false) 日本 JAPAO
+      option(value=23,selected=v==23?true:false) 愛爾蘭 IRLANDA
+      option(value=24,selected=v==24?true:false) 印度 INDIA
+      option(value=25,selected=v==25?true:false) 法國 FRANCA
+      option(value=26,selected=v==26?true:false) 新加坡 SINGAPURA
+      option(value=27,selected=v==27?true:false) 多明尼加 REPUBLICA DOMINICANA
+      option(value=28,selected=v==28?true:false) 多米尼克 DOMINICA
+      option(value=29,selected=v==29?true:false) 哥倫比亞 COLOMBIA
+      option(value=30,selected=v==30?true:false) 斯里蘭卡 SRI LANKA
+      option(value=31,selected=v==31?true:false) 巴拿馬 PANAMA
+      option(value=32,selected=v==32?true:false) 毛里求斯 MAURICIAS
+      option(value=33,selected=v==33?true:false) 尼加拉瓜 NICARAGUA
+      option(value=34,selected=v==34?true:false) 南非 AFRICA DO SUL
+      option(value=35,selected=v==35?true:false) 紐西蘭 NOVA ZELANDIA
+      option(value=36,selected=v==36?true:false) 東加王國 TONGA
+      option(value=37,selected=v==37?true:false) 厄瓜多爾 EQUADOR
+      option(value=38,selected=v==38?true:false) 危地馬拉 GUATEMALA
+      option(value=39,selected=v==39?true:false) 老撾 LAOS
+      option(value=40,selected=v==40?true:false) 洪都拉斯 HONDURAS
+      option(value=41,selected=v==41?true:false) 斐濟 FIJI
+      option(value=42,selected=v==42?true:false) 德國 ALEMANHA
+      option(value=43,selected=v==43?true:false) 坦桑尼亞 TANZANIA
+      option(value=44,selected=v==44?true:false) 柬埔寨 CAMBOJA
+      option(value=45,selected=v==45?true:false) 海上 NO MAR
+      option(value=46,selected=v==46?true:false) 利比里亞 LIBERIA
+      option(value=47,selected=v==47?true:false) 千里達 TRINDADE
+      option(value=48,selected=v==48?true:false) 西班牙 ESPANHA
+      option(value=49,selected=v==49?true:false) 伯利茲 BELIZE
+      option(value=50,selected=v==50?true:false) 阿根廷 ARGENTINA
+      option(value=51,selected=v==51?true:false) 玻利維亞 BOLIVIA
+      option(value=52,selected=v==52?true:false) 埃及 EGIPTO
+      option(value=53,selected=v==53?true:false) 荷蘭 HOLANDA
+      option(value=54,selected=v==54?true:false) 朝鮮 COREIA
+      option(value=55,selected=v==55?true:false) 越南 VIETNAME
+      option(value=56,selected=v==56?true:false) 意大利 ITALIA
+      option(value=57,selected=v==57?true:false) 薩爾瓦多 SALVADOR
+      option(value=58,selected=v==58?true:false) 俄羅斯 RUSSIA
+      option(value=59,selected=v==59?true:false) 新畿內亞 PAPUA NOVA GUINE
+      option(value=60,selected=v==60?true:false) 烏干達 UGANDA
+      option(value=61,selected=v==61?true:false) 墨西哥 MEXICO
+      option(value=62,selected=v==62?true:false) 東非 E. AFRICA
+      option(value=63,selected=v==63?true:false) 塞席爾 SEYCHEUES
+      option(value=64,selected=v==64?true:false) 伊朗 IRAN
+      option(value=65,selected=v==65?true:false) 中國臺灣 TAIWAN, CHINA
+      option(value=66,selected=v==66?true:false) 巴基斯坦 PAKISTAN
+      option(value=67,selected=v==67?true:false) 巴林 BAHRAIN
+      option(value=68,selected=v==68?true:false) 古巴 CUBA
+      option(value=69,selected=v==69?true:false) 瑞典 SWEDEN
+      option(value=70,selected=v==70?true:false) 馬耳他 MALTA
+      option(value=71,selected=v==71?true:false) 比利時 BELGICA
+      option(value=72,selected=v==72?true:false) 奧地利 Austria
+      option(value=73,selected=v==73?true:false) 東帝汶 Timor
+      option(value=74,selected=v==74?true:false) 幾內亞比紹 Guine Basseu
+      option(value=75,selected=v==75?true:false) 挪威 Noruega
+      option(value=76,selected=v==76?true:false) 聖露西亞 St. Lucia
+      option(value=77,selected=v==77?true:false) 丹麥 Dinamarca
+      option(value=78,selected=v==78?true:false) 烏拉圭 Uruguay
+      option(value=79,selected=v==79?true:false) 瑞士 Suica
+      option(value=80,selected=v==80?true:false) 波蘭 Polanda
+      option(value=81,selected=v==81?true:false) 格林納達 Grandola
+      option(value=82,selected=v==82?true:false) 南斯拉夫 Jugoslavia
+      option(value=83,selected=v==83?true:false) 智利 CHILE
+      option(value=84,selected=v==84?true:false) 突尼斯 Tis
+      option(value=85,selected=v==85?true:false) 諾魯/瑙魯 Nauru
+      option(value=96,selected=v==96?true:false) 佛得角 Cabo Verde
+      option(value=97,selected=v==97?true:false) 聖多美和林西比 S緌 Tom?e Principe
+      option(value=98,selected=v==98?true:false) 尼泊爾 Napel
+      option(value=99,selected=v==99?true:false) 匈牙利 HUNGRIA
+      option(value=100,selected=v==100?true:false) 牙買加 Jamaica
+      option(value=101,selected=v==101?true:false) 芬蘭 Finland
+      option(value=102,selected=v==102?true:false) 保加利亞 Bugarlia
+      option(value=103,selected=v==103?true:false) 土耳其 Turkia
+      option(value=104,selected=v==104?true:false) 尼日利亞 NIGERIA
+      option(value=105,selected=v==105?true:false) 阿拉伯聯合酋長國 Arabes Unidos (Estados dos Emirados)
+      option(value=106,selected=v==106?true:false) 多哥 Togo
+      option(value=107,selected=v==107?true:false) 羅馬尼亞 ROM冇IA
+      option(value=108,selected=v==108?true:false) 烏克蘭 Ucr滱ia
+      option(value=109,selected=v==109?true:false) 希臘 GREぢCIAぢ
+      option(value=110,selected=v==110?true:false) 亞美尼亞 REPUBLIC OF ARMENIA
+      option(value=111,selected=v==111?true:false) 杜拜 DUBAI
+      option(value=112,selected=v==112?true:false) 馬爾代夫 Maldivas
+      option(value=999,selected=v==999?true:false) 不詳 INCONHECIDO    
+mixin inputIDTYPE(n,ID_TYPE)      
+  select(id=`${n}cbx`,name=n)
+    option(value='',selected=   ID_TYPE==''?true:false) 空()Vazio
+    option(value='*',selected=  ID_TYPE=='*'?true:false) 空(*)NULO
+    option(value='ADN',selected=ID_TYPE=='ADN'?true:false) 澳門出生登記(ADN)
+    option(value='BIC',selected=ID_TYPE=='BIC'?true:false) 領事身份證(BIC)
+    option(value='BICHN',selected=ID_TYPE=='BICHN'?true:false) 中國居民身份證(BICHN)
+    option(value='BIE',selected=ID_TYPE=='BIE'?true:false) 非葡藉認別證(BIE)
+    option(value='BIN',selected=ID_TYPE=='BIN'?true:false) 葡藉認別證(BIN)
+    option(value='BIR',selected=ID_TYPE=='BIR'?true:false) 澳門居民身份證(BIR)
+    option(value='BIRNP',selected=ID_TYPE=='BIRNP'?true:false) 非永久性居民身份證(BIRNP)
+    option(value='BIRP',selected=ID_TYPE=='BIRP'?true:false) 永久性居民身份證(BIRP)
+    option(value='CEDUL',selected=ID_TYPE=='CEDUL'?true:false) 葡國中央登記(CEDUL)
+    option(value='CI',selected=ID_TYPE=='CI'?true:false) 簽證身份書(CI)
+    option(value='CIP',selected=ID_TYPE=='CIP'?true:false) 澳門身份證(CIP)
+    option(value='COB',selected=ID_TYPE=='COB'?true:false) 香港出生登記(COB)
+    option(value='CPAS',selected=ID_TYPE=='CPAS'?true:false) 中國護照(CPAS)
+    option(value='CPASS',selected=ID_TYPE=='CPASS'?true:false) 中國通行証(CPASS)
+    option(value='HKID',selected=ID_TYPE=='HKID'?true:false) 香港身份證(HKID)
+    option(value='HKPAS',selected=ID_TYPE=='HKPAS'?true:false) 香港特區護照(HKPAS)
+    option(value='HKREP',selected=ID_TYPE=='HKREP'?true:false) 回港証(HKREP)
+    option(value='PAS',selected=ID_TYPE=='PAS'?true:false) 外國護照(PAS)PASSPORTE
+    option(value='PPAS',selected=ID_TYPE=='PPAS'?true:false) 葡國護照(PPAS)PASSPORTE PORTUGUES
+    option(value='RECIB',selected=ID_TYPE=='RECIB'?true:false) 移民局收條(RECIB)RECIBO
+    option(value='TITNR',selected=ID_TYPE=='TITNR'?true:false) 非本地勞工身份咭(TITNR)
+    option(value='TPT',selected=ID_TYPE=='TPT'?true:false) 臨時逗留證(TPT)
+    option(value='TRP',selected=ID_TYPE=='TRP'?true:false) 永久居留證(TRP)
+    option(value='TRT',selected=ID_TYPE=='TRT'?true:false) 臨時居留證(TRT)
+    option(value='往來港澳通行証',selected=ID_TYPE=='往來港澳通行証'?true:false) 往來港澳通行証
+mixin inputNATION(n,NATION)     
+  select(id=`${n}cbx`,name=n)          
+    option(value='0',selected=NATION=='0'?true:false) 空 Vazio
+    option(value='1',selected=NATION=='1'?true:false) 葡國 PORTUGUESA
+    option(value='2',selected=NATION=='2'?true:false) 中國 CHINESA
+    option(value='3',selected=NATION=='3'?true:false) 英國 INGLESA
+    option(value='4',selected=NATION=='4'?true:false) 美國 ESTADOS UNIDOS
+    option(value='5',selected=NATION=='5'?true:false) 菲律賓 FILIPINA
+    option(value='6',selected=NATION=='6'?true:false) 加拿大 CANADA
+    option(value='7',selected=NATION=='7'?true:false) 緬甸 BIRMANIA
+    option(value='8',selected=NATION=='8'?true:false) 泰國 TAILANDIA
+    option(value='9',selected=NATION=='9'?true:false) 哥斯達黎加 COSTA RICA
+    option(value='10',selected=NATION=='10'?true:false) 東加王國 TONGA
+    option(value='11',selected=NATION=='11'?true:false) 委內瑞拉 VENEZUELA
+    option(value='12',selected=NATION=='12'?true:false) 澳洲 AUSTRALIA
+    option(value='13',selected=NATION=='13'?true:false) 日本 JAPAO
+    option(value='14',selected=NATION=='14'?true:false) 韓國 COREIA DO SUL
+    option(value='15',selected=NATION=='15'?true:false) 秘魯 PERU
+    option(value='16',selected=NATION=='16'?true:false) 印度 INDIA
+    option(value='17',selected=NATION=='17'?true:false) 洪都拉斯 HONDURAS
+    option(value='18',selected=NATION=='18'?true:false) 多明尼加共 REPUBLICA DOMINICANA
+    option(value='19',selected=NATION=='19'?true:false) 多米尼克 DOMINICA
+    option(value='20',selected=NATION=='20'?true:false) 馬來西亞 MALASIA
+    option(value='21',selected=NATION=='21'?true:false) 巴西 BRASIL
+    option(value='22',selected=NATION=='22'?true:false) 印尼 INDONESIA
+    option(value='23',selected=NATION=='23'?true:false) 馬達加斯加 MADAGASCAR
+    option(value='24',selected=NATION=='24'?true:false) 塞拉里昂 SERRA LEONA
+    option(value='25',selected=NATION=='25'?true:false) 紐西蘭 NOVA ZELANDIA
+    option(value='26',selected=NATION=='26'?true:false) 法國 FRANCA
+    option(value='27',selected=NATION=='27'?true:false) 斯里蘭卡 SRI LANKA
+    option(value='28',selected=NATION=='28'?true:false) 愛爾蘭 IRLANDA
+    option(value='29',selected=NATION=='29'?true:false) 厄瓜多爾 EQUADOR
+    option(value='30',selected=NATION=='30'?true:false) 伯利茲 BELIZE
+    option(value='31',selected=NATION=='31'?true:false) 德國 ALEMANHA
+    option(value='32',selected=NATION=='32'?true:false) 新加坡 SINGAPURA
+    option(value='33',selected=NATION=='33'?true:false) 巴拿馬 PANAMA
+    option(value='34',selected=NATION=='34'?true:false) 毛里求斯 MAURICIAS
+    option(value='35',selected=NATION=='35'?true:false) 尼加拉瓜 NICARAGUA
+    option(value='36',selected=NATION=='36'?true:false) 危地馬拉 GUATEMALA
+    option(value='37',selected=NATION=='37'?true:false) 西班牙 ESPANHA
+    option(value='38',selected=NATION=='38'?true:false) 坦桑尼亞 TANZANIA
+    option(value='39',selected=NATION=='39'?true:false) 莫桑比克 MOCAMBIQUE
+    option(value='40',selected=NATION=='40'?true:false) 斐濟 FIJI
+    option(value='41',selected=NATION=='41'?true:false) 朝鮮 COREIA
+    option(value='42',selected=NATION=='42'?true:false) 奧地利 AUSTRIA
+    option(value='43',selected=NATION=='43'?true:false) 阿根廷 ARGENTINA
+    option(value='44',selected=NATION=='44'?true:false) 南非 AFRICA DO SUL
+    option(value='45',selected=NATION=='45'?true:false) 玻利維亞 BOLIVIA
+    option(value='46',selected=NATION=='46'?true:false) 埃及 EGIPTO
+    option(value='47',selected=NATION=='47'?true:false) 挪威 NORUEGA
+    option(value='48',selected=NATION=='48'?true:false) 瑞士 SUICA
+    option(value='49',selected=NATION=='49'?true:false) 瑞典 SUECIA
+    option(value='50',selected=NATION=='50'?true:false) 巴布亞新畿 PAPUA NOVA GUINE
+    option(value='51',selected=NATION=='51'?true:false) 烏干達 UGANDA
+    option(value='52',selected=NATION=='52'?true:false) 墨西哥 MEXICO
+    option(value='53',selected=NATION=='53'?true:false) 意大利 ITALY
+    option(value='54',selected=NATION=='54'?true:false) 巴基斯坦 PAKISTAN
+    option(value='55',selected=NATION=='55'?true:false) 塞席爾 SEYCHEUES
+    option(value='56',selected=NATION=='56'?true:false) 古巴 CUBA
+    option(value='57',selected=NATION=='57'?true:false) 瑞典 SWEDEN
+    option(value='58',selected=NATION=='58'?true:false) 馬耳他 MALTA
+    option(value='59',selected=NATION=='59'?true:false) 比利時 BELGICA
+    option(value='60',selected=NATION=='60'?true:false) 越南 VIETNAM
+    option(value='61',selected=NATION=='61'?true:false) 奧地利 Austria
+    option(value='62',selected=NATION=='62'?true:false) 荷蘭 Holanda
+    option(value='63',selected=NATION=='63'?true:false) 聖露西亞 St. Lucia
+    option(value='64',selected=NATION=='64'?true:false) 丹麥 Dinamarca
+    option(value='65',selected=NATION=='65'?true:false) 柬埔寨 Camboja
+    option(value='66',selected=NATION=='66'?true:false) 千里達 Trindade
+    option(value='67',selected=NATION=='67'?true:false) 烏拉圭 Uraguay
+    option(value='68',selected=NATION=='68'?true:false) 波蘭 Polandesa
+    option(value='69',selected=NATION=='69'?true:false) 幾內亞比紹 Guine Basseu
+    option(value='70',selected=NATION=='70'?true:false) 安哥拉 Angolense
+    option(value='71',selected=NATION=='71'?true:false) 俄羅斯 Russo
+    option(value='72',selected=NATION=='72'?true:false) 南斯拉夫 Jugoslav
+    option(value='73',selected=NATION=='73'?true:false) 哥倫比亞 Columbia
+    option(value='74',selected=NATION=='74'?true:false) 智利 CHILE
+    option(value='75',selected=NATION=='75'?true:false) 匈牙利 Hungria
+    option(value='76',selected=NATION=='76'?true:false) 西薩摩亞 Samoa Ocidental
+    option(value='77',selected=NATION=='77'?true:false) 岡比亞 Gambia
+    option(value='78',selected=NATION=='78'?true:false) 諾魯/瑙魯 Nauru
+    option(value='79',selected=NATION=='79'?true:false) 聖多美和林西比 S緌 Tom?e Principe
+    option(value='80',selected=NATION=='80'?true:false) 基里巴斯 Kiribati
+    option(value='81',selected=NATION=='81'?true:false) 尼泊爾 Napel
+    option(value='82',selected=NATION=='82'?true:false) 牙買加 Jamaica
+    option(value='83',selected=NATION=='83'?true:false) 芬蘭 Finland
+    option(value='84',selected=NATION=='84'?true:false) 保加利亞 Bugarlia
+    option(value='85',selected=NATION=='85'?true:false) 土耳其 Turkia
+    option(value='86',selected=NATION=='86'?true:false) 尼日利亞 NIGERIA
+    option(value='87',selected=NATION=='87'?true:false) 阿拉伯聯合酋長國 Arabes Unidos (Estados dos Emirados)
+    option(value='88',selected=NATION=='88'?true:false) 多哥 Togo
+    option(value='89',selected=NATION=='89'?true:false) 羅馬尼亞 ROMENO
+    option(value='90',selected=NATION=='90'?true:false) 亞美尼亞 REPUBLIC OF ARMENIA
+    option(value='91',selected=NATION=='91'?true:false) 杜拜 DUBAI
+    option(value='92',selected=NATION=='92'?true:false) 馬爾代夫 Maldivas
+    option(value='93',selected=NATION=='93'?true:false) 希臘                 Hellenic                                
+    option(value='999',selected=NATION=='999'?true:false) 不詳 INCONHECIDO
+mixin inputSt_status(n,St_status)     
+  select(id=`${n}cbx`,name=n)      
+    option(value='0',selected=St_status==''?true:false) 空
+    option(value='1',selected=St_status=='1'?true:false) 新生
+    option(value='2',selected=St_status=='2'?true:false) 舊生
+    option(value='3',selected=St_status=='3'?true:false) 插班               
+    option(value='4',selected=St_status=='4'?true:false) 留班             
+    option(value='5',selected=St_status=='5'?true:false) 停學               
+    option(value='6',selected=St_status=='6'?true:false) 退學               
+    option(value='7',selected=St_status=='7'?true:false) 轉學               
+    option(value='8',selected=St_status=='8'?true:false) 畢業               
+    option(value='9',selected=St_status=='9'?true:false) 修業               

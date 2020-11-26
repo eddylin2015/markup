@@ -1,0 +1,107 @@
+﻿extends ./base.pug
+
+block content
+  h3
+   span= fn
+   span (
+   span=  OpSect
+   span )
+  .btn-group
+    if editable=='true'
+      a(href=`/internal/markup/studcourse/editpingyu/${course_d_id}?fn=${fn}&lno=0`, class='btn btn-primary btn-sm')
+        i.glyphicon.glyphicon-edit
+        span  編輯
+      //a(href=`/internal/markup/studcourse/editpingyu/${course_d_id}?fn=${fn}&lno=0`, class='btn btn-warning btn-sm')
+        i.glyphicon.glyphicon-edit
+        span  編輯(篩選Line:0)
+
+      a(href=`/internal/markup/studcourse/regpingyu/${course_d_id}?fn=${fn}`, class='btn btn-primary btn-sm')
+        i.glyphicon.glyphicon-plus-sign
+        span  登記學生
+    a(href=`/internal/markup/markcommentxls/${course_d_id}`, class='btn btn-primary btn-sm')#expxls
+      i.glyphicon.glyphicon-download
+      span 下載Xls
+    a(href=`#`, class='btn btn-primary btn-sm',onclick=`OpenCommentupdfrm(${esess.session_id},"${course_d_id}");`)#upxls
+      i.glyphicon.glyphicon-upload
+      span  上傳Xls      
+    a(href=`#`, class='btn btn-primary btn-sm')#export_py_code_btn
+      //i.glyphicon.glyphicon-upload
+      span  評語碼                  
+
+    a(href='#', class='btn btn-primary btn-sm')#prtbtn
+      i.glyphicon.glyphicon-print
+      span Print 
+  
+  div#tableContent
+    table#tbl
+      tr
+        td(align='left',style="border: 1px solid grey;") 座
+        td(align='left',style="border: 1px solid grey;") 姓名
+        td(align='left',style="border: 1px solid grey;min-width:250px") 評語1
+        td(align='left',style="border: 1px solid grey;min-width:250px") 評語2
+        td(align='left',style="border: 1px solid grey;min-width:250px") 評語3
+            
+      each book in books
+        tr
+          td(align='left',style="border: 1px solid grey;")= book.seat
+          td(align='left',style="border: 1px solid grey;")= book.c_name
+          td(align='left',style="border: 1px solid grey;min-width:250px")= book.py1
+          td(align='left',style="border: 1px solid grey;min-width:250px")= book.py2
+          td(align='left',style="border: 1px solid grey;min-width:250px")= book.py3
+  -var act_link="/internal/PublicAPI/ExpXls.php?charset=utf-8&filename="+fn+".xls"
+  div= act_link
+  div#CSVFrm
+    div#CSVFrm_Link
+      form(id="CSVFrmPOST", method="post", action=act_link, target="xlsdownload")
+        input(type="hidden",  id="CSVFrmPOSTVALUE", name="CSVFrmPOSTNAME")
+  include frm/commentupd     
+  script(src="/javascripts/cool/py-data-utf.js")
+  script(src="/javascripts/cool/pycode.txt.js")        
+  script(src='/javascripts/cool/webtoolkit.aim.js')    
+  style.
+    td{border: 1px solid grey; margin-left: 10px; margin-right: 10px;padding-left: 10px; padding-right: 10px;}
+  div(title="Show Msg",style="display:none")#ShowMsg
+    pre#ShowMsgTxt  
+  script.
+    function ShowMsg(x)
+    {
+      document.getElementById('ShowMsgTxt').innerHTML=x;
+      $( "#ShowMsg" ).dialog("open"); //$("#ShowMsg").dialog( { autoOpen: false, });   
+    }  
+    $(document).ready(function(){
+    $("#ShowMsg").dialog( { autoOpen: false, });
+    var toPrint = document.getElementById('tableContent');
+    $('#prtbtn').click(function(){
+      var popupWin = window.open('', '_blank', 'width=350,height=150,location=no,left=200px');
+      popupWin.document.open();
+      popupWin.document.write('<html><title>prt</title></head><body>');
+      popupWin.document.write('#{fn}');
+      popupWin.document.write(toPrint.innerHTML);
+      popupWin.print();
+      popupWin.document.close();
+    });
+    $('#expxls').click(function(){      
+      //exportDataTbl('tbl');
+    });
+    $('#export_py_code_btn').click(function(event){
+      let action_url="/internal/PublicAPI/ExpXls.php?charset=utf-8&filename=Comment_code.xls";
+      $('#CSVFrmPOST').attr("action",action_url);
+      filename="comment_code.csv";
+      Link_id='CSVFrm_Link';
+      var txt="<table><tr><td>";
+      for(let i=0;i<pingyu_txt_code.length;i++)
+      	txt+="<tr><td>"+pingyu_txt_code[i]+"</td></tr>";
+       excelhead='<HTML xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">\n<head><meta http-equiv="content-type" content="application/vndms-excel; charset=UTF-8"></head>\n<body>\n';
+       excelend='</body></html>';
+       txt=excelhead
+       +txt
+       +excelend;
+       var exportLink = document.createElement('a');
+       exportLink.setAttribute("download",filename);
+      document.getElementById('CSVFrmPOSTVALUE').value=txt;
+      document.getElementById('CSVFrmPOST').submit();
+      exportLink.appendChild(document.createTextNode(filename));
+      document.getElementById(Link_id).appendChild(exportLink);
+      $('#CSVFrmPOST').attr("action","");
+    });
+    });      

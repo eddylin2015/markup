@@ -1,0 +1,166 @@
+﻿html
+  head
+    title= classno + "_" + term +"_term_mark_report"
+    meta(charset='utf-8')
+    script(src='/javascripts/jquery.min.js')
+    script(src='/mk/js/mfmt_term_docprt_s.js')   
+    link(rel='stylesheet', href='/mk/css/mfmt_term.1.css')
+  body
+    -var cnt=0
+    each element in books
+      -cnt++
+      table(class="studinfotbl_css")
+        tr
+          td(style="width:14.5cm;border:0;margin:0",colspan=9)
+            img(class="header",style="width:6cm;",src="/png/mbc_h-png.png")
+            span &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            span(style="font-weight: bold;font-size:20px;") 成  績  通  知  單
+      table(style="border-collapse:collapse;")
+        tr
+          td(class="yt",  style="width:0.9cm;") 學年
+          td(class="yt0", style="width:3.3cm;") !{session}  第 !{term} 段
+          td(class="yt",  style="width:1.6cm;") 發出日期
+          td(class="yt0", style="width:2.0cm;") !{pdate}
+          td(class="yt",  style="width:0.9cm;") 班級
+          td(class="yt0", style="width:1.1cm;")
+            script.
+              docclassn('!{element.curr_class}')
+          td(class="yt" , style="width:2.0cm;") 教青局編號
+          td(class="yt0", style="width:2.0cm;")= element.dsej_ref
+        tr
+          td( class="yt",  style="width:0.9cm;") 姓名
+          td( class="yt0", colspan=3)
+            span !{element.c_name+"("+ element.e_name+ ")"}
+          td(class="yt",style="width:0.9cm;") 學號
+          td(class="yt0", style="width:1.0cm;")= element.curr_seat
+          td(class="yt",  style="width:2.0cm;") 校內編號
+          td(class="yt0", style="width:2.0cm;")= element.stud_ref
+        table(class="mk_term_tbl_css")
+          tr
+            td(class="tablenoneline")
+              table(class="mktbl_css")#mark_1
+                tr
+                  td(class="music_course_title_td") 科目
+                  td(class="music_course_term_sub_td") 平時
+                  td(class="music_course_term_sub_td") 考試
+                  td(class="music_course_term_sub_td1") 成績
+                
+                -var parms=`docprtterm(${term},'${mg}',`
+                -parms+=`{mk1:${element.mark1},mk2:${element.mark2},mk3:${element.mark3},`
+                -parms+=`voc1:${element.voca_cult_avg1},voc2:${element.voca_cult_avg2},voc3:${element.voca_cult_avg3},`
+                -parms+=`vop1:${element.voca_prof_avg1},vop2:${element.voca_prof_avg2},vop3:${element.voca_prof_avg3}},[`
+                each m1 in element.marks
+                  -parms+= `{cn:'${m1.coursename}',eog:${m1.eog},rate:${m1.rate},ct:'${m1.c_t_type}',gid:${m1.groupid},t1:${m1.t1},e1:${m1.e1},to1:${m1.total1},t2:${m1.t2},e2:${m1.e2},to2:${m1.total2},t3:${m1.t3},e3:${m1.e3},to3:${m1.total3}},`
+                -parms+=`{cn:'null'}]);`
+                SCRIPT.
+                  !{parms}
+                -var act_py=""
+                each mele2 in element.acmarks
+                  -act_py=mele2.act_py
+                  tr
+                    td(class="mk0",colspan=3) 課外活動
+                    //!{mele2.activeName}
+                    td(class="mke")
+                      -var acparms=`docprtmark2grade(${term},${mele2.grade1},${mele2.grade2},${mele2.grade3})`
+                      SCRIPT.
+                        !{acparms}
+                each mele3 in element.gcmarks
+                  tr
+                    td(class="mk0",colspan=3) !{mele3.GC_Name}
+                    td(class="mke")
+                      -var mkparms=`docprtgrade(${term},'${mele3.grade1}','${mele3.grade2}','${mele3.grade3}')`;
+                      SCRIPT.
+                        !{mkparms}
+                tr
+                  td(colspan=5)
+            td(class="tablenoneline")
+              table(class="mknotetbl_css")
+                tr
+                  td(style="height:40px;", class="music_course_td1") 綜合評鑑
+                  td(class="music_course_term_td", colspan="2" ,style="text-align: left;")
+                    if term==1
+                      span !{element.SchoolEval1}
+                    if term==2
+                      span !{element.SchoolEval2}
+                    if term==3
+                      span !{element.SchoolEval3}
+
+                tr
+                  td(class="music_course_td1") 在校記錄總結
+                  td(class="music_course_term_td", colspan="2")
+                    if term==1
+                      -wrglat=`遲到：${element.wrg_later1} 次`
+                      -wrgabs=`缺席：${element.wrg_absence1} 節`
+                      -wrgtru=`曠課：${element.wrg_truancy_s1}  節 ${element.wrg_truancy_t1} 次`
+                      -wrgcon=`操行：${element.conduct1} `
+                      -wrgmrk=`違紀：${element.WrgMarks1}  印`
+                      -wrghon=`褒獎：${element.honor1 + element.SE_HONOR1}  印`
+                    if term==2
+                      -wrglat=`遲到：${element.wrg_later2} 次`
+                      -wrgabs=`缺席：${element.wrg_absence2} 節`
+                      -wrgtru=`曠課：${element.wrg_truancy_s2}  節 ${element.wrg_truancy_t2} 次`
+                      -wrgcon=`操行：${element.conduct2} `
+                      -wrgmrk=`違紀：${element.WrgMarks2}  印`
+                      -wrghon=`褒獎：${element.honor2 + element.SE_HONOR2}  印`
+                    if term==3
+                      -wrglat=`遲到：${element.wrg_later3} 次`
+                      -wrgabs=`缺席：${element.wrg_absence3} 節`
+                      -wrgtru=`曠課：${element.wrg_truancy_s3}  節 ${element.wrg_truancy_t3} 次`
+                      -wrgcon=`操行：${element.conduct3} `
+                      -wrgmrk=`違紀：${element.WrgMarks3}  印`
+                      -wrghon=`褒獎：${element.honor3 + element.SE_HONOR3}  印`
+                    table(class="later")
+                      tr(class="later")
+                        td(class="later")=  wrglat
+                        td(class=later)= wrgabs
+                        td(class="later1")= wrgtru
+                      tr(class="later")
+                        td(class="later") !{wrgcon}
+                        td(class="later")= wrgmrk
+                        td(class="later")= wrghon
+                tr
+                  td(style="height:40px;",class="music_course_td1") 評語
+                  td(colspan=2, class="music_course_term_td", style="text-align: left;")
+                    if term==1
+                      div !{element.py1}
+                    if term==2
+                      div !{element.py2}
+                    if term==3
+                      div !{element.py3}
+                tr
+                  td(style="height:40px;",class="music_course_td1") 參加課外活動狀況
+                  td(colspan=2, class="music_course_term_td", style="text-align: left;")
+                      div !{act_py}
+                tr
+                  td(colspan="3", class="c_zeroline")
+                    table(width="390px", class="c_zeroline")
+                      tr
+                        td( colspan="4")
+                      tr
+                        td( class="ying_title") 校長
+                        td( class="ying_title") 學部主任
+                        td( class="ying_title") 班主任
+                        td( class="ying_title") 家長
+                        td( rowspan="2", class="c_zeroline")
+                          -var qrimgparam=`docqrimg(${sess},'${element.curr_class}',${element.curr_seat},'${element.dsej_ref}');`;
+                          SCRIPT.
+                            !{qrimgparam}
+                          
+                      tr( class="c_zeroline", style="height:95px")
+                        td( class="c_oneline")
+                          img(width="50px", src='/png/xz.png')
+                        td( class="c_oneline")
+                          img(width="48px", src='/png/zs.png')
+                        td(class="c_oneline")= " "
+                        td(class="c_oneline")= " "
+                tr
+                  td( style="font-size:11px;vertical-align:top;", colspan=3)
+                    div(style="margin-left: auto;margin-right: auto;width: 8em")= "備    註"
+                    div(class="c01")= "[1]成績等級準則: A+表示優異、A表示優良、A-表示優良、B+表示良好、B表示良好、B-表示良好、C+表示好、C表示一般、C-表示一般、D表示合格及F表示不合格。"
+                    div(class="c01")= "[2]校方綜合評鑑學生在校表現，並給予相應評鑑稱謂。品學兼優生：凡操行在甲-或以上並全科合格及總平均分在B-或以上；品行優異生：凡操行在甲-或以上並全科合格；學業優異生：凡操行在乙或以上並全科合格及總平均分在B-或以上；勤學生：凡操行在乙或以上並全科合格及總平均分在C+或以上；全勤生：凡沒有遲到及缺席。"
+                    div(class="c01")= "[3]本文件若無任何本校印章，只可作為臨時成績通知書使用。"
+      -var flag= cnt % 2
+      if flag==1
+        DIV(style='height:1.15cm')
+      if flag==0
+        DIV(style='page-break-after:always')

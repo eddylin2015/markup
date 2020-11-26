@@ -1,0 +1,63 @@
+
+- classli=  ["P1A","P1B","P1C","P1D","P2A","P2B","P2C","P2D","P3A","P3B","P3C","P3D","P4A","P4B","P4C","P5A","P5B","P5C","P6A","P6B","P6C",]                 
+div(title="Info Dialog",style="display:none")#gcrsupdClassDialog
+  form(action="/internal/markup/grademarkSelect")
+    div
+      input(type="date", name="sDate", value=`${sDate}`)
+    div 
+      input(type="date", name="eDate", value=`${eDate}`)
+    div
+      Select(name="classno")
+        each classN in classli
+          Option(value=classN)= classN
+    div
+      input(type="submit",value="submit")
+
+div(title=" 輸入分數 音藝 Grade dialog ",style="display:none;background-color:black;color:white;")#gcrsupdfrm
+  p 用戶: #{profile.id} 上傳分數
+  form(enctype="multipart/form-data",action="/internal/dashboard/sharefiles/mrsMarkXls", method="post",onSubmit="return AIM.submit(this, {'onStart' : gcrsupdfrm_startCallback, 'onComplete' : gcrsupdfrm_completeCallback})")
+    input(type="hidden",name="title")
+    input(type="file" name="upload" multiple="multiple")
+    input(type="submit" value="提交",style="color:black;")
+  p
+    span#gcrsupdfrm_nr 0
+    span#gcrsupdfrm_json
+div(title="Basic dialog",style="display:none")#gcrsupdfrm_res
+  div#gcrsupdfrm_res_XLSTable
+  div(style="display:none")#gcrsupdfrm_res_XLSJSON       
+script(type="text/javascript").
+  $(document).ready(function(){
+    $("#gcrsupdClassDialog").dialog({ autoOpen: false,  });
+    $("#gcrsupdfrm").dialog( { autoOpen: false,height:  $(window).height()*0.9,  width:'90%', });  
+    $("#gcrsupdfrm_res").dialog( {
+      autoOpen: false,
+      height:  $(window).height()*0.9,
+      width:'90%',
+      buttons: [
+        {
+          text: "Update Record",  icon: "ui-icon-heart",
+          click: function() {
+            let json=JSON.parse( document.getElementById('gcrsupdfrm_res_XLSJSON').innerHTML);
+            let savejsonurl='/internal/markup/studcourse/editgrademark/grademarksavejson.php';
+            SaveJson(json,savejsonurl)
+            $( this ).dialog( "close" );
+          }
+        }
+      ]
+    });
+  });  
+  function gcrsupdfrm_startCallback() { return true; }
+  function gcrsupdfrm_completeCallback(response) {
+    response=response.replace('<pre style="word-wrap: break-word; white-space: pre-wrap;">', "").replace("</pre>", "");
+    document.getElementById('gcrsupdfrm_nr').innerHTML = parseInt(document.getElementById('gcrsupdfrm_nr').innerHTML) + 1;
+    document.getElementById('gcrsupdfrm_res_XLSJSON').innerHTML = response;
+    let json=JSON.parse( response);
+    let tbl="<table>";
+    for(let i=0;i<json.length;i++){
+      tbl+="<tr>"; for(let j=0;j<json[i].length;j++){ tbl+="<td>"+json[i][j]+"</td>"; } tbl+="</tr>";
+    }
+    tbl+="</table>";
+    document.getElementById('gcrsupdfrm_res_XLSTable').innerHTML=tbl;
+    $( "#gcrsupdfrm_res" ).dialog("open");
+  }
+ 

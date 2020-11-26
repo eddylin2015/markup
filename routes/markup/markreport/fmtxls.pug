@@ -1,0 +1,70 @@
+﻿HTML(xmlns:o="urn:schemas-microsoft-com:office:office", xmlns:x="urn:schemas-microsoft-com:office:excel", xmlns="http://www.w3.org/TR/REC-html40")
+  head
+    meta(http-equiv="content-type",content="application/vndms-excel; charset=utf-8")
+  body
+    table
+      tbody
+        each element in books
+          tr
+            td= element.stud_ref
+            td= element.curr_class
+            td= element.curr_seat
+            td= element.c_name
+            td= element.curr_class
+            td= element.dsej_ref
+          each mele1 in element.marks
+            tr
+              td= mele1.coursename
+              td= mele1.t1
+              td= mele1.e1
+              td= mele1.total1
+              td= mele1.t2
+              td= mele1.e2
+              td= mele1.total2
+              td= mele1.t3
+              td= mele1.e3
+              td= mele1.total3
+              td= mele1.total
+              td= mele1.pk
+              td= mele1.P_X
+          tr           
+            td(colspan=3)
+            td= element.mark1
+            td(colspan=2)
+            td= element.mark2
+            td(colspan=2)
+            td= element.mark3
+            td= element.mark
+          each mele2 in element.acmarks
+            tr
+              td(colspan=3)= mele2.activeName
+              td= mele2.grade1
+              td(colspan=2)
+              td= mele2.grade2
+              td(colspan=2)
+              td= mele2.grade3
+              td= mele2.grade
+            tr
+              td(colspan=5)= mele2.act_py
+          each mele3 in element.gcmarks
+            tr
+              td(colspan=3)= mele3.GC_Name
+              td= mele3.grade1
+              td(colspan=2)
+              td= mele3.grade2
+              td(colspan=2)
+              td= mele3.grade3
+          tr
+            td= element.volunteer_hr
+          tr
+            td(colspan=5)= "|Lat:"+element.wrg_later1+"|Abs:"+element.wrg_absence1+"|Tru:"+element.wrg_truancy_t1+"("+element.wrg_truancy_s1+')\n|Wrg:'+ element.WrgMarks1+"|Hon:"+ element.honor1+"|Seh:"+ element.SE_HONOR1+"|Con:"+element.conduct1
+            td(colspan=3)= element.SchoolEval1
+            td(colspan=10)= element.py1
+          tr
+            td(colspan=5)= "|Lat:"+element.wrg_later2+"|Abs:"+element.wrg_absence2+"|Tru:"+element.wrg_truancy_t2+"("+element.wrg_truancy_s2+')\n|Wrg:'+ element.WrgMarks2+"|Hon:"+ element.honor2+"|Seh:"+ element.SE_HONOR2+"|Con:"+element.conduct2
+            td(colspan=3)= element.SchoolEval2
+            td(colspan=10)= element.py2
+          tr
+            td(colspan=5)= "|Lat:"+element.wrg_later3+"|Abs:"+element.wrg_absence3+"|Tru:"+element.wrg_truancy_t3+"("+element.wrg_truancy_s3+')\n|Wrg:'+ element.WrgMarks3+"|Hon:"+ element.honor3+"|Seh:"+ element.SE_HONOR3+"|Con:"+element.conduct3
+            td(colspan=3)= element.SchoolEval3
+            td(colspan=10)= element.py3
