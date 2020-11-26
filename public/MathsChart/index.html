@@ -1,0 +1,80 @@
+
+<img id="cbg" src="chartbg.png" style="display:none;">
+<img id="b1br" src="bar10.png"  style="display:none;">
+<img id="b2br" src="bar20.png"  style="display:none;">
+<img id="b3br" src="bar30.png"  style="display:none;">
+<img id="b4br" src="bar40.png"  style="display:none;">
+<img id="b5br" src="bar50.png"  style="display:none;">
+<img id="b6br" src="bar60.png"  style="display:none;">
+<img id="b7br" src="bar70.png"  style="display:none;">
+
+<table>
+    <tr>
+        <td align="center"><h3>澳門浸信中學</h3></td>
+    </tr>
+    <tr>
+        <td align="center"><h4>初三級</h4></td>
+    </tr>
+    <tr>
+            <td>姓名:    王悅        </td>
+        </tr>    
+    <tr>
+        <td>
+           <canvas id="myCanvas" width="663" height="484" style="border:1px solid #d3d3d3;">HTML5 canvas tag.</canvas>
+        </td>
+    </tr>
+    <tr>
+        <td>
+<textarea rows="16" cols="95">
+ 王悅同學：
+ 學習是人生最重要的活動，努力學習，充實自己。只有有知識，有能力的人才能生活得更好。加油!
+ 
+ 改進你的學習方法，一定會進步神速。
+ 
+ 自學要有毅力，要有恒心，要講究方法。閱讀是自學的主要方法，學會看數學書，學會看懂數學數。
+ 
+ 數學運算能力尚可，能融會貫通才可感受數學在生活中力量。
+ 
+ 培養善於觀察事物的能力，對人對己都是一份重要的能力，請多觀察多思考。
+ 
+ 對圖形觀察及分類具基本能力，唯複雜圖形之綜合分析能力，必須多練多看才能提升。
+ 
+ 具基本解題能力，只要多加練習必成大器。
+ </textarea>
+        </td>
+    </tr>   
+</table>
+<script>
+window.onload = function() {
+  var cbg = document.getElementById("cbg");
+  var br1 = document.getElementById("b1br");
+  var br2 = document.getElementById("b2br");
+  var br3 = document.getElementById("b3br");
+  var br4 = document.getElementById("b4br");
+  var br5 = document.getElementById("b5br");
+  var br6 = document.getElementById("b6br");
+  var br7 = document.getElementById("b7br");
+  var c = document.getElementById("myCanvas");
+  var ctx = c.getContext("2d");
+  ctx.drawImage(cbg, 0,0);
+  ctx.drawImage(br1, 79,301,80,80);
+  ctx.drawImage(br2, 160,220,80,160);
+  ctx.drawImage(br3, 240,301,80,80);
+  ctx.drawImage(br4, 320,301,80,80);
+  ctx.drawImage(br5, 400,301,80,80);
+  ctx.drawImage(br6, 480,301,80,80);
+  ctx.drawImage(br7, 560,301,80,80);
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "blue";
+  ctx.fillText("王悅", 30,443);
+  ctx.fillText("1", 120,443);
+  ctx.fillText("2", 200,443);
+  ctx.fillText("1", 280,443);
+  ctx.fillText("1", 360,443);
+  ctx.fillText("1", 440,443);
+  ctx.fillText("1", 520,443);
+  ctx.fillText("1", 600,443);
+  ctx.fillText("1", 680,443);
+  ctx.fillText("1", 760,443);
+};
+</script>

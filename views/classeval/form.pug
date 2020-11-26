@@ -1,6 +1,5 @@
 extends ./base.pug
 block content
-
   style.
     input[type=radio] {
         width: 20px;
@@ -9,21 +8,6 @@ block content
         border-radius: 3px;
     }
     select, option {color: black;}
-    .custom-combobox {
-      position: relative;
-      display: inline-block;
-    }
-    .custom-combobox-toggle {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      margin-left: -1px;
-      padding: 0;
-    }
-    .custom-combobox-input {
-      margin: 0;
-      padding: 5px 10px;
-    }        
   include ./inc/mixinFormControl    
   script(src='/ckeditor/ckeditor.js')
   script.
@@ -56,7 +40,6 @@ block content
           }
         }
       }
-      
     }
   //h3 #{title_act} #{action} 
   form(method="POST", enctype="multipart/form-data")#ActForm
@@ -66,11 +49,11 @@ block content
     table#tbl
       if book.id
         tr
-          td 編號:	
+          td 編號:
           td 
             span= book.id
       tr  
-        td 日期*:	
+        td 日期*:
         td 
           .form-group                
             input.form-control(type="text", name="ce_Date", id="ce_Date", value=book.ce_Date)
@@ -80,13 +63,13 @@ block content
           .form-group.hidden                
             input.form-control(type="text", name="ce_Dept", id="ce_Dept", value=book.ce_Dept)
       tr(style="padding:20px;margin:20px;")   
-        td 節*:	
+        td 節*:
         td
           .form-group         
             +inputSectNo("ce_SectNo",book.ce_SectNo)            
       tr(style="padding:20px;margin:20px;")            
         td
-          span#mathcTimeTable(onclick="mathcTimeTable();") 【班別】*:	
+          a#mathcTimeTable(onclick="mathcTimeTable();",href="#") 班別*:	
         td
           .form-group 
             +inputClassNo("ce_CNo",book.ce_CNo)   
@@ -96,19 +79,19 @@ block content
           .form-group 
             input.form-control(type="text", name="ce_Room", id="ce_Room", value=book.ce_Room)          
       tr 
-        td 科目:	
+        td 科目:
         td 
           .form-group                
             input.form-control(type="text", name="ce_Subject", id="ce_Subject", value=book.ce_Subject)
       tr  
-        td 教師:	
+        td 教師:
         td
           .form-group        
             input.form-control(type="text", name="ce_Teacher", id="ce_Teacher", value=book.ce_Teacher)
       tr        
         td 
           .form-group
-            label(for="ce_Status") 課堂狀況:	
+            label(for="ce_Status") 課堂狀況:
         td 
           .form-group        
             //+inputStatus("ce_Status",book.ce_Status)             
@@ -127,7 +110,7 @@ block content
         td
           .form-group
             input.form-control(type="text", name="ce_Mng", id="ce_Mng", value=book.ce_Mng) 
-    h3 學生表現 
+    h3 學生表現
     -let s_v=["","很好","好","一般","差","很差"];
     -let s_s=["","__","____","__","____","__"];
     table
@@ -233,7 +216,7 @@ block content
           input#ce_WrgOther(name="ce_WrgOther", value=book.ce_WrgOther)
           span#btn_ce_WrgOther(class="BTNINPUTNO") 編輯
     .form-group
-      label(for="ce_TchNote") 補充事項:    
+      label(for="ce_TchNote") 補充事項:
       textarea.form-control(rows=3,  style="color: white;background-color:black; ",name="ce_TchNote", id="ce_TchNote", value=book.ce_TchNote)= book.ce_TchNote
     h3 校園環境
     .form-group
@@ -312,14 +295,14 @@ block content
           for(let i=1;i<41;i++)
             if($('#ck'+i).prop('checked')) res.push(i) ;
           $("#"+title).val((res.join(",")+","+res_res))  ;
-          $( this ).dialog( "close" );
+          $( this ).dialog("close");
         }
       }
       });      
-      let _old=$( "#ce_Date" ).val();
-      $( "#ce_Date" ).datepicker();
-      $( "#ce_Date" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
-      $( "#ce_Date" ).val(_old);
+      let _old=$("#ce_Date").val();
+      $("#ce_Date").datepicker();
+      $("#ce_Date").datepicker( "option", "dateFormat", "yy-mm-dd" );
+      $("#ce_Date").val(_old);
    	  $('.BTNINPUTNO').click(function(){
          let title=this.id.replace("btn_","");
          $( "#inputseatno_dlg" ).dialog({ title:title});
@@ -328,5 +311,5 @@ block content
       $("#ce_SectNocbx").combobox();
       $("#ce_CNocbx").combobox();
       $("#ce_Statuscbx").CustCombobox({ source: ["很好","好","一般","差","很差"] });
-      //$("#ce_Statuscbx" ).autocomplete({ source: ["AA","AB","C","D"] });
+      //$("#ce_Statuscbx").autocomplete({ source: ["AA","AB","C","D"] });
     });

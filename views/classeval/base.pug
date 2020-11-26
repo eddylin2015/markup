@@ -11,6 +11,7 @@ html
     link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/main.css')
     link(rel='stylesheet', href='/jquery-ui-dist/jquery-ui.min.css')
+    link(rel='stylesheet', href='/stylesheets/cool/widget_combobox.css')
   body
     .navbar.navbar-default
       .container
@@ -32,6 +33,9 @@ html
             li
               a(href="/internal/classeval/searchform") 
                 span 查詢
+            li
+              a(href="/internal/classeval/editTimeTable") 
+                span 上課表                
           ul.navbar-text.navbar-right
             if profile
               if profile.image

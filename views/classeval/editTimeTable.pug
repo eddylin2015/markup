@@ -1,0 +1,99 @@
+extends ./baseEditGrid.pug
+mixin link(aotid,aot, idname, grade)
+  if aot==3 && aotid==2
+    td.M(id=idname,style='width:60px;text-align:center;')= grade
+  else if aotid==aot
+    td.M(id=idname,style='width:60px;text-align:center;')= grade
+  else 
+    td(style='width:60px;text-align:center;')= grade
+block content
+  style.
+    div.container{width:100%}
+    textarea
+    {
+    text-align:left;
+    display:block;
+    margin-top:0px;
+    margin-left:0px;
+    margin-right:0px;
+    margin-bottom:0px;
+    padding:0;
+    background-color:#EFFBFB;
+    }
+    input[type="text"]
+    {
+    width:100px;
+    display:block;
+    margin-bottom:1px;
+    background-color:yellow;
+    }
+    td.M
+    {
+    width:100px;
+    height:25px;
+    text-align:center
+    }  
+  div#tableContent
+    table#EDUTBL
+      tbody
+        tr.even
+          td ClassSect
+          td#MA_H(style="text-align:center") ClassMaster
+          td#MB_H(style="text-align:center") Mon
+          td#MC_H(style="text-align:center") Tue
+          td#MD_H(style="text-align:center") Wed
+          td#ME_H(style="text-align:center") Thu
+          td#MF_H(style="text-align:center") Fri
+          td#MG_H(style="text-align:center") 一
+          td#MH_H(style="text-align:center") 二
+          td#MI_H(style="text-align:center") 三
+          td#MJ_H(style="text-align:center") 四
+          td#MK_H(style="text-align:center") 五 
+        -let IdxChar  =["0","A","B","C","D","E","F","G","H","I","J","K"]
+        each book in books
+          tr
+            td.ID_EDU_TD(style='max-width:5px;font-size:1em;')= book[0]
+            each idx in [1,2,3,4,5,6,7,8,9,10,11]
+              td.M(id=`M${IdxChar[idx]}_${book[0]}_${idx}`)= book[idx]
+  script(language="javascript", src="/javascripts/cool/pycode.txt.js")
+  script.
+    var fn='!{fn}';
+    var PostUrl='UpdateTimeTable';    
+    var returnUrl='/internal/classeval/';
+    var CGIExpXlsUrl='/internal/PublicAPI/ExpXls.php?charset=utf-8&filename=timetable_!{fn}.xls';
+    $('#returnUrlBtn').attr("href", returnUrl);
+    $('#CSVFrmPOST').attr("action", CGIExpXlsUrl);
+    $(document).ready(function(){
+      BindingPastFrm("PastFrm","PastFrmText","EDUTBL");
+      BindingCSVFrm('CSVFrm','CSVFrm_Link','tableContent','data.xls');
+      BindingFunctions("editbtn","_#savebtn","pastbtn","exportbtn",'readmodebtn');
+      BindingHead_EditMode(['MA_H','MB_H','MC_H','MD_H','ME_H','MF_H','MG_H','MH_H','MI_H','MJ_H','MK_H']); //BindingFieldDefsIntegerFields({'MA':'INT','MB':'INT','MC':'INT','MG':'DEC'});
+      GenOriginalData();
+      $('#savebtn').click(function(event){   
+        closeedit();
+        alert();
+        var json=[];
+        var result_set="";
+        var error_msg="";
+        var decode_error_msg="";
+        var $rows = $("#EDUTBL").find('tr:has(td)');
+         $rows.map(function(i, row) {
+            var $row = $(row),  $cols = $row.find('td');
+            if(i==0) return;
+             json[i-1]=Array.from($cols.map(function(j, col) {
+                 var $col = $(col), text = $col.text();
+                  return text.replace(/"/g, '""'); // escape double quotes
+              }))
+          })
+        console.log(json)
+        if( PostUrl != null){
+        $.post( PostUrl, { datajson: JSON.stringify(json), type: "json",keycode:'125678985432' })
+          .done(function( data ) {
+            alert( "Update Data : " + data + error_msg);
+            for(var key in json){ 
+          OriginalData[key]="-1";
+            }
+          });
+        }
+      });      
+    });  

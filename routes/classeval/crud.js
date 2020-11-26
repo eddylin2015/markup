@@ -71,6 +71,27 @@ router.get('/api/timetable.json',require('connect-ensure-login').ensureLoggedIn(
   var readStream = fs.createReadStream(process.cwd() + "\\db\\tabletime.json");
   readStream.pipe(res);
 });
+router.get('/editTimeTable',require('connect-ensure-login').ensureLoggedIn(),  (req, res) => {
+  //res.type('application/json'); 
+  //var readStream = fs.createReadStream(process.cwd() + "\\db\\tabletime.json");
+  //readStream.pipe(res);
+  fs.readFile(process.cwd() + "\\db\\tabletime.json", (err, data) => {
+    if (err) throw err;
+    let books = JSON.parse(data);
+    res.render('classeval/editTimeTable.pug', {
+      profile: req.user,
+      books:books,
+      fn:"timetable"
+    });
+  
+  });
+});
+router.post('/UpdateTimeTable', require('connect-ensure-login').ensureLoggedIn(),
+    images.multer.single('image'),
+    (req, res) => {
+      fs.writeFileSync(process.cwd() + "\\db\\tabletime.json", req.body.datajson);
+    res.end("ok")
+    });
 router.get('/add', require('connect-ensure-login').ensureLoggedIn(), (req, res) => {
   let sectno=req.query.sectno?req.query.sectno:getSectNo();
   res.render('classeval/form.pug', {
