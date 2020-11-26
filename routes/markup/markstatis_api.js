@@ -113,7 +113,7 @@ router.get('/mark_report_mrs_course_list', (req, res) => {
         res.render('markup/statistics/report_mrs_course_list.pug', { books: entity });
     });
 });
-router.get('/mark_report_mrs_course_table', (req, res,next) => {
+router.get('/mark_report_mrs_course_table', (req, res) => {
     let c=req.query.c;
     let orderby=req.query.orderby;
     orderby = orderby ? orderby.replace( /(\w+)\s(\w+)/, '$2,$1'):"classno,tab";  
