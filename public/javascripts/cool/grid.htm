@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh">
+<head>
+	<meta charset="utf-8">
+	<title>GRID</title>
+	<script src='/javascripts/jquery.js'></script>
+	<link  href='/jquery-ui-dist/jquery-ui.css' rel='stylesheet' type='text/css'  />
+	<script src='/jquery-ui-dist/jquery-ui.js'></script>
+	<link  href='/stylesheets/cool/grid.css' rel='stylesheet' type='text/css' />
+	<script src='/javascripts/cool/grid.js'></script>
+	<script src='/javascripts/cool/grid_export.js'></script>
+	<script>
+		$(function () {
+			$("#menu").menu();
+		}
+		);
+		$(document).ready(function () {
+			BindingPastFrm("PastFrm", "PastFrmText", "EDUTBL");
+			BindingCSVFrm('CSVFrm', 'CSVFrm_Link', 'tableContent', 'data.xls');
+			BindingFunctions("editbtn", "savebtn", "pastbtn", "exportbtn", 'readmodebtn');
+			BindingHead_EditMode(['MA_head', 'MB_head']);
+		});
+	</script>
+	<style>
+		table {
+			border-collapse: collapse;
+		}
+		table,
+		td,
+		th {
+			border: 1px solid black;
+			margin: 0px;
+			padding:0px;
+		}
+		textarea {
+			display: block;
+			margin: 0px;
+			padding:0px;
+			background-color: #EFFBFB;
+		}
+	</style>
+</head>
+<body>
+	<table>
+		<tr>
+			<td><span id=copyallbtn>Copy</span>
+			<td>
+				<ul id="menu">
+					<li>
+						<a href="#">管理</a>
+						<ul>
+							<li><a href="#" id=editbtn>編輯模式</a></li>
+							<li><a href="#" id=readmodebtn>唯讀模式</a></li>
+							<li><a href="#" id=savebtn>儲存</a></li>
+							<li><a href="#" id=pastbtn>粘貼</a></li>
+							<li><a href="#" id=exportbtn>匯出csv</a></li>
+						</ul>
+					</li>
+				</ul>
+	</table>
+	<div id="PastFrm">
+		<textarea id="PastFrmText"></textarea>
+	</div>
+	<div id="CSVFrm">
+		<div id="CSVFrm_Link"></div>
+		<form id="CSVFrmPOST" method="post" action="/internal/PublicAPI/ExpXls.php" target="xlsdownload">
+			<input type=hidden id=CSVFrmPOSTVALUE name=CSVFrmPOSTNAME>
+		</form>
+	</div>
+	學歷(請參照教青局的指引填寫)
+	<div id=tableContent>
+		<table id=EDUTBL>
+			<tbody>
+				<tr class=even>
+					<td>ID
+					<td>教育階段
+					<td>主修科系
+					<td>發出學歷教育機構
+					<td>就讀地點(國家/地區)
+					<td id=MA_head>取得學歷的日期(年/月/日)
+					<td id=MB_head>修讀年期</td>
+				</tr>
+				<script>
+					for (i = 0; i < 30; i++) {
+						document.write("<tr><td class=ID_EDU_TD>109<td>09 中學畢業/職中畢業<td>理科<td>蔡高中學<td>澳門<td class=M id=MA1>1994/07<td class=M id=MB1>5.0</td></tr>");
+					}
+				</script>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

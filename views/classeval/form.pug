@@ -91,7 +91,7 @@ block content
           .form-group 
             +inputClassNo("ce_CNo",book.ce_CNo)   
       tr
-        td /地點
+        td 地點
         td
           .form-group 
             input.form-control(type="text", name="ce_Room", id="ce_Room", value=book.ce_Room)          
@@ -100,13 +100,11 @@ block content
         td 
           .form-group                
             input.form-control(type="text", name="ce_Subject", id="ce_Subject", value=book.ce_Subject)
-     
       tr  
         td 教師:	
         td
           .form-group        
             input.form-control(type="text", name="ce_Teacher", id="ce_Teacher", value=book.ce_Teacher)
-
       tr        
         td 
           .form-group
@@ -166,8 +164,6 @@ block content
     //.form-group
       label(for="ce_CMNote") 學生表現事項:    
       textarea.form-control(rows=3,  style="color: white;background-color:black; ",name="ce_CMNote", id="ce_CMNote", value=book.ce_CMNote)= book.ce_CMNote
-    
-
     h3 老師表現
     table
       tr
@@ -197,7 +193,6 @@ block content
             label(for="ce_TchITWrit",style="width:88px") 擅用版書及<br>資訊科技
         td
           .form-group
-
             each val in [1,2,3,4,5]
               span
                 label(class="radio-inline")=  s_v[val] + s_s[val]
@@ -212,29 +207,31 @@ block content
               span
                 label(class="radio-inline")=  s_v[val] + s_s[val]
                   input(type="radio", name="ce_TchCommu",id= ("ce_TchCommu"+val), value= (s_v[val]), checked= ( book.ce_TchCommu == s_v[val] ? true : false )  )
-
     h3 學生常規
     table
       tr  
         td
-          <span>睡覺學生學號</span>
+          span 睡覺學生學號
           input#ce_WrgSleep(name="ce_WrgSleep",value=book.ce_WrgSleep)
-          <span id="btn_ce_WrgSleep" class=BTNINPUTNO>編輯</span><br>
-          <span>開小差的學生</span>
+          span#btn_ce_WrgSleep(class="BTNINPUTNO") 編輯
+          br
+          span 開小差的學生
           input#ce_WrgConcent(name="ce_WrgConcent",value=book.ce_WrgConcent )
-          <span id="btn_ce_WrgConcent" class=BTNINPUTNO >編輯</span><br>
-          <span>破坏課堂秩序</span>
-          input#ce_WrgClOrder( name="ce_WrgClOrder", value=book.ce_WrgClOrder)  
-          <span id="btn_ce_WrgClOrder", class=BTNINPUTNO , >編輯</span><br>
-          <span>儀容違規學號</span>
+          span#btn_ce_WrgConcent(class="BTNINPUTNO") 編輯
+          br
+          span 破坏課堂秩序
+          input#ce_WrgClOrder(name="ce_WrgClOrder", value=book.ce_WrgClOrder)  
+          span#btn_ce_WrgClOrder(class="BTNINPUTNO") 編輯
+          br
+          span 儀容違規學號
           input#ce_WrgManner(name="ce_WrgManner", value=book.ce_WrgManner)  
-          <span id="btn_ce_WrgManner" class=BTNINPUTNO >編輯</span><br>
-          <span>其他違規描述</span>
+          span#btn_ce_WrgManner(class="BTNINPUTNO") 編輯
+          br
+          span 其他違規描述
           input#ce_WrgOtherDesc(name='ce_WrgOtherDesc', value=book.ce_WrgOtherDesc, size=8)
-          <span>學號</span>
+          span 學號
           input#ce_WrgOther(name="ce_WrgOther", value=book.ce_WrgOther)
-          <span id="btn_ce_WrgOther" class=BTNINPUTNO >編輯</span>
-
+          span#btn_ce_WrgOther(class="BTNINPUTNO") 編輯
     .form-group
       label(for="ce_TchNote") 補充事項:    
       textarea.form-control(rows=3,  style="color: white;background-color:black; ",name="ce_TchNote", id="ce_TchNote", value=book.ce_TchNote)= book.ce_TchNote
@@ -248,48 +245,39 @@ block content
     //.form-group
       label(for="topNote") 置頂
       input.form-control(type="radio", name="topNote", id="topNote", value=1, checked= book.topNote == 1 ? true: false )          
-      input.form-control(type="radio", name="topNote", id="topNote", value=0, checked= book.topNote == 1 ? false: true )          
-    //.form-group
-      label(for="jobtype") 支援類別
-      select.form-control(type="text", name="jobtype", id="jobtype", value=book.jobtype)
-        each val in ["","設備更换","設備外借","課室硬件","課室支援","老師支援","印表機支援","MSAD支援","軟件支援","內部軟件支援"]
-          option(value=val, selected=  book.jobtype == val ? true : false)= val
     .form-group.hidden
        label(for="createdById") Created by ID
        input.form-control(type="text", name="createdById", id="createdById", value=book.createdById)
     button.btn.btn-success(type="button",onclick="Save();") Save
     //button.btn.btn-success(type="submit") Save
-
     div#inputseatno_dlg(title="Basic dialog")
       table
         tr
-          each _id in  [1,2,3,4,5,6,7,8,9,10]
+          each _id in [1,2,3,4,5,6,7,8,9,10]
             td(style="padding:5px;")
               input(type="checkbox", id=`ck${_id}`, name=`ck${_id}`)
               span= _id
         tr
-          each _id in  [11,12,13,14,15,16,17,18,19,20]
+          each _id in [11,12,13,14,15,16,17,18,19,20]
             td(style="padding:5px;")
               input(type="checkbox", id=`ck${_id}`, name=`ck${_id}`)
               span= _id
         tr
-          each _id in  [21,22,23,24,25,26,27,28,29,30]
+          each _id in [21,22,23,24,25,26,27,28,29,30]
             td(style="padding:5px;")
               input(type="checkbox", id=`ck${_id}`, name=`ck${_id}`)
               span= _id
         tr
-          each _id in  [31,32,33,34,35,36,37,38,39,40]
+          each _id in [31,32,33,34,35,36,37,38,39,40]
             td(style="padding:5px;")
               input(type="checkbox", id=`ck${_id}`, name=`ck${_id}`)
               span= _id
-
   script.
     //CKEDITOR.replace('ce_Note',{ filebrowserUploadUrl: "imageUploader" } );   
     $(function() {
       if(data==null){
         $.getJSON( "/internal/classeval/api/timetable.json", function( data_ ) {
           data=data_
-          console.log(data);
         });
       }
       $('#inputseatno_dlg').dialog(
@@ -307,7 +295,6 @@ block content
           found.forEach((item,index)=>{ 
             $('#ck'+item).prop('checked', true);
           })
-          
         },
         modal: true,
       buttons: {
@@ -338,206 +325,8 @@ block content
          $( "#inputseatno_dlg" ).dialog({ title:title});
          $('#inputseatno_dlg').dialog('open'); 
       });      
-      $.widget( "custom.combobox", {
-        _create: function() {
-          this.wrapper = $( "<span>" )
-            .addClass( "custom-combobox" )
-            .insertAfter( this.element );
-          this.element.hide();
-          this._createAutocomplete();
-          this._createShowAllButton();
-        },
-        _createAutocomplete: function() {
-          var selected = this.element.children( ":selected" ),
-            value = selected.val() ? selected.text() : "";
-          this.input = $( "<input>" )
-            .appendTo( this.wrapper )
-            .val( value )
-            .attr( "title", "" )
-            .addClass( "custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left" )
-            .autocomplete({
-              delay: 0,
-              minLength: 0,
-              source: $.proxy( this, "_source" )
-            })
-            .tooltip({
-              classes: {
-                "ui-tooltip": "ui-state-highlight"
-              }
-            });
-          this._on( this.input, {
-            autocompleteselect: function( event, ui ) {
-              ui.item.option.selected = true;
-              this._trigger( "select", event, {
-                item: ui.item.option
-              });
-            },
-            autocompletechange: "_removeIfInvalid"
-          });
-        },
-    
-        _createShowAllButton: function() {
-          var input = this.input,
-            wasOpen = false;
-    
-          $( "<a>" )
-            .attr( "tabIndex", -1 )
-            .attr( "title", "Show All Items" )
-            .tooltip()
-            .appendTo( this.wrapper )
-            .button({
-              icons: {
-                primary: "ui-icon-triangle-1-s"
-              },
-              text: false
-            })
-            .removeClass( "ui-corner-all" )
-            .addClass( "custom-combobox-toggle ui-corner-right" )
-            .on( "mousedown", function() {
-              wasOpen = input.autocomplete( "widget" ).is( ":visible" );
-            })
-            .on( "click", function() {
-              input.trigger( "focus" );
-    
-              // Close if already visible
-              if ( wasOpen ) {
-                return;
-              }
-    
-              // Pass empty string as value to search for, displaying all results
-              input.autocomplete( "search", "" );
-            });
-        },
-    
-        _source: function( request, response ) {
-          var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
-          response( this.element.children( "option" ).map(function() {
-            var text = $( this ).text();
-            if ( this.value && ( !request.term || matcher.test(text) ) ){
-              return {
-                label: text,
-                value: text,
-                option: this
-              };
-            }
-          }) );
-        },
-    
-        _removeIfInvalid: function( event, ui ) {
-    
-          // Selected an item, nothing to do
-          if ( ui.item ) {
-            return;
-          }
-          // Search for a match (case-insensitive)
-          var value = this.input.val(),
-            valueLowerCase = value.toLowerCase(),            valid = false;
-          this.element.children( "option" ).each(function() {
-            if ( $( this ).text().toLowerCase() === valueLowerCase ) {
-              this.selected = valid = true;
-              return false;
-            }
-          });
-          // Found a match, nothing to do
-          if ( valid ) {
-            return;
-          }
-          // Remove invalid value
-          this.input
-            .val( "" )
-            .attr( "title", value + " didn't match any item" )
-            .tooltip( "open" );
-          this.element.val( "" );
-          this._delay(function() {
-            this.input.tooltip( "close" ).attr( "title", "" );
-          }, 2500 );
-          this.input.autocomplete( "instance" ).term = "";
-        },
-        _destroy: function() {
-          this.wrapper.remove();
-          this.element.show();
-        }
-      });
-
-      $.widget( "custom.CustCombobox", {
-        options: {
-        source: 0
-        },
-        _create: function(source) {
-          this.source=this.options.source;
-          this.wrapper = $( "<span>" )
-            .addClass( "custom-combobox" )
-            .insertAfter( this.element );
-          this.element.hide();
-          this._createAutocomplete();
-          this._createShowAllButton();
-        },
-        _createAutocomplete: function() {
-          value=this.element.val();
-          this.input = $( "<input>" )
-            .appendTo( this.wrapper )
-            .val( value )
-            .attr( "title", "" )
-            .addClass( "custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left" )
-            .autocomplete({
-               minLength: 0,
-               source: $.proxy( this, "_source" )
-            })
-            .tooltip({
-              classes: {
-                "ui-tooltip": "ui-state-highlight"
-              }
-            });
-          this._on( this.input, {
-            autocompleteselect: function( event, ui ) { },
-            autocompletechange: "_removeIfInvalid"
-          });
-        },
-        _createShowAllButton: function() {
-          var input = this.input,
-            wasOpen = false;
-            $( "<a>" )
-            .attr( "tabIndex", -1 )
-            .attr( "title", "Show All Items" )
-            .tooltip()
-            .appendTo( this.wrapper )
-            .button({
-              icons: {
-                primary: "ui-icon-triangle-1-s"
-              },
-              text: false
-            })
-            .removeClass( "ui-corner-all" )
-            .addClass( "custom-combobox-toggle ui-corner-right" )
-            .on( "mousedown", function() {
-              wasOpen = input.autocomplete( "widget" ).is( ":visible" );
-            })
-            .on( "click", function() {
-              console.log("aaaa")
-              input.trigger( "focus" );
-              // Close if already visible
-              if ( wasOpen ) { return; }
-              // Pass empty string as value to search for, displaying all results
-              input.autocomplete( "search", "" );
-            });
-        },
-        _source: function( request, response ) {
-          response( this.source.filter(word => word.indexOf(request.term)>-1));
-        },
-        _removeIfInvalid: function( event, ui ) {
-          var value = this.input.val()
-          this.element.val( this.input.val() )
-          return;
-        },
-        _destroy: function() {
-          this.wrapper.remove();
-          this.element.show();
-        }
-      });
-
-      $("#ce_SectNocbx" ).combobox();
-      $("#ce_CNocbx" ).combobox();
+      $("#ce_SectNocbx").combobox();
+      $("#ce_CNocbx").combobox();
       $("#ce_Statuscbx").CustCombobox({ source: ["很好","好","一般","差","很差"] });
-      
       //$("#ce_Statuscbx" ).autocomplete({ source: ["AA","AB","C","D"] });
-    } );
+    });

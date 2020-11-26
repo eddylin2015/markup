@@ -1,0 +1,39 @@
+﻿body {
+    padding: 50px;
+    font-family:  "Microsoft JhengHei"; 
+    line-height: 1.4;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+a {
+    color: #00ff21;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #222;
+    color: #aaa;
+}
+
+
+footer {
+    color: #999;
+    font-size: 12px;
+    margin: 10px;
+    text-align: right;
+}
+
+    footer a {
+        color: #666;
+        text-decoration: none;
+    }
+
+        footer a:hover {
+            text-decoration: underline;
+        }

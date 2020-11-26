@@ -1,0 +1,30 @@
+table, th, td {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-right: 0px;
+    margin-left: 0px;
+}
+	table tr.even {
+		background: #CCC;
+	}
+	td.ID_EDU_TD , td.ID_TT_TD , td.ID_CD_TD , td.ID_TE_TD , td.ID_WE_TD 
+	{
+		font-weight: bold;
+	}
+	td.M{
+	}
+	td.DEL_ID_EDU_TD 
+	{
+		font-weight: normal;
+		color:red;
+		text-decoration: line-through;
+	}
+	span.ADDROW_FONT{
+		font-weight: normal;
+		color:blue;
+		font-size:x-small;
+		position:absolute;
+	}
+/*.ui-menu { width: 80px; }
+.ui-draggable, .ui-droppable {	background-position: top;}
+li {font-size:x-small}*/

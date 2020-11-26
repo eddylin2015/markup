@@ -1,0 +1,119 @@
+@CHARSET "UTF-8";
+table{
+width:17cm;
+max-width:17cm;
+font-size:21px;
+font-family:"細明體";
+}
+table.ks10, table.stb{
+width:16.5cm;
+max-width:16.5cm;
+min-width:16.5cm;
+font-size:28px;
+font-family:"細明體";
+table-layout:fixed;
+}
+table.stb, td.stb, tr.stb , td.stb1,  td.stb1_honor , td.stb1_pingyu
+{
+border-collapse:collapse;
+}
+td.stb1
+{
+border:1px solid black;
+border-collapse:collapse;
+text-align:center;
+overflow:hidden;
+font-family: '新細明體';
+font-size:16px;
+}
+td.stb2
+{
+height:2.2cm;
+border:1px solid black;
+border-collapse:collapse;
+text-align:center;
+overflow:hidden;
+font-family: '新細明體';
+font-size:16px;
+}
+td.stb3
+{
+height:1.5cm;
+border:1px solid black;
+border-collapse:collapse;
+text-align:center;
+overflow:hidden;
+font-family: '新細明體';
+font-size:16px;
+}
+td.stb1_honor
+{
+border:1px solid black;
+border-collapse:collapse;
+text-align:center;
+font-size:23px;
+overflow:hidden;
+}
+td.stb1_pingyu
+{
+border:1px solid black;
+border-collapse:collapse;
+text-align:center;
+font-size:23px;
+overflow:hidden;
+}
+
+
+table.c0
+{
+width:14cm;
+max-width:14m;
+border:0px solid black;
+border-collapse:collapse;
+padding: 0;
+margin-left:5px;
+margin-top:5px;
+}
+td.c01{
+width:2.8cm;
+vertical-align: text-top;
+border:0px solid black;
+border-collapse:collapse;
+margin-right:0;
+margin-left:0;
+margin-top:3px;
+margin-bottom:3px;
+padding:0;
+}
+div.c02
+{
+text-indent: -20px;
+line-height:26px;
+}
+td.c02{
+width:10.8cm;
+max-width:10.8cm;
+padding-left:20px;
+border:0px solid black;
+border-collapse:collapse;
+}
+div.ass_title{
+border:0px solid red;
+font-size:40px;
+width:18cm;
+max-width:18cm;
+text-align:center;
+font-family:"標楷體";
+font-weight: bold;
+ text-decoration: underline;
+}
+span.wbfont
+{
+font-family:'Webdings';
+max-width:0.7cm;
+}
+span.wgfont
+{
+font-family:'Wingdings';
+max-width:0.7cm;
+}

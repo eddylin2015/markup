@@ -1,0 +1,268 @@
+img.footer{ width: 20cm;   white-space: nowrap;}
+img.header{	width: 15cm;}
+body{ 	font-family: "細明體_HKSCS"; }
+table{	font-size:13px;}
+table.studinfotbl_css{ width: 19.8cm;border: 0px;border-collapse:collapse;}
+td.studinfotbl_cssName{font-family: "細明體_HKSCS";border-collapse:collapse;border: 1px solid black;}
+td.studinfotbl_cssT{border-collapse:collapse;border: 1px solid black;width: 2cm;}
+td.studinfotbl_cssV{border-collapse:collapse;border: 1px solid black;width: 5cm;}
+td.studinfotbl_cssVC{ text-align: center;border-collapse:collapse;border: 1px solid black;width: 5cm;}
+table.mk_term_tbl_css{
+	width: 19.8cm;
+	height: 11cm;
+	border-collapse:collapse;
+	border: 0px solid green;
+	margin-bottom:2px;
+	margin-top:2px;
+}
+td.tablenoneline{
+		vertical-align:top;
+		border-collapse:collapse;
+		border: 0px solid green;
+		margin: 0px;
+		padding: 0px;
+}
+table.mktbl_css{
+	width: 9.3cm;
+	height: 11cm;
+	border-collapse:collapse;
+	border: 1px solid black;
+	margin-bottom:2px;
+	margin: 0px;
+	padding: 0px;
+}
+table.mknotetbl_css{
+	margin-left: 0.1cm;
+	width: 10.4cm;
+	height: 50px;
+	max-height: 60px;
+	border-collapse:collapse;
+}
+td.music_course_title_td
+{
+	width:3.8cm;
+	min-width:3.8cm;
+	max-width:3.8cm;
+	text-align: center;
+	margin:0;
+	height:10px;
+	text-align: center;
+	border-collapse:collapse;
+	border-bottom: 1px solid black;
+}
+td.music_course_term_sub_td,td.music_course_term_sub_td1{
+	border:1px;
+	width:1.3cm;
+	min-width:1.3cm;
+	max-width:1.3cm;
+	height:10px;
+	margin:0;
+	height:10px;
+	text-align: center;
+	border-collapse:collapse;
+}
+td.music_course_term_sub_td{
+	border:1px;
+	border-top: 1px;
+	border-bottom: 1px;
+	border-bottom-style: solid;
+}
+td.music_course_term_sub_td1 {
+    border-right: 1px solid black;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+td.mk0,td.mk1,td.mke,td.mkf{	height: 12px;}
+td.mk1{	padding-right: 25px;	text-align:right;}
+td.mke{
+	padding-right: 25px;
+	text-align:right;
+	border-right: 1px solid black;
+}
+td.mkf{
+	border-right: 1px solid black;
+	border-left: 1px solid black;
+}
+tr.mk_blank,td.mk_blank{ }			
+tr.mKT{
+	/*border-top: 1px;
+	border-top-style: dotted;
+	border-bottom: 1px;
+	border-bottom-style: dotted;*/
+	}
+td.mkT{
+	padding-right: 25px;
+	text-align:right;
+	border-top: 1px;
+	border-top-style: dotted;
+	/*border-bottom: 1px;
+	border-bottom-style: dotted;*/
+	border-right:0;
+	border-left: 0;
+	height: 20px;
+	margin-right: 2px;
+	}
+
+    td.music_course_td1
+	{
+		border: 1px solid black;
+		height: 40px;
+		padding-left:4px;
+		padding-right:4px;
+		width:1.6cm;
+		min-width:1.6m;
+		max-width:1.6cm;
+		margin:0;
+		text-align:justify;
+		text-justify: inter-ideograph;
+		-webkit-text-align-last:justify; 
+	}
+	td.music_course_td1:after {
+	content: '';
+	display: inline-block;
+	width: 100%;
+	}	
+	td.music_course_term_td
+	{
+		border: 1px solid black;
+		width:4.5cm;
+		min-width:4.5cm;
+		max-width:4.5cm;
+		text-align: center;
+		margin:0;
+		height:10px;
+		text-align: center;
+	}
+/*------------------------------------*/
+td.music_course_type_td
+{
+	width:0.5cm;
+	min-width:0.5cm;
+	max-width:0.5cm;	
+	margin:0;
+	text-align:justify;
+	padding-left: 5px;
+}
+td.mkmf{	border-right:0px;}
+td.mkmf1{	border-right:1px;	border-right-style: solid;}
+td.mkmf,td.mkmf1{
+border-left:0px;
+text-align:right;
+height: 10px;
+margin-right: 2px;
+padding-right:5px;
+border-top-style: dotted;
+border-bottom-style: dotted;
+}
+td.mkmf_1{	border-right:0px;}
+td.mkmf1_1{	border-right:1px;	border-right-style: solid;}
+td.mkmf_1,td.mkmf1_1{
+border-left:0px;
+text-align:right;
+height: 10px;
+margin-right: 2px;
+padding-right:5px;
+border-top-style: solid;
+border-bottom-style: solid;
+}
+td.mkmftotal1,td.mkmfpk1{
+border-top-style: solid;
+border-bottom-style: solid;
+text-align:right;
+padding-right:5px;
+}
+td.mkmftotal,td.mkmfpk{
+border-top-style: dotted;
+border-bottom-style: dotted;
+text-align:right;
+padding-right:5px;
+}
+td.mkmf{
+text-align:right;
+height: 10px;
+margin-right: 2px;
+}
+table.later,td.later,td.later1,tr.later{
+border: 0px;
+border-collapse:collapse;
+}
+td.later{
+width: 2.0cm;
+max-width: 2.0cm;	
+white-space: nowrap;
+}
+td.later1{
+width: 3.0cm;
+max-width: 3.0cm;	
+white-space: nowrap;
+}
+table.pytbl_css{
+width: 20cm;
+height: 60px;
+max-height: 60px;
+border-collapse:collapse;
+border: 1px solid black;
+margin-bottom:2px;
+}
+
+
+table.c_zeroline,tr.c_zeroline,td.c_zeroline{
+	border: 0px solid black;
+	border-collapse:collapse;
+	padding:0;
+	margin: 0;
+}
+tr.c_oneline,td.c_oneline{
+	border: 1px solid black;
+	border-collapse:collapse;
+	padding:0;
+	margin: 0;
+	text-align: center;
+}
+
+td.ying_title
+{
+	border: 1px solid black;
+	height: 20px;
+	padding-left:4px;
+	padding-right:4px;
+	width:1.95cm;
+	min-width:1.95m;
+	max-width:1.95cm;
+	margin:0;
+	text-align:justify;
+	text-justify: inter-ideograph;
+	-webkit-text-align-last:justify; 
+}
+td.ying_title:after {
+	content: '';
+	display: inline-block;
+	width: 100%;
+}	
+div.c01
+{
+text-indent: -18px;
+padding-left: 15px;
+/*line-height:26px;*/
+}
+td.yt0 {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+td.yt {
+    border-collapse: collapse;
+    border: 1px solid black;
+    height: 20px;
+    max-height: 20px;
+    padding-left: 3px;
+    padding-right: 3px;
+    margin: 0;
+    text-align: justify;
+    text-justify: inter-ideograph;
+    /*-webkit-text-align-last: justify;*/
+}
+td.yt:after {
+	content: '';
+	display: inline-block;
+	width: 100%;
+}
