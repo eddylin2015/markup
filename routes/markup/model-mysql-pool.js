@@ -1,6 +1,4 @@
-﻿// attend
-
-'use strict';
+﻿'use strict';
 const mysql = require('mysql');
 const mysqlcfg = require('../mysql250/mysql250config');
 
@@ -24,16 +22,16 @@ function listCourseBy(staf_ref, userid, limit, token, cb) {
                 const hasMore = results.length === limit ? token + results.length : false;
                 cb(null, results, hasMore);
                 connection.release();
-
             });
     });
 }
+
 function StatisticsRead(sql, cb) {
     pool.getConnection(function (err, connection) {
         if (err) {
             cb(err);
             return;
-        }
+        } 
         connection.query(
             sql,
             [],
@@ -144,127 +142,7 @@ function RegObserver(staf_ref,userid,csid,obsid,cb){
             });
     });
 }
-function updateGradeMark(connection, sql, v_arr) {
-    return new Promise(function (resolve, reject) {
-        connection.query(sql, v_arr, (err, result) => {
-            if (err) { console.log(err); reject(err); }
-            resolve(100 + result.affectedRows);
-        });
-    });
-}
-function pm2g(m) {
-    return m >= 95 ? "A " : m >= 90 ? "A-" : m >= 85 ? "B+" : m >= 80 ? "B " : m >= 75 ? "B-" : m >= 70 ? "C+" : m >= 65 ? "C " : m >= 60 ? "C-" : "D "
-}
-function savegrademark(staf_ref, json, cb) {
-    pool.getConnection(function (err, connection) {
-        if (err) { cb(err); return; }
-        let arrkeys = Object.keys(json);
-        let cnt = 0;
-        for (let i = 0; i < arrkeys.length; i++) {
-            let x = arrkeys[i];
-            let v = json[x];
-            let a = x.split("_");
-            let k = a[2];
-            let fieldn = a[1].replace("-", "_");
 
-            let sql = 'UPDATE `mrs_stud_grade_course` SET ' + fieldn + '= ? WHERE `sgcid` =?  ';
-            let v_arr = [v, k];
-            if (fieldn.indexOf("mgrade") > -1) {
-                let f1 = fieldn.replace("mgrade", "grade");
-                let res = v.match(/^\d+[.\d+]*$/);
-                if (res) {
-                    sql = `UPDATE mrs_stud_grade_course SET ${f1}=?, ${fieldn}= ? WHERE sgcid =?  `;
-                    let grade = pm2g(Number(res));
-                    v_arr = [grade, v, k];
-                }
-            }
-
-            updateGradeMark(connection, sql, v_arr).then(function (response) {
-                cnt += response;
-                if ((i + 1) == arrkeys.length) {
-                    cb(null, cnt);
-                    connection.release();
-                }
-            });
-        }
-    });
-}
-
-
-function updateGradeMarkarray(connection, sql, gcname, grade, mgrade, studref) {
-    return new Promise(function (resolve, reject) {
-        connection.query(sql, [gcname, grade, mgrade, studref], (err, result) => {
-            if (err) { console.log(err); reject(err); }
-            resolve(100 + result.affectedRows);
-        });
-    });
-}
-function savegrademarkarray(fieldn, data, cb) {
-    pool.getConnection(function (err, connection) {
-        if (err) { cb(err); return; }
-        let cnt = 0;
-        let STUD_REF_index = 0;
-        let GC_NAME_index = 0;
-        let GRADE_index = 0;
-        if (data.length > 0 && data[0][0].toUpperCase() == "STUD_REF") {
-            for (let i = 0; i < data[0].length; i++) {
-                if (!data[0][i]) continue;
-                if (data[0][i].toUpperCase().indexOf("STUD_REF")>-1) { STUD_REF_index = i; }
-                if (data[0][i].toUpperCase().indexOf("GC_NAME")>-1) { GC_NAME_index = i; }
-                if (data[0][i].toUpperCase().indexOf(fieldn.toUpperCase())>-1) { GRADE_index = i; }
-            }
-        }
-        if (!(GC_NAME_index > 0 && GRADE_index > 0)) cb("error format!");
-        for (let i = 0; i < data.length; i++) {
-            if (data[i][0] == "stud_ref" || data[i][0] == "STUD_REF") continue;
-            let studref = data[i][STUD_REF_index];
-            let gcname = data[i][GC_NAME_index];
-            let grade = data[i][GRADE_index] ? data[i][GRADE_index] : '';     //.substring(0,2)
-            let mgrade = 0;
-            let numpatt = /^\d+[.\d+]*$/;
-            let res = grade.match(numpatt);
-            if (res) {
-                mgrade = Number(res);
-                grade = pm2g(mgrade);
-            }
-            let sql = 'UPDATE `mrs_stud_grade_course` SET gc_name= ? ,' + fieldn + '= ?,m' + fieldn + '= ? WHERE `stud_ref` = ? ; ';
-            updateGradeMarkarray(connection, sql, gcname, grade, mgrade, studref).then(function (response) {
-                cnt += response;
-                if ((i + 1) == data.length) {
-                    cb(null, Math.floor(cnt / 100));
-                    connection.release();
-                }
-            });
-        }
-    });
-}
-function updateGCNameCMD(connection, sql, gcname, studref) {
-    return new Promise(function (resolve, reject) {
-        connection.query(sql, [gcname, studref], (err, result) => {
-            if (err) { console.log(err); reject(err); }
-            resolve(100 + result.affectedRows);
-        });
-    });
-}
-function updateGCNameArray(GCName, data, cb) {
-    pool.getConnection(function (err, connection) {
-        if (err) { cb(err); return; }
-        let cnt = 0;
-        for (let i = 0; i < data.length; i++) {
-            let li=data[i].split('_');
-            let studref = li[0];
-            let gcname = GCName;
-            let sql = 'UPDATE `mrs_stud_grade_course` SET gc_name= ?  WHERE `stud_ref` = ? ; ';
-            updateGCNameCMD(connection, sql, gcname, studref).then(function (response) {
-                cnt += response;
-                if ((i + 1) == data.length) {
-                    cb(null, Math.floor(cnt / 100));
-                    connection.release();
-                }
-            });
-        }
-    });
-}
 function updateMrkPubDate(data) {
     pool.getConnection(function (err, connection) {
         if (err) {
@@ -447,9 +325,6 @@ module.exports = {
     readpingyu: readpingyu,
     readconduct: readconduct,
     readgrademark: readgrademark,
-    savegrademark: savegrademark,
-    savegrademarkarray: savegrademarkarray,
-    updateGCNameArray:updateGCNameArray,
     updateMrkPubDate: updateMrkPubDate,
     ReadMarksysAuth: ReadMarksysAuth,
     StatisticsRead: StatisticsRead,

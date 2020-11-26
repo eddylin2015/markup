@@ -3,13 +3,13 @@ const mysql = require('mysql');
 const mysqlcfg = require('../../mysql250/mysql250config');
 const pool = mysqlcfg.esdbPool;
 
-function list( limit, token, cb) {
+function list(userid,limit, token, cb) {
     token = token ? parseInt(token, 10) : 0;
     pool.getConnection(function (err, connection) {
         if(err){cb(err);return;}
         // Use the connection
         connection.query(
-            'SELECT * FROM `mrs_course_detail` order by id DESC LIMIT ? OFFSET ?', [limit, token],
+            'SELECT * FROM `mrs_course_detail` order by course_d_id DESC LIMIT ? OFFSET ?', [limit, token],
             (err, results) => {
                 if (err) {
                     cb(err);
@@ -28,7 +28,7 @@ function listByUserId(userId, limit, token, cb) {
     pool.getConnection(function (err, connection) {
         if(err){cb(err);return;}
         connection.query(
-            'SELECT * FROM `mrs_course_detail` WHERE `staf_ref` = ? order by id DESC LIMIT ? OFFSET ?  ;',
+            'SELECT * FROM `mrs_course_detail` WHERE `staf_ref` = ? order by course_d_id DESC LIMIT ? OFFSET ?  ;',
             [userId, limit, token],
             (err, results) => {
                 if (err) {
@@ -110,7 +110,6 @@ module.exports = {
     read: read,
     update: update,
     delete: _delete,
-    listBy: listBy
 };
 
 if (module === require.main) {
