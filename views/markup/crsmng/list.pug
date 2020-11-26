@@ -28,17 +28,33 @@ block content
       tr
         td
           .media
-            a(href=`/internal/worknote/${book.id}`, style="color: grean; ")
+            a(href=`/internal/markup/crsmng/${book.course_d_id}`)
               .media-left
-                if book.deptlog>0
-                  span(class="glyphicon glyphicon-ok")
-                else if book.deptlog<0
-                  span(class="glyphicon glyphicon-minus-sign")
-                else
-                  span(class="glyphicon glyphicon-pencil")
               .media-body            
-                h4(  style="color: white;background-color:#222; ") !{book.id} . !{book.title}                  
-      tr
+              span= book.course_d_id
+            span .
+            span= book.session_id
+            span .
+            span= book.classno
+            span .
+            span= book.staf_ref
+            span .
+            span= book.courseName
+            span .
+            span= book.c_T_type
+            span .
+            span= book.c_field
+            span .
+            span= book.c_section_total
+            span .
+            span= book.tab
+            span .
+            span= book.groupid
+            span .
+            span= book.rate
+            span .                
+            span= book.SPK
+      //tr
         td
           small= book.author
             a(href=`/internal/worknote/followlist?rid=${book.id}`) follow list

@@ -71,7 +71,7 @@ router.get('/api/timetable.json',require('connect-ensure-login').ensureLoggedIn(
   var readStream = fs.createReadStream(process.cwd() + "\\db\\tabletime.json");
   readStream.pipe(res);
 });
-router.get('/add', (req, res) => {
+router.get('/add', require('connect-ensure-login').ensureLoggedIn(), (req, res) => {
   let sectno=req.query.sectno?req.query.sectno:getSectNo();
   res.render('classeval/form.pug', {
       profile: req.user,
@@ -349,7 +349,7 @@ router.post(
  * GET /books/:id/edit
  * Display a book for editing.
  */
-router.get('/:book/edit', (req, res, next) => {
+router.get('/:book/edit', require('connect-ensure-login').ensureLoggedIn() ,(req, res, next) => {
     getModel().read(req.user.id, req.params.book, (err, entity) => {
     if (err) {
       next(err);
