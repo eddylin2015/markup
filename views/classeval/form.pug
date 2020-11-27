@@ -12,6 +12,7 @@ block content
   script(src='/ckeditor/ckeditor.js')
   script.
     var data=null;
+    var ce_Teacher=null;
     function Save(){
        document.getElementById('ActForm').submit();
     }
@@ -34,7 +35,9 @@ block content
             //if($("#ce_Teacher").val()=="" && $("#ce_Subject").val()=="" )
             {
                $("#ce_Teacher").val(teacher);
+               $("#ce_Teachercbx").val(teacher);
                $("#ce_Subject").val(coursename);
+               $("#ce_Subjectcbx").val(coursename);
             }
             break;
           }
@@ -95,7 +98,7 @@ block content
         td 
           .form-group        
             //+inputStatus("ce_Status",book.ce_Status)             
-            input.form-control(type="text", name="ce_Status", id="ce_Statuscbx", value=book.ce_Status)
+            input.form-control(type="text", name="ce_Status", id="ce_Status", value=book.ce_Status)
       tr
         td
           .form-group.hidden                
@@ -310,6 +313,8 @@ block content
       });      
       $("#ce_SectNocbx").combobox();
       $("#ce_CNocbx").combobox();
-      $("#ce_Statuscbx").CustCombobox({ source: ["很好","好","一般","差","很差"] });
+      $("#ce_Status").CustCombobox({cbxid:"ce_Statuscbx" , source: ["很好","好","一般","差","很差"] });
+      $("#ce_Teacher").CustCombobox({cbxid:"ce_Teachercbx" ,source: ["很好","好","一般","差","很差"] });
+      $("#ce_Subject").CustCombobox({cbxid:"ce_Subjectcbx" ,source: ["很好","好","一般","差","很差"] });
       //$("#ce_Statuscbx").autocomplete({ source: ["AA","AB","C","D"] });
     });

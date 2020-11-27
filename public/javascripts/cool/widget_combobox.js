@@ -121,9 +121,10 @@ $.widget("custom.combobox", {
 
 $.widget("custom.CustCombobox", {
     options: {
-        source: 0
+        source: 0,
+        cbxid:""
     },
-    _create: function (source) {
+    _create: function () {
         this.source = this.options.source;
         this.wrapper = $("<span>")
             .addClass("custom-combobox")
@@ -134,7 +135,7 @@ $.widget("custom.CustCombobox", {
     },
     _createAutocomplete: function () {
         value = this.element.val();
-        this.input = $("<input>")
+        this.input = $(`<input id="${this.options.cbxid}">`)
             .appendTo(this.wrapper)
             .val(value)
             .attr("title", "")
