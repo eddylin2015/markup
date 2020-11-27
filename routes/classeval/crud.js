@@ -51,10 +51,7 @@ router.get('/', require('connect-ensure-login').ensureLoggedIn(), (req, res, nex
     });
   });
 });
-/**
- * GET /books/add
- * Display a form for creating a book.
- */
+
 function getSectNo(){
   let d = new Date();
   let h = d.getHours();
@@ -66,16 +63,19 @@ function getSectNo(){
     if(time_str<time_sectno[i]) return i==0?"":sectno[i-1]
   return "";
 }
+router.get('/api/secteacher.json',require('connect-ensure-login').ensureLoggedIn(),  (req, res) => {
+  res.type('application/json'); 
+  var readStream = fs.createReadStream(process.cwd() + "\\jsondata\\SecTeacher.json");
+  readStream.pipe(res);
+});
+
 router.get('/api/timetable.json',require('connect-ensure-login').ensureLoggedIn(),  (req, res) => {
   res.type('application/json'); 
-  var readStream = fs.createReadStream(process.cwd() + "\\db\\tabletime.json");
+  var readStream = fs.createReadStream(process.cwd() + "\\jsondata\\timetable.json");
   readStream.pipe(res);
 });
 router.get('/editTimeTable',require('connect-ensure-login').ensureLoggedIn(),  (req, res) => {
-  //res.type('application/json'); 
-  //var readStream = fs.createReadStream(process.cwd() + "\\db\\tabletime.json");
-  //readStream.pipe(res);
-  fs.readFile(process.cwd() + "\\db\\tabletime.json", (err, data) => {
+  fs.readFile(process.cwd() + "\\jsondata\\timetable.json", (err, data) => {
     if (err) throw err;
     let books = JSON.parse(data);
     res.render('classeval/editTimeTable.pug', {
@@ -83,13 +83,12 @@ router.get('/editTimeTable',require('connect-ensure-login').ensureLoggedIn(),  (
       books:books,
       fn:"timetable"
     });
-  
   });
 });
 router.post('/UpdateTimeTable', require('connect-ensure-login').ensureLoggedIn(),
     images.multer.single('image'),
     (req, res) => {
-      fs.writeFileSync(process.cwd() + "\\db\\tabletime.json", req.body.datajson);
+      fs.writeFileSync(process.cwd() + "\\jsondata\\timetable.json", req.body.datajson);
     res.end("ok")
     });
 router.get('/add', require('connect-ensure-login').ensureLoggedIn(), (req, res) => {

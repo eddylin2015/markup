@@ -14,19 +14,9 @@ block content
             a(href=`/internal/classeval/${book.id}`, style="color: grean; ")
               .media-left
               .media-body            
-                h4(  style="color: white;background-color:#222; ") !{book.id} . !{book.title}                  
-          table
-            tr
-              td= book.ce_Date
-              td
-                span (
-                span= book.ce_SectNo
-                span )
-              td= book.ce_CNo                
-              td= book.ce_Subject
-              td= book.ce_Teacher
-              td
-                span= book.ce_Room
+                span= `${book.id}.${book.ce_Date}.${book.ce_SectNo}.${book.ce_CNo}`
+                span= book.ce_Subject
+                span= book.ce_Teacher
       //tr
         td
           small= book.author

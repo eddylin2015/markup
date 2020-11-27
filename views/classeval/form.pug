@@ -12,7 +12,8 @@ block content
   script(src='/ckeditor/ckeditor.js')
   script.
     var data=null;
-    var ce_Teacher=null;
+    var course_list=["中文","公民","化學","生物","合奏","合唱","地理","多選一","自然科學","宗教教育","物理","社會與人文","科學探究","英文","英文會話","英語商業信札","音樂","創意科技","聖經","葡文","電腦","歴史","數學","樂理","歷史","藝術","體育"]
+    var teacher_list=null;
     function Save(){
        document.getElementById('ActForm').submit();
     }
@@ -23,7 +24,6 @@ block content
       var weekday = d.getDay()
       let key=$("#ce_CNocbx").val()+$("#ce_SectNocbx").val();
       if(data){
-        console.log(data)
         for(let i=0;i<data.length;i++)
         {
           console.log(data[i])
@@ -35,9 +35,9 @@ block content
             //if($("#ce_Teacher").val()=="" && $("#ce_Subject").val()=="" )
             {
                $("#ce_Teacher").val(teacher);
-               $("#ce_Teachercbx").val(teacher);
                $("#ce_Subject").val(coursename);
-               $("#ce_Subjectcbx").val(coursename);
+               $("#cbx_Teacher").val(teacher);
+               $("#cbx_Subject").val(coursename);
             }
             break;
           }
@@ -71,12 +71,15 @@ block content
           .form-group         
             +inputSectNo("ce_SectNo",book.ce_SectNo)            
       tr(style="padding:20px;margin:20px;")            
-        td
-          a#mathcTimeTable(onclick="mathcTimeTable();",href="#") 班別*:	
+        td 班別*:	
         td
           .form-group 
-            +inputClassNo("ce_CNo",book.ce_CNo)   
+            +inputClassNo("ce_CNo",book.ce_CNo)  
       tr
+        td
+        td
+          button(type="button", class="btn btn-warning",onclick="mathcTimeTable();") 查詢
+      //tr
         td 地點
         td
           .form-group 
@@ -182,7 +185,7 @@ block content
             each val in [1,2,3,4,5]
               span
                 label(class="radio-inline")=  s_v[val] + s_s[val]
-                  input(type="radio", name="ce_TchITWrit",id= ("ce_TchITWrit"+val), value= (s_v[val]), checked= ( book.ce_TchWriting == s_v[val] ? true : false )  )
+                  input(type="radio", name="ce_TchITWrit",id= ("ce_TchITWrit"+val), value= (s_v[val]), checked= ( book.ce_TchITWrit == s_v[val] ? true : false )  )
       tr
         td
           .form-group
@@ -220,11 +223,11 @@ block content
           span#btn_ce_WrgOther(class="BTNINPUTNO") 編輯
     .form-group
       label(for="ce_TchNote") 補充事項:
-      textarea.form-control(rows=3,  style="color: white;background-color:black; ",name="ce_TchNote", id="ce_TchNote", value=book.ce_TchNote)= book.ce_TchNote
+      textarea.form-control(rows=3,  name="ce_TchNote", id="ce_TchNote", value=book.ce_TchNote)= book.ce_TchNote
     h3 校園環境
     .form-group
       label(for="description") 需跟進事項:    
-      textarea.form-control(rows=3,  style="color: white;background-color:black; ",name="ce_Note", id="ce_Note", value=book.ce_Note)= book.ce_Note
+      textarea.form-control(rows=3,  name="ce_Note", id="ce_Note", value=book.ce_Note)= book.ce_Note
     //.form-group
       label(for="description") 工作內容:
       textarea.form-control(rows=10,  style="color: white;background-color:black; ",name="description", id="description", value=book.description)= book.description
@@ -266,6 +269,12 @@ block content
           data=data_
         });
       }
+      if(teacher_list==null){
+        $.getJSON( "/internal/classeval/api/secteacher.json", function( data_ ) {
+          teacher_list=data_
+          $("#ce_Teacher").CustCombobox({cbxid:"cbx_Teacher",source:teacher_list});
+        });
+      }      
       $('#inputseatno_dlg').dialog(
         {	autoOpen:false,	
           width:"360px"	,
@@ -313,8 +322,8 @@ block content
       });      
       $("#ce_SectNocbx").combobox();
       $("#ce_CNocbx").combobox();
-      $("#ce_Status").CustCombobox({cbxid:"ce_Statuscbx" , source: ["很好","好","一般","差","很差"] });
-      $("#ce_Teacher").CustCombobox({cbxid:"ce_Teachercbx" ,source: ["很好","好","一般","差","很差"] });
-      $("#ce_Subject").CustCombobox({cbxid:"ce_Subjectcbx" ,source: ["很好","好","一般","差","很差"] });
+      $("#ce_Status").CustCombobox({ source: ["很好","好","一般","差","很差"] });
+      $("#ce_Subject").CustCombobox({cbxid:"cbx_Subject",source:course_list });
+      
       //$("#ce_Statuscbx").autocomplete({ source: ["AA","AB","C","D"] });
     });

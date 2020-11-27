@@ -179,7 +179,7 @@ $.widget("custom.CustCombobox", {
                 // Close if already visible
                 if (wasOpen) { return; }
                 // Pass empty string as value to search for, displaying all results
-                input.autocomplete("search", "");
+                input.autocomplete("search", input.value);
             });
     },
     _source: function (request, response) {
