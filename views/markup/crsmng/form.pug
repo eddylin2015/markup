@@ -15,87 +15,69 @@ extends ./base.pug
 
 block content
   script(src='/ckeditor/ckeditor.js')
-  h3 #{action} 工作小便條 
   form(method="POST", enctype="multipart/form-data")
-    .form-group.hidden
-      label(for="title") 標題
-      input.form-control(type="text", name="title", id="title", value=book.title)
     table#tbl
       tr
-        td
-          .form-group
-            label(for="author") Author
-            input.form-control(type="text", name="author", id="author", value=book.author, readonly=true) 
-        td
-          .form-group
-            label(for="authorname") authorname
-            input.form-control(type="text", name="authorname", id="authorname", value=book.authorname, readonly=true)
-        td
-          .form-group
-            label(for="logDate") 日期
-            input.form-control(type="text", name="logDate", id="logDate", value=book.logDate)
-    .form-group
-      label(for="description") 工作內容:
-      textarea.form-control(rows=10,  style="color: white;background-color:black; ",name="description", id="description", value=book.description)= book.description
-      table
-        tr
+        td course_d_id
+        td= book.course_d_id
+        tr        
+          td session_id
           td
-          td
-            .form-group
-              label(for="mailto") mailto:
-              input.form-control(type="text",name="mailto", id="mailto", value=book.author+"-")
-    table#tbl2
-      tr
-        td
-          .form-group
-            label(for="topNote") 置頂
-            input.form-control(type="radio", name="topNote", id="topNote", value=1, checked= book.topNote == 1 ? true: false )          
-            input.form-control(type="radio", name="topNote", id="topNote", value=0, checked= book.topNote == 1 ? false: true )          
-        td
-          .form-group
-            label(for="toStaf") 支援職員編號
-            input.form-control(type="text", name="toStaf", id="toStaf", value=book.toStaf)
-        td
-          .form-group
-            label(for="toName") 支援職員名稱
-            input.form-control(type="text", name="toName", id="toName", value=book.toName)
-        td
-          .form-group
-            label(for="jobtype") 支援類別
-            select.form-control(type="text", name="jobtype", id="jobtype", value=book.jobtype)
-              each val in ["","設備更换","設備外借","課室硬件","課室支援","老師支援","印表機支援","MSAD支援","軟件支援","內部軟件支援"]
-                option(value=val, selected=  book.jobtype == val ? true : false)= val
-    .form-group
-      label(for="title") 狀態:
-      label(class="radio-inline")=   "-1.關閉請求___" 
-        input(type="radio", name="deptlog",id= ("deptlog_1"), value= -1, checked=  book.deptlog == - 1 ? true : false )  
-      label(class="radio-inline")=   "0.處理進行中___" 
-        input(type="radio", name="deptlog",id= ("deptlog_2"), value=  0, checked=  book.deptlog == 0 ? true : false )  
-      label(class="radio-inline")=   "1.完成並關閉請求___" 
-        input(type="radio", name="deptlog",id= ("deptlog_3"), value=  1, checked=  book.deptlog > 0  ? true : false )  
-    .form-group.hidden
-      label(for="rootid") rootid 
-      input.form-control(type="text", name="rootid", id="rootid", value=book.rootid)
-    .form-group.hidden
-      label(for="parentid") parentid 
-      input.form-control(type="text", name="parentid", id="parentid", value=book.parentid)
-    .form-group.hidden
+            input.form-control(type="text", name="session_id", id="session_id", value=book.session_id, readonly=true)
+        tr        
+          td classno
+          td 
+            input.form-control(type="text", name="classno", id="classno", value=book.classno)
+        tr        
+          td staf_ref
+          td 
+            input.form-control(type="text", name="staf_ref", id="staf_ref", value=book.staf_ref)
+        tr        
+          td courseName
+          td 
+            input.form-control(type="text", name="courseName", id="courseName", value=book.courseName)
+        tr        
+          td c_T_type
+          td 
+            input.form-control(type="text", name="c_T_type", id="c_T_type", value=book.c_T_type)
+        tr        
+          td c_field
+          td 
+            input.form-control(type="text", name="c_field", id="c_field", value=book.c_field)
+        tr        
+          td c_section_total
+          td 
+            input.form-control(type="text", name="c_section_total", id="c_section_total", value=book.c_section_total)
+        tr        
+          td tab
+          td 
+            input.form-control(type="text", name="tab", id="tab", value=book.tab)
+        tr        
+          td groupid
+          td 
+            input.form-control(type="text", name="groupid", id="groupid", value=book.groupid)
+        tr        
+          td filename
+          td 
+            input.form-control(type="text", name="filename", id="filename", value=book.filename)
+        tr        
+          td rate
+          td 
+            input.form-control(type="text", name="rate", id="rate", value=book.rate)
+        tr        
+          td SPK
+          td 
+            input.form-control(type="text", name="SPK", id="SPK", value=book.SPK)
+        tr        
+          td c_ng_id  
+          td 
+            input.form-control(type="text", name="c_ng_id", id="c_ng_id", value=book.c_ng_id)
+    //.form-group.hidden
       label(for="createdBy") Created by 
       input.form-control(type="text", name="createdBy", id="createdBy", value=book.createdBy)
-    .form-group.hidden
+    //.form-group.hidden
        label(for="createdById") Created by ID
        input.form-control(type="text", name="createdById", id="createdById", value=book.createdById)
-    if book.deptlog==0
-      if profile.id == book.createdById
-        button.btn.btn-success(type="submit") Save
-      if action == 'Edit'
-        if book.rootid
-          a(href=`/internal/worknote/${book.id}/follow?rid=${book.rootid}&n=Follow&t=${book.description}`)
-            button.btn.btn-success(type="button") Follow
-        else
-          a(href=`/internal/worknote/${book.id}/follow?rid=${book.id}&n=Follow&t=${book.description}`)
-            button.btn.btn-success(type="button") Follow
-    else
-      button(type="button", class="btn btn-success disabled") Save
+    button.btn.btn-success(type="submit") Save
   script.
-    CKEDITOR.replace( 'description',{    filebrowserUploadUrl: "imageUploader" }  );      
+    //CKEDITOR.replace( 'description',{    filebrowserUploadUrl: "imageUploader" }  );      

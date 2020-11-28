@@ -14,28 +14,59 @@
 extends ./base.pug
 
 block content
-  h3 Work Log
-    small
-
+  script.
+    function confirmDelete(url,key){
+      let aK = prompt("Please enter Key", "");
+      if (aK != null && aK ==key) {
+         window.location = url;
+      }
+    }
   .btn-group
-    a(href=`/internal/worknote/${book.id}/edit`, class='btn btn-primary btn-sm')
+    a(href=`/internal/markup/crsmng/${book.course_d_id}/edit`, class='btn btn-primary btn-sm')
       i.glyphicon.glyphicon-edit
-      span  Edit_Log
-    a(href=`/internal/worknote/${book.id}/edittext`, class='btn btn-primary btn-sm')
-      i.glyphicon.glyphicon-edit
-      span  Edit_Work      
-    a(href=`/internal/worknote/${book.id}/delete`, class='btn btn-danger btn-sm')
+      span  Edit
+    a(href="#",onclick=`confirmDelete("/internal/markup/crsmng/${book.course_d_id}/delete",${book.course_d_id});`, class='btn btn-danger btn-sm')
       i.glyphicon.glyphicon-trash
-      span  Delete_Log
-
+      span  Delete
   .media
     .media-left
       img(src=book.imageUrl || "/images/deptworklog.jpg")
     .media-body
-      h4= book.title
-        | &nbsp;
-        small= book.logDate
-        small= book.jobtype
-      h5 By #{book.author||'unknown'}
-      div(class="pre-scrollable;", style="color: white;background-color:black; ") !{book.description}
-      small Added by #{book.createdBy}
+      table
+        tr
+          td course_d_id
+          td session_id
+          td classno
+          td staf_ref
+          td courseName
+          td c_T_type
+          td c_field
+          td c_section_total
+          td tab
+          td groupid
+          td filename
+          td upcnt
+          td rate
+          td SPK
+          td c_ng_id
+
+        tr
+          td= book.course_d_id
+          td= book.session_id
+          td= book.classno
+          td= book.staf_ref
+          td= book.courseName
+          td= book.c_T_type
+          td= book.c_field
+          td= book.c_section_total
+          td= book.tab
+          td= book.groupid
+          td= book.filename
+          td= book.upcnt
+          td= book.rate
+          td= book.SPK
+          td= book.c_ng_id
+
+      //h5 By #{book.author||'unknown'}
+      //div(class="pre-scrollable;", style="color: white;background-color:black; ") !{book.description}
+      //small Added by #{book.createdBy}
