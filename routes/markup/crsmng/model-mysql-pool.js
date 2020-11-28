@@ -44,8 +44,7 @@ function listByUserId(userId, limit, token, cb) {
 }
 
 
-function create( data, cb) {
-       
+function create( userid,data, cb) {
     pool.getConnection(function (err, connection) {
         if(err){cb(err);return;}
         connection.query('INSERT INTO `mrs_course_detail` SET ?', data, (err, res) => {
@@ -53,7 +52,7 @@ function create( data, cb) {
                 cb(err);
                 return;
             }
-            read(res.insertId, cb);
+            read(userid,res.insertId, cb);
             connection.release();
         });
     });
@@ -80,24 +79,24 @@ function read(userid, id, cb) {
     });
 }
 
-function update( id, data, cb) {
+function update(userid, id, data, cb) {
     pool.getConnection(function (err, connection) {
         if(err){cb(err);return;}
         connection.query(
-            'UPDATE `mrs_course_detail` SET ? WHERE `id` = ?  ', [data, id], (err) => {
+            "UPDATE mrs_course_detail SET ? WHERE course_d_id = ?;"  , [data, id], (err,res) => {
                 if (err) {
                     cb(err);
                     return;
                 }
-                read( id, cb);
+                read(userid, id, cb);
                 connection.release();
             });
     });
 }
-function _delete(id, cb) {
+function _delete(userid,id, cb) {
     pool.getConnection(function (err, connection) {
         if(err){cb(err);return;}
-        connection.query('DELETE FROM `mrs_course_detail` WHERE `id` = ?  ',[ id ],  cb);
+        connection.query('DELETE FROM `mrs_course_detail` WHERE `course_d_id` = ?  ', id,  cb);
         connection.release();
     });
 }

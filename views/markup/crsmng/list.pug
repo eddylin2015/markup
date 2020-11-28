@@ -14,15 +14,10 @@
 extends ./base.pug
 
 block content
-  h3 Job Note
   meta(http-equiv="refresh", content="300")
-  a(href="/internal/worknote/add", class='btn btn-success btn-sm')
+  a(href="/internal/markup/crsmng/add", class='btn btn-success btn-sm')
     i.glyphicon.glyphicon-plus
-    span  Add Work Log
-  a(href="/internal/worknote/addtext", class='btn btn-success btn-sm')
-    i.glyphicon.glyphicon-plus
-    span  Add Work text
-
+    span  Add 
   table#desc
     each book in books
       tr
