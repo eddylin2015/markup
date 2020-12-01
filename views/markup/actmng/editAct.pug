@@ -1,0 +1,71 @@
+﻿extends ./baseEditAct.pug
+mixin link(aotid,aot, idname, grade)
+  if aot==3 && aotid==2
+    td.M(id=idname,align='right')= grade
+  else if aotid==aot
+    td.M(id=idname,align='right')= grade
+  else 
+    td= grade
+block content
+  style.
+    .tdh{padding-left:10px;padding-right:10px;text-align:center;}
+    .m{padding-left:10px;padding-right:10px;}
+  div#tableContent
+    table#EDUTBL
+      tbody
+        tr
+          td stud_ref
+          td session_id
+          td classno
+          td seat
+          td c_name
+          td#MA_H.tdh act_c_id
+          td#MB_H.tdh activeName
+          td#MC_H.tdh grade1
+          td#MD_H.tdh grade2
+          td#ME_H.tdh grade3
+          td#MF_H.tdh bk
+          td#MG_H.tdh act_py          
+
+        each book in books
+          tr
+            td= book.stud_ref
+            td= book.session_id
+            td= book.classno
+            td= book.seat
+            td= book.c_name
+            td.M(id=`MA_act-c-id_${book.stud_ref}`,style='text-align:center')= book.act_c_id
+            td.M(id=`MB_activeName_${book.stud_ref}`,style='text-align:left')= book.activeName
+            td.M(id=`MC_grade1_${book.stud_ref}`,align='right')= book.grade1
+            td.M(id=`MD_grade2_${book.stud_ref}`,align='right')= book.grade2
+            td.M(id=`ME_grade3_${book.stud_ref}`,align='right')= book.grade3
+            td.M(id=`MF_bk_${book.stud_ref}`,align='right')= book.bk
+            td.M(id=`MG_act-py_${book.stud_ref}`,style='text-align:left')= book.act_py
+
+  script.
+    var fn='!{fn}';
+    var PostUrl='/internal/markup/act/studGradeUpdate?sid=!{sid}&aot=!{aot}&fn=!{fn}';    
+    var returnUrl='/internal/markup/act/cnolist?cno=!{fn[0]}';
+    var CGIExpXlsUrl='/internal/PublicAPI/ExpXls.php?charset=utf-8&filename=mark_!{fn}.xls';
+    $('#returnUrlBtn').attr("href", returnUrl);
+    $('#CSVFrmPOST').attr("action", CGIExpXlsUrl);
+    $(document).ready(function(){
+    	BindingPastFrm("PastFrm","PastFrmText","EDUTBL");
+    	BindingCSVFrm('CSVFrm','CSVFrm_Link','tableContent','data.xls');
+    	BindingFunctions("editbtn","savebtn","pastbtn","exportbtn",'readmodebtn');
+    	BindingHead_EditMode(['MA_H','MB_H','MC_H','MD_H','ME_H','MF_H','MG_H']);
+    	BindingFieldDefsIntegerFields({'MC':'DEC','MD':'DEC','ME':'DEC'});
+    	GenOriginalData();
+    	
+    	$('#prtbtn').click(function(){
+            var toPrint = document.getElementById('tableContent');
+            var popupWin = window.open('', '_blank', 'width=350,height=150,location=no,left=200px');
+            popupWin.document.open();
+            popupWin.document.write('<html><title>'+"prt"+'</title><link rel="stylesheet" type="text/css" href="../print.css" /></head><body onload="window.print()">')
+    		    popupWin.document.write('<h4>'+fn+'</h4>');
+            popupWin.document.write(toPrint.innerHTML);
+            popupWin.document.write('</html>');
+            popupWin.document.close();
+    	});
+    });  
+   

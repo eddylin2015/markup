@@ -1,18 +1,18 @@
 ﻿// markup
 
 'use strict';
-const config = require('../../config');
+const config = require('../../../config');
 const PHP_HOST = config.get('PHP_HOST');
 const PHP_PORT = config.get('PHP_PORT');
 const express = require('express');
 const images = require('./images');
 const http = require('http');
 const querystring = require('querystring');
-const grp = require('../../db/it_support_right');
+const grp = require('../../../db/it_support_right');
 var redis = require("redis"),
     client = redis.createClient();
-const netutils = require('../../lib/net_utils');
-function getModel() { return require(`./model-mysql-pool_mark`); }
+const netutils = require('../../../lib/net_utils');
+function getModel() { return require(`./model-mysql-pool_act`); }
 const router = express.Router();
 
 function GetCDIDS(req) {
@@ -111,6 +111,157 @@ router.use((req, res, next) => {
     next();
 });
 
+router.get('/', require('connect-ensure-login').ensureLoggedIn(), (req, res, next) => {
+    res.render('markup/actmng/index.pug', {
+        profile: req.user,
+        esess: req.user.marksys_info[0][0],
+        sid:GetSID(req)
+    });
+});  
+router.get('/cnolist', require('connect-ensure-login').ensureLoggedIn(), (req, res, next) => {
+    res.render('markup/actmng/cnolist.pug', {
+        profile: req.user,
+        esess: req.user.marksys_info[0][0],
+        sid:GetSID(req),
+        sect:req.query.cno,
+    });
+});  
+////
+router.get('/actlist', (req, Response, next) => {
+    let aot = GetAOT(req);
+    let sid= GetSID(req);
+    let cno = 'actcid';
+    let staf_ref = netutils.id2staf(req.user);
+    getModel().ReadActDef( (err, entity) => {
+        if (err) { next(err); return; }
+        Response.render('markup/actmng/editActList.pug', {
+            profile: req.user,
+            fn: `${cno}_act`,
+            cno: cno,
+            books: entity,
+            editable: req.query.r,
+            aot: aot,
+            sid:sid
+        });
+    });
+});
+router.post('/actlistUpdate', images.multer.single('image'), (req, Response, next) => {
+    let staf = req.user ? req.user.id : null;
+    let aot = req.query.aot;
+    let sid= GetSID(req);
+    //console.log(req.body.datajson);
+    let data=JSON.parse(req.body.datajson)
+        getModel().UpdateActDef(data, (err, entity) => {
+            if (err) { next(err); return; }
+            Response.end(`更新${entity}筆...`);
+        });
+});
+router.get('/actGrade/:book/edit', (req, Response, next) => {
+    let aot = GetAOT(req);
+    let sid= GetSID(req);
+    let cno = req.params.book;
+    let actcid=cno;
+    let staf_ref = netutils.id2staf(req.user);
+    getModel().ReadActivebyACTCID( actcid, (err, entity) => {
+        if (err) { next(err); return; }
+        Response.render('markup/actmng/editAct.pug', {
+            profile: req.user,
+            fn: `${cno}_act`,
+            cno: req.params.book,
+            books: entity,
+            editable: req.query.r,
+            aot: aot,
+            sid:sid
+        });
+    });
+});
+////
+
+router.get('/studGrade/:book/edit', (req, Response, next) => {
+    let aot = GetAOT(req);
+    let sid= GetSID(req);
+    let cno = req.params.book;
+    let staf_ref = netutils.id2staf(req.user);
+    getModel().readclassact(staf_ref, cno,sid, (err, entity) => {
+        if (err) { next(err); return; }
+        Response.render('markup/actmng/editAct.pug', {
+            profile: req.user,
+            fn: `${cno}_act`,
+            cno: req.params.book,
+            books: entity,
+            editable: req.query.r,
+            aot: aot,
+            sid:sid
+        });
+    });
+});
+////
+
+////
+//actUpdate
+router.post('/studGradeUpdate', images.multer.single('image'), (req, Response, next) => {
+    let staf = req.user ? req.user.id : null;
+    let aot = req.query.aot;
+    let sid= GetSID(req);
+    //console.log(req.body.datajson);
+    let data=JSON.parse(req.body.datajson)
+    if ( data && (aot == 1 || aot == 2 || aot == 3)) {
+        getModel().UpdateAct(data,sid,aot, (err, entity) => {
+            if (err) { next(err); return; }
+            Response.end(`第${aot}段, 更新${entity}筆...`);
+        });
+    } else {
+        Response.end("Err");
+    }
+});
+
+
+router.get('/regStud/:book', (req, Response, next) => {
+    let cno = req.params.book;
+    let rurl = encodeURI(req.baseUrl);// + `/act/${cno}?r=true&fn=` + encodeURI(req.query.fn);
+    if(req.user && (req.user.id="2002024"))
+    getModel().ReadClassStudAct(cno, (err, entity) => {
+            if (err) { console.log(err);next(err); return; }
+            Response.render('markup/actmng/regstud/studlist_act.pug', {
+                profile: req.user,
+                fn: cno,
+                classno: cno,
+                books: entity,
+                rurl : rurl,
+                jsontwolist_php:`markup_jsontwolist?cno=${cno}&fn=${encodeURI(cno)}`,
+            });
+        });
+});
+
+router.post('/regStud/markup_jsontwolist', (req, Response, next) => {
+    let cno=req.query.cno;
+    let sid= GetSID(req);
+    let act_c_id=900;
+    let key1=req.body.aObj? req.body.aObj:null;
+    let key2=req.body.rObj? req.body.rObj:null;
+    getModel().RegStudAct(sid, cno,act_c_id, key1, key2 , (err, entity) => {
+        if (err) { next(err); return; }        
+        Response.end( entity.toString());
+    });
+    //Response.end(JSON.stringify(req.body))
+    /*
+    req.body.stafref = netutils.id2staf(req.user);
+    let sid=GetSID(req);
+    let cdid=req.query.cdid;
+    let cno=req.query.ccno;
+    getModel().RegStudCourse(sid, cdid, cno, key1, key2 , (err, entity) => {
+        if (err) { next(err); return; }        
+        Response.end( entity.toString());
+    });
+    */
+});
+
+
+
+
+
+
+
 router.get('/studcourse/:book', (req, res, next) => {
     if (CheckCDID(req, req.params.book)) { }
     else if (CheckCLASSCDID(req, req.params.book)) { }
@@ -202,44 +353,6 @@ router.post('/studcourse/editstudmark/marksavejson', images.multer.single('image
     }
 });
 
-router.get('/studcourse/regstudcourse/:book', (req, Response, next) => {
-    let cdid = req.params.book;
-    let rurl = encodeURI(req.baseUrl) + `/studcourse/${cdid}?r=true&fn=` + encodeURI(req.query.fn);
-    if (req.user && req.user.marksys_info) {
-        for (let i = 0; i < req.user.marksys_info[2].length; i++) {
-            if (req.user.marksys_info[2][i].course_d_id == cdid) {
-                let ccno = req.user.marksys_info[2][i].classno;
-                getModel().ReadClassStudCourse(cdid,ccno, (err, entity) => {
-                    if (err) { console.log(err);next(err); return; }
-                    Response.render('markup/regstudcourse/studlist_studcourse.pug', {
-                        profile: req.user,
-                        fn: req.query.fn,
-                        classno: ccno,
-                        cdid:cdid,
-                        books: entity,
-                        rurl : rurl,
-                        jsontwolist_php:`markup_jsontwolist?ccno=${ccno}&cdid=${cdid}&fn=${encodeURI(req.query.fn)}`,
-                    });
-                });
-            }
-        }
-    } else {
-        Response.end("no right");
-    }
-});
-
-router.post('/studcourse/regstudcourse/markup_jsontwolist', (req, Response, next) => {
-    req.body.stafref = netutils.id2staf(req.user);
-    let sid=GetSID(req);
-    let cdid=req.query.cdid;
-    let cno=req.query.ccno;
-    let key1=req.body.aObj? req.body.aObj:null;
-    let key2=req.body.rObj? req.body.rObj:null;
-    getModel().RegStudCourse(sid, cdid, cno, key1, key2 , (err, entity) => {
-        if (err) { next(err); return; }        
-        Response.end( entity.toString());
-    });
-});
 router.get('/studcourse/regstudcourse.php/:book', (req, Response, next) => {
     let cdid = req.params.book;
     let ccno = "";

@@ -2,7 +2,7 @@
 
 const express = require('express');
 const images = require('./images');
-
+const fs=require('fs')
 function getModel() {
   return require(`./model-mysql-pool`);
 }
@@ -34,8 +34,17 @@ router.get('/', require('connect-ensure-login').ensureLoggedIn(), (req, res, nex
   });
 });
 
-// Use the oauth2.required middleware to ensure that only logged-in users
-// can access this handler.
+router.get('/api/secteacher.json',require('connect-ensure-login').ensureLoggedIn(),  (req, res) => {
+  res.type('application/json'); 
+  const data = fs.readFileSync(process.cwd() + "\\jsondata\\teachers_obj.json");
+  let obj=JSON.parse(data);
+  let result=[];
+  for(let i=0;i<obj.length;i++){
+    result.push(`${obj[i].staf_ref} ${obj[i].cname}`)
+  }
+  res.end(JSON.stringify(result));
+});
+
 router.get('/mine', require('connect-ensure-login').ensureLoggedIn(), (req, res, next) => {
   getModel().listBy(
     req.user.id,

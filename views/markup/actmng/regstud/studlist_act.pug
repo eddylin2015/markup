@@ -1,0 +1,34 @@
+﻿extends ./base.pug  
+
+block content
+  div#tableContent
+    table#EDUTBL
+      tr.even
+        td
+          div 備選同學
+          select#srcList(style="width: 250px;height:500px;" , size=30, multiple)
+            each st_ in books
+              if st_.id==null
+                option(value=st_.stud_ref)= `${st_.curr_seat}:${st_.c_name}::`
+        td
+          button#btn0 全部
+          br
+          br
+          br
+          button#btn1 &nbsp; -&gt; &nbsp;  
+          br
+          br
+          br
+          button#btn2 &nbsp; &lt;- &nbsp;
+        td
+          div 已選課同學
+          select#disList(style="width: 250px;height:500px;" , size=30, multiple)
+            each st_ in books
+              if st_.id  && st_.grade1<1
+                option(value=st_.stud_ref)= `${st_.curr_seat}:${st_.c_name}:${st_.id}:`
+        td
+          div 已登分同學
+          select#markList(style="width: 250px;height:500px;",  size=30, multiple)
+            each st_ in books
+              if st_.id && st_.grade1>0
+                option(value=st_.stud_ref)= `${st_.curr_seat}:${st_.c_name}:${st_.id}:`

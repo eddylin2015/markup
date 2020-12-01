@@ -14,6 +14,15 @@
 extends ./base.pug
 
 block content
+  style.
+    input[type=radio] {
+        width: 20px;
+        height: 20px;
+        border: 1px solid black;
+        border-radius: 3px;
+    }
+    select, option {color: black;}
+  include ./inc/mixinFormControl    
   script(src='/ckeditor/ckeditor.js')
   form(method="POST", enctype="multipart/form-data")
     table#tbl
@@ -27,7 +36,9 @@ block content
         tr        
           td classno
           td 
-            input.form-control(type="text", name="classno", id="classno", value=book.classno)
+            //input.form-control(type="text", name="classno", id="classno", value=book.classno)
+            .form-group 
+              +inputClassNo("classno",book.classno)              
         tr        
           td staf_ref
           td 
@@ -47,31 +58,40 @@ block content
         tr        
           td c_section_total
           td 
-            input.form-control(type="text", name="c_section_total", id="c_section_total", value=book.c_section_total)
+            //input.form-control(type="text", name="c_section_total", id="c_section_total", value=book.c_section_total)
+            +inputNum("c_section_total",book.c_section_total)
         tr        
           td tab
           td 
-            input.form-control(type="text", name="tab", id="tab", value=book.tab)
+            //input.form-control(type="text", name="tab", id="tab", value=book.tab)
+            +inputNum("tab",book.tab)
         tr        
           td groupid
           td 
-            input.form-control(type="text", name="groupid", id="groupid", value=book.groupid)
+            //input.form-control(size=30,type="text", name="groupid", id="groupid", value=book.groupid)
+            +inputNum("groupid",book.groupid)            
+        tr        
+          td rate
+          td 
+            //input.form-control(type="text", name="rate", id="rate", value=book.rate)
+            +inputNum("rate",book.rate)                   
+        tr        
+          td SPK
+          td 
+            //input.form-control(type="text", name="SPK", id="SPK", value=book.SPK)
+            +inputNum("SPK",book.SPK)                   
+        tr        
+          td c_ng_id  
+          td 
+            //input.form-control(type="text", name="c_ng_id", id="c_ng_id", value=book.c_ng_id)
+            .form-group 
+              +inputNGrade("c_ng_id",book.c_ng_id)                
+
         tr        
           td filename
           td 
             input.form-control(type="text", name="filename", id="filename", value=book.filename)
-        tr        
-          td rate
-          td 
-            input.form-control(type="text", name="rate", id="rate", value=book.rate)
-        tr        
-          td SPK
-          td 
-            input.form-control(type="text", name="SPK", id="SPK", value=book.SPK)
-        tr        
-          td c_ng_id  
-          td 
-            input.form-control(type="text", name="c_ng_id", id="c_ng_id", value=book.c_ng_id)
+
     //.form-group.hidden
       label(for="createdBy") Created by 
       input.form-control(type="text", name="createdBy", id="createdBy", value=book.createdBy)
@@ -80,4 +100,23 @@ block content
        input.form-control(type="text", name="createdById", id="createdById", value=book.createdById)
     button.btn.btn-success(type="submit") Save
   script.
+    data=null;
+    teacher_list=null;
     //CKEDITOR.replace( 'description',{    filebrowserUploadUrl: "imageUploader" }  );      
+    $(function() {
+      if(data==null){
+        //$.getJSON( "/internal/markup/crsmng/api/timetable.json", function( data_ ) {data=data_ });
+      }
+      if(teacher_list==null){
+        $.getJSON( "/internal/markup/crsmng/api/secteacher.json", function( data_ ) {
+          teacher_list=data_
+          $("#staf_ref").CustCombobox({cbxid:"cbx_Teacher",source:teacher_list});
+        });
+      }      
+      $("#classnocbx").combobox();
+      $("#c_ng_idcbx").combobox();
+      $("#c_T_type").comboboxWithSource({ source: ["","必修","必選","職業文化","職業專業"] });
+      $("#c_field").comboboxWithSource({ source: ["","中文","英文","數學","德育","電腦","體育","歷史","地理","物理","化學","生物","自然科學","音藝","葡文","公民教育"] });
+
+    });
+

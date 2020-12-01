@@ -1,0 +1,34 @@
+extends ./base.pug
+  
+block content
+  if sect == 'S' 
+    -let classlist=["SG1A","SG1B","SG1C","SG1D","SG2A","SG2B","SG2C","SG2D","SG3A","SG3B","SG3C","SG3D","SC1A","SC1B","SC1C","SC1D","SC1E","SC2A","SC2B","SC2C","SC2D","SC2E","SC3A","SC3B","SC3C","SC3D","SC3E"]
+    table.table
+      tr
+        td 班别
+        td
+        td 登記學生
+      each c_ in classlist
+        tr
+          td
+            a(href=`/internal/markup/act/studGrade/${c_}/edit?sid=${sid}&aot=${aot}`)= c_
+          td
+            span &nbsp;
+          td
+            a(href=`/internal/markup/act/regStud/${c_}?sid=${sid}&aot=${aot}`) 登記Reg
+  if sect == 'P' 
+    -let pclasslist=["P1A","P1B","P1C","P1D","P2A","P2B","P2C","P2D","P3A","P3B","P3C","P3D","P4A","P4B","P4C","P4D","P5A","P5B","P5C","P5D","P6A","P6B","P6C","P6D"]
+    table.table
+      tr
+        td 班别
+        td
+        td 登記學生
+      each c_ in pclasslist
+        tr
+          td
+            a(href=`/internal/markup/act/studGrade/${c_}/edit?sid=${sid}&aot=${aot}`)= c_
+          td
+            span &nbsp;
+          td
+            a(href=`/internal/markup/act/regStud/${c_}?sid=${sid}&aot=${aot}`) 登記Reg
+

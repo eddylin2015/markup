@@ -1,0 +1,38 @@
+doctype html
+html
+  head
+    title act
+    meta(charset='utf-8')
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/main.css')
+    style.
+      a {color:white;}
+  body
+    .navbar.navbar-default
+      .container
+        .navbar-header
+          .navbar-brand 活動中心
+        ul.nav.navbar-nav
+          li
+            a(href="/internal/") 
+              span(class="glyphicon") &#xe021
+          li
+            a(href="/internal/markup/act") 主頁
+          li
+            a(href="/internal/markup/act/actlist") 活動列表
+          li
+            a(href="/internal/markup/act/cnolist?cno=P") 小學活動分
+          li
+            a(href="/internal/markup/act/cnolist?cno=S") 中學活動分
+
+        p.navbar-text.navbar-right
+          if profile
+            if profile.image
+              img.img-circle(src=profile.image, width=24)
+            span #{profile.displayName} &nbsp;
+              a(href='/logout') (logout)
+          else
+            a(href='/login') Login
+    .container
+      block content

@@ -17,8 +17,18 @@ html
     title Job Note
     meta(charset='utf-8')
     meta(name="viewport", content="width=device-width, initial-scale=1")
+
+
+    script(src='/javascripts/jquery.js')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='/jquery-ui-dist/jquery-ui.min.js')
+    link(rel='stylesheet', href='/jquery-ui-dist/jquery-ui.min.css')
+
     link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/main.css')
+
+    script(src='/javascripts/cool/widget_combobox.js')    
+    link(rel='stylesheet', href='/stylesheets/cool/widget_combobox.css')    
     style.
       a {color:white;}
   body
@@ -32,6 +42,10 @@ html
               span(class="glyphicon") &#xe021
           li
             a(href="/internal/markup/crsmng") 課程
+          li
+            a(href="/internal/markup/crsmng/plist") 小學課程
+          li
+            a(href="/internal/markup/crsmng/slist") 中學課程
           li
             a(href="/internal/markup/crsmng/searchform") 查詢
           li
