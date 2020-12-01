@@ -36,13 +36,17 @@ router.get('/', require('connect-ensure-login').ensureLoggedIn(), (req, res, nex
 
 router.get('/api/secteacher.json',require('connect-ensure-login').ensureLoggedIn(),  (req, res) => {
   res.type('application/json'); 
-  const data = fs.readFileSync(process.cwd() + "\\jsondata\\teachers_obj.json");
-  let obj=JSON.parse(data);
-  let result=[];
-  for(let i=0;i<obj.length;i++){
-    result.push(`${obj[i].staf_ref} ${obj[i].cname}`)
-  }
-  res.end(JSON.stringify(result));
+  const path = process.cwd() + "\\jsondata\\teachers_obj.json";
+  fs.readFile(path, (err, data) => {
+    if (err) throw err;
+    data = data.toString().replace(/\W+\[/, '[');
+    let obj=JSON.parse(data);
+    let result=[];
+    for(let i=0;i<obj.length;i++){
+      result.push(`${obj[i].staf_ref} ${obj[i].cname}`)
+    }
+    res.end(JSON.stringify(result));
+    });
 });
 
 router.get('/mine', require('connect-ensure-login').ensureLoggedIn(), (req, res, next) => {
@@ -190,6 +194,7 @@ router.post(
   images.multer.single('image'),
   (req, res, next) => {
     const data = req.body;
+    if(data.staf_ref&&data.staf_ref.length>=8) data.staf_ref=data.staf_ref.substring(0,8)
     // If the user is logged in, set them as the creator of the book.
     /*
     if (req.user) {
@@ -247,6 +252,7 @@ router.post(
   images.multer.single('image'), require('connect-ensure-login').ensureLoggedIn(),
   (req, res, next) => {
     let data = req.body;
+    if(data.staf_ref&&data.staf_ref.length>=8) data.staf_ref=data.staf_ref.substring(0,8)
     //if (req.file && req.file.cloudStoragePublicUrl) { req.body.imageUrl = req.file.cloudStoragePublicUrl; }
     getModel().update(req.user.id, req.params.book, data, (err, savedData) => {
       if (err) { next(err); return; }

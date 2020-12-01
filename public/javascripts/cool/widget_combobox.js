@@ -150,10 +150,9 @@ $.widget("custom.comboboxWithSource", {
             });
         this._on(this.input, {
             autocompleteselect: function (event, ui) {
-                ui.item.option.selected = true;
-                this._trigger("select", event, {
-                    item: ui.item.option
-                });
+                console.log(ui)
+                this.element.val(ui.item.value) 
+                //ui.item.option.selected = true; this._trigger("select", event, {item: ui.item.option});
             },
             autocompletechange: "_removeIfInvalid"
         });
@@ -181,12 +180,8 @@ $.widget("custom.comboboxWithSource", {
             })
             .on("click", function () {
                 input.trigger("focus");
-
                 // Close if already visible
-                if (wasOpen) {
-                    return;
-                }
-
+                if (wasOpen) { return; }
                 // Pass empty string as value to search for, displaying all results
                 input.autocomplete("search", "");
             });
@@ -209,18 +204,17 @@ $.widget("custom.comboboxWithSource", {
     },
 
     _removeIfInvalid: function (event, ui) {
-
+        
         // Selected an item, nothing to do
-        if (ui.item) {
-            return;
-        }
+        if (ui.item) { return; }
         // Search for a match (case-insensitive)
-        var value = this.input.val(),
+        var value = this.input.val(),//this.element.val(this.input.val()) 
             valueLowerCase = value.toLowerCase(), valid = false;
         for(let i=0;i<this.source.length;i++)    
         {
            if(this.source[i].toLowerCase() === valueLowerCase) {
-                this.selected = valid = true;
+                this.element.val(this.input.val()) 
+                valid = true;
                 return false;
            }
         }
@@ -232,9 +226,7 @@ $.widget("custom.comboboxWithSource", {
             }
         });*/
         // Found a match, nothing to do
-        if (valid) {
-            return;
-        }
+        if (valid) { return;}
         // Remove invalid value
         this.input
             .val("")
@@ -296,9 +288,7 @@ $.widget("custom.CustCombobox", {
             .tooltip()
             .appendTo(this.wrapper)
             .button({
-                icons: {
-                    primary: "ui-icon-triangle-1-s"
-                },
+                icons: { primary: "ui-icon-triangle-1-s" },
                 text: false
             })
             .removeClass("ui-corner-all")
