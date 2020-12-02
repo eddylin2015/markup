@@ -3,13 +3,13 @@ const mysql = require('mysql');
 const mysqlcfg = require('../../mysql250/mysql250config');
 const pool = mysqlcfg.esdbPool;
 
-function list(userid,limit, token, cb) {
+function list(userid,c,limit, token, cb) {
     token = token ? parseInt(token, 10) : 0;
     pool.getConnection(function (err, connection) {
         if(err){cb(err);return;}
-        // Use the connection
+        let sql=`SELECT * FROM mrs_course_detail WHERE classno like '${c}%'  order by course_d_id DESC LIMIT ? OFFSET ?`;
         connection.query(
-            'SELECT * FROM `mrs_course_detail` order by course_d_id DESC LIMIT ? OFFSET ?', [limit, token],
+            sql, [limit, token],
             (err, results) => {
                 if (err) {
                     cb(err);

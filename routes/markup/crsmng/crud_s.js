@@ -7,21 +7,17 @@ const fs=require('fs')
 function getModel() {
   return require(`./model-mysql-pool`);
 }
+
 function GetSID(req) {
   return (req.user && req.user.marksys_info) ? req.user.marksys_info[0][0].session_id : null;
 }
+
 function authRequired(req, res, next) {
   if (!req.user) {
       req.session.oauth2return = req.originalUrl;
       return res.redirect('/auth/login');
-  }else if("2002024,2003006,2006011,2012021,".indexOf(req.user.id)==-1){
-      return res.end(`${req.user.id}please auth required for Markup_CrsMng_Crud !`);
-  }
-  let c=req.session.c?req.session.c:req.query.c;
-  if("2003006"==req.user.id && c!="P"){
-    return res.end(`${req.user.id}please auth required for Markup_CrsMng_Crud for P !`);
-  }else if("2006011,2012021".indexOf(req.user.id)>-1 && c!="S"){
-    return res.end(`${req.user.id}please auth required for Markup_CrsMng_Crud for S !`);
+  }else if("2002024,2006011,2012021,".indexOf(req.user.id)==-1){
+      return res.end(`${req.user.id}please auth required for Markup_CrsMng_Crud_S !`);
   }
   next();
 }
@@ -37,14 +33,7 @@ const router = express.Router();
 // });
 
 router.get('/', authRequired, (req, res, next) => {
-  let c=req.query.c?req.query.c:"S";
-  req.session.c=c;
-  res.redirect("crsmng/list");
-});
-
-router.get('/list', authRequired, (req, res, next) => {
-  let c=req.query.c?req.query.c:req.session.c;
-  getModel().list(req.user.id, c, 100, req.query.pageToken, (err, entities, cursor) => {
+  getModel().list(req.user.id, 100, req.query.pageToken, (err, entities, cursor) => {
     if (err) {
       next(err);
       return;
@@ -52,27 +41,28 @@ router.get('/list', authRequired, (req, res, next) => {
     res.render('markup/crsmng/list.pug', {
       profile: req.user,
       books: entities,
-      nextPageToken: cursor,
-      c:c
+      nextPageToken: cursor
     });
   });
 });
 
-router.get('/api/seccourse.json',authRequired,  (req, res) => {
-  res.type('application/json'); 
-  let c=req.query.c?req.query.c:req.session.c;
-  let spk=c=='S'?"1":"2";
-  const path = process.cwd() + "\\jsondata\\CourseDefPri.json";
-  if(spk=='1')
-    path = process.cwd() + "\\jsondata\\CourseDefSec.json";
-  var readStream = fs.createReadStream(path);
-  readStream.pipe(res);
+router.get('/list', authRequired, (req, res, next) => {
+  getModel().list(req.user.id, 100, req.query.pageToken, (err, entities, cursor) => {
+    if (err) {
+      next(err);
+      return;
+    }
+    res.render('markup/crsmng/list.pug', {
+      profile: req.user,
+      books: entities,
+      nextPageToken: cursor
+    });
+  });
 });
+
 
 router.get('/api/secteacher.json',authRequired,  (req, res) => {
   res.type('application/json'); 
-  let c=req.query.c?req.query.c:req.session.c;
-  let spk=c=='S'?"1":"2";
   const path = process.cwd() + "\\jsondata\\teachers_obj.json";
   fs.readFile(path, (err, data) => {
     if (err) throw err;
@@ -80,144 +70,11 @@ router.get('/api/secteacher.json',authRequired,  (req, res) => {
     let obj=JSON.parse(data);
     let result=[];
     for(let i=0;i<obj.length;i++){
-      if(obj[i].sect == spk)
-        result.push(`${obj[i].staf_ref} ${obj[i].cname}`)
+      result.push(`${obj[i].staf_ref} ${obj[i].cname}`)
     }
     res.end(JSON.stringify(result));
     });
 });
-
- /**
- * GET /books/add
- * Display a form for creating a book.
- */
-router.get('/add', authRequired, (req, res) => {
-  let c=req.session.c;
-  let spk=c=='S'?1:2;
-  res.render('markup/crsmng/form.pug', {
-    profile: req.user,
-    c:c,
-    book: {
-      session_id: Number(GetSID(req)),
-      SPK:spk ,
-      classno:"",
-      groupid:100,
-      rate:100,
-      c_section_total:0,
-      c_ng_id:9
-
-    },
-    action: 'Add'
-  });
-});
-
-/**
- * POST /books/add
- * Create a book.
- */
-// [START add]
-router.post(
-  '/add',authRequired,
-  images.multer.single('image'),
-  (req, res, next) => {
-    const data = req.body;
-    if(data.staf_ref&&data.staf_ref.length>=8) data.staf_ref=data.staf_ref.substring(0,8)
-    /* if (req.user) {data.createdBy = req.user.displayName; data.createdById = req.user.id;} else {data.createdBy = 'Anonymous';}*/
-    getModel().create(req.user.id, data, (err, savedData) => {
-      if (err) {
-        next(err);
-        return;
-      }
-      res.redirect(`${req.baseUrl}/${savedData.course_d_id}`);
-    });
-  }
-);
-
-// [END add]
-/**
- * GET /books/:id/edit
- * Display a book for editing.
- */
-router.get('/:book/edit', (req, res, next) => {
-  let c=req.session.c;
-  let spk=c=='S'?1:2;
-  getModel().read(req.user.id, req.params.book, (err, entity) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.render('markup/crsmng/form.pug', {
-      profile: req.user,
-      book: entity,
-      c:c,
-      action: 'Edit'
-    });
-  });
-});
-
-
-router.post('/:book/imageUploader',authRequired, images.multer.any(), function (req, res) {
-  //req.file
-  res.send({
-    "uploaded": 1,
-    "fileName": "IMAGE.PNG",
-    "url": "/ckeditorimages/" + req.files[0].filename
-  })
-})
-
-/**
- * POST /books/:id/edit
- * Update a book.
- */
-router.post(
-  '/:book/edit',
-  images.multer.single('image'),authRequired,
-  (req, res, next) => {
-    let data = req.body;
-    if(data.staf_ref&&data.staf_ref.length>=8) data.staf_ref=data.staf_ref.substring(0,8)
-    //if (req.file && req.file.cloudStoragePublicUrl) { req.body.imageUrl = req.file.cloudStoragePublicUrl; }
-    getModel().update(req.user.id, req.params.book, data, (err, savedData) => {
-      if (err) { next(err); return; }
-      res.redirect(`${req.baseUrl}/${savedData.course_d_id}`);
-    });
-  }
-);
-/**
- * GET /books/:id
- * Display a book.
- */
-router.get('/:book', (req, res, next) => {
-  let c=req.query.c?req.query.c:"S";
-  let spk=c=='S'?1:2;
-  getModel().read(req.user.id, req.params.book, (err, entity) => {
-    
-    if (err) {
-      next(err);
-      return;
-    }
-    res.render('markup/crsmng/view.pug', {
-      profile: req.user,
-      book: entity,
-      c:c
-    });
-  });
-});
-
-/**
- * GET /books/:id/delete
- * Delete a book.
- */
-router.get('/:book/delete',authRequired, (req, res, next) => {
-  getModel().delete(req.user.id, req.params.book, (err) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.redirect(req.baseUrl);
-  });
-});
-
-/////////////End//////////////////
 
 router.get('/mine', authRequired, (req, res, next) => {
   getModel().listBy(
@@ -340,6 +197,118 @@ router.post('/searchforKW', authRequired,
     );
   });
 
+ /**
+ * GET /books/add
+ * Display a form for creating a book.
+ */
+router.get('/add', authRequired, (req, res) => {
+  res.render('markup/crsmng/form.pug', {
+    profile: req.user,
+    book: {
+      session_id: Number(GetSID(req)),
+    },
+    action: 'Add'
+  });
+});
+
+/**
+ * POST /books/add
+ * Create a book.
+ */
+// [START add]
+router.post(
+  '/add',authRequired,
+  images.multer.single('image'),
+  (req, res, next) => {
+    const data = req.body;
+    if(data.staf_ref&&data.staf_ref.length>=8) data.staf_ref=data.staf_ref.substring(0,8)
+    /* if (req.user) {data.createdBy = req.user.displayName; data.createdById = req.user.id;} else {data.createdBy = 'Anonymous';}*/
+    getModel().create(req.user.id, data, (err, savedData) => {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.redirect(`${req.baseUrl}/${savedData.course_d_id}`);
+    });
+  }
+);
+
+// [END add]
+/**
+ * GET /books/:id/edit
+ * Display a book for editing.
+ */
+router.get('/:book/edit', (req, res, next) => {
+  getModel().read(req.user.id, req.params.book, (err, entity) => {
+    if (err) {
+      next(err);
+      return;
+    }
+    res.render('markup/crsmng/form.pug', {
+      profile: req.user,
+      book: entity,
+      action: 'Edit'
+    });
+  });
+});
+
+
+router.post('/:book/imageUploader',authRequired, images.multer.any(), function (req, res) {
+  //req.file
+  res.send({
+    "uploaded": 1,
+    "fileName": "IMAGE.PNG",
+    "url": "/ckeditorimages/" + req.files[0].filename
+  })
+})
+
+/**
+ * POST /books/:id/edit
+ * Update a book.
+ */
+router.post(
+  '/:book/edit',
+  images.multer.single('image'),authRequired,
+  (req, res, next) => {
+    let data = req.body;
+    if(data.staf_ref&&data.staf_ref.length>=8) data.staf_ref=data.staf_ref.substring(0,8)
+    //if (req.file && req.file.cloudStoragePublicUrl) { req.body.imageUrl = req.file.cloudStoragePublicUrl; }
+    getModel().update(req.user.id, req.params.book, data, (err, savedData) => {
+      if (err) { next(err); return; }
+      res.redirect(`${req.baseUrl}/${savedData.course_d_id}`);
+    });
+  }
+);
+/**
+ * GET /books/:id
+ * Display a book.
+ */
+router.get('/:book', (req, res, next) => {
+  getModel().read(req.user.id, req.params.book, (err, entity) => {
+    if (err) {
+      next(err);
+      return;
+    }
+    res.render('markup/crsmng/view.pug', {
+      profile: req.user,
+      book: entity
+    });
+  });
+});
+
+/**
+ * GET /books/:id/delete
+ * Delete a book.
+ */
+router.get('/:book/delete',authRequired, (req, res, next) => {
+  getModel().delete(req.user.id, req.params.book, (err) => {
+    if (err) {
+      next(err);
+      return;
+    }
+    res.redirect(req.baseUrl);
+  });
+});
 
 /**
  * Errors on "/books/*" routes.

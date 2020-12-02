@@ -12,50 +12,38 @@
  limitations under the License.
 
 doctype html
-html
+html(lang="en")
   head
-    title Job Note
+    title mbc staf info system
     meta(charset='utf-8')
     meta(name="viewport", content="width=device-width, initial-scale=1")
+    link(rel="stylesheet", href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css")
 
-
-    script(src='/javascripts/jquery.js')
-    script(src='/javascripts/bootstrap.min.js')
-    script(src='/jquery-ui-dist/jquery-ui.min.js')
-    link(rel='stylesheet', href='/jquery-ui-dist/jquery-ui.min.css')
-
-    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
-    link(rel='stylesheet', href='/stylesheets/main.css')
-
-    script(src='/javascripts/cool/widget_combobox.js')    
-    link(rel='stylesheet', href='/stylesheets/cool/widget_combobox.css')    
-    style.
-      a {color:white;}
   body
     .navbar.navbar-default
       .container
         .navbar-header
-          .navbar-brand 課程管理
+          .navbar-brand 行政資訊系統
+
         ul.nav.navbar-nav
           li
-            a(href="/internal/") 
+            a(href="/") 
               span(class="glyphicon") &#xe021
           li
-            a(href=`/internal/markup/crsmng/list?c=${c}`) 課程
+            a(href="/bbs") 留言板
           li
-            a(href=`/internal/markup/mark_report_mrs_course_table?c=${c}&orderby=classno,tab`) 大表
-          li
-            a(href="/internal/markup/crsmng/searchform") 查詢
-          li
-            a(href='/internal/markup/crsmng/searchforKW')
-              span(class="glyphicon glyphicon-search")
+            a(href="/bbs/mine") 我的留言
+
         p.navbar-text.navbar-right
+          // [START profile]
           if profile
             if profile.image
               img.img-circle(src=profile.image, width=24)
             span #{profile.displayName} &nbsp;
-              a(href='/logout') (logout)
+              a(href=logout) (logout)
           else
-            a(href='/login') Login
+            a(href=login) Login
+          // [END profile]
+
     .container
       block content

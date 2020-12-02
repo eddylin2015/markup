@@ -15,7 +15,7 @@ extends ./base.pug
 
 block content
   meta(http-equiv="refresh", content="300")
-  a(href="/internal/markup/crsmng/add", class='btn btn-success btn-sm')
+  a(href=`/internal/markup/crsmng/add?c=${c}`, class='btn btn-success btn-sm')
     i.glyphicon.glyphicon-plus
     span  Add 
   table#desc
@@ -23,7 +23,7 @@ block content
       tr
         td
           .media
-            a(href=`/internal/markup/crsmng/${book.course_d_id}`)
+            a(href=`/internal/markup/crsmng/${book.course_d_id}?c=${c}`)
               .media-left
               .media-body            
               span= book.course_d_id

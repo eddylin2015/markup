@@ -34,64 +34,63 @@ block content
           td
             input.form-control(type="text", name="session_id", id="session_id", value=book.session_id, readonly=true)
         tr        
-          td classno
+          td 班別
           td 
             //input.form-control(type="text", name="classno", id="classno", value=book.classno)
             .form-group 
-              +inputClassNo("classno",book.classno)              
+              +inputClassNo("classno",book.classno.trim(),c)              
         tr        
-          td staf_ref
+          td 教師
           td 
             input.form-control(type="text", name="staf_ref", id="staf_ref", value=book.staf_ref)
         tr        
-          td courseName
+          td 課程
           td 
             input.form-control(type="text", name="courseName", id="courseName", value=book.courseName)
         tr        
-          td c_T_type
+          td 類別
           td 
             input.form-control(type="text", name="c_T_type", id="c_T_type", value=book.c_T_type)
         tr        
-          td c_field
+          td 學科
           td 
             input.form-control(type="text", name="c_field", id="c_field", value=book.c_field)
         tr        
-          td c_section_total
           td 
-            //input.form-control(type="text", name="c_section_total", id="c_section_total", value=book.c_section_total)
-            +inputNum("c_section_total",book.c_section_total)
+          td
+            input.form-control.hidden(type="text", name="c_section_total", id="c_section_total", value=book.c_section_total)
+            //+inputNum("c_section_total",book.c_section_total)
         tr        
-          td tab
+          td 
+            a(href="#",onclick="GenTab();") [順序]
           td 
             //input.form-control(type="text", name="tab", id="tab", value=book.tab)
             +inputNum("tab",book.tab)
         tr        
-          td groupid
+          td 組別
           td 
             //input.form-control(size=30,type="text", name="groupid", id="groupid", value=book.groupid)
             +inputNum("groupid",book.groupid)            
         tr        
-          td rate
+          td 分數(比率)
           td 
             //input.form-control(type="text", name="rate", id="rate", value=book.rate)
             +inputNum("rate",book.rate)                   
         tr        
-          td SPK
-          td 
-            //input.form-control(type="text", name="SPK", id="SPK", value=book.SPK)
-            +inputNum("SPK",book.SPK)                   
-        tr        
-          td c_ng_id  
+          td 扣分  
           td 
             //input.form-control(type="text", name="c_ng_id", id="c_ng_id", value=book.c_ng_id)
             .form-group 
               +inputNGrade("c_ng_id",book.c_ng_id)                
-
+        tr        
+          td SPK
+          td 
+            input.form-control(type="text", name="SPK", id="SPK", value=book.SPK,readonly="true")
+            //+inputNum("SPK",book.SPK)                  
         tr        
           td filename
           td 
-            input.form-control(type="text", name="filename", id="filename", value=book.filename)
-
+            input.form-control(type="text", name="filename", id="filename", value=book.filename,readonly=true,onclick="GenFileName();")
     //.form-group.hidden
       label(for="createdBy") Created by 
       input.form-control(type="text", name="createdBy", id="createdBy", value=book.createdBy)
@@ -100,23 +99,65 @@ block content
        input.form-control(type="text", name="createdById", id="createdById", value=book.createdById)
     button.btn.btn-success(type="submit") Save
   script.
-    data=null;
-    teacher_list=null;
+    function GenTab(){
+      //course_list=null;//courseName,type,field,groupid,rate,tab
+      let coursename=$("#courseName").val();
+      let ctype=$("#c_T_type").val();
+      //console.log($("#classnocbx").val());
+      for(let i=0;i<course_list.length;i++)
+      {
+        let r=course_list[i];
+        console.log(r,coursename,ctype)
+        console.log(r[0].trim()==coursename.trim() , r[1].trim() == ctype.trim());
+        if(sect=='P' && r[0].trim()==coursename.trim() && r[1].trim() == ctype.trim())
+        {
+          $("#groupid").val(r[3]);
+          $("#rate").val(r[4]);
+          $("#tab").val(r[5]);
+          
+          break;
+        }
+      }
+    }
+    function GenFileName(){
+      let courseName=$("#courseName").val().replace('※',"");
+      let filename=`${$("#classnocbx").val()}${$("#c_T_type").val()}${courseName}.xls`;
+      $("#filename").val(filename)
+    }
+    var sect='!{c}';
+    var data=null;
+    var teacher_list=null;
+    var course_list=null;//courseName,type,field,groupid,rate,tab
+    var courseName_list=[];
     //CKEDITOR.replace( 'description',{    filebrowserUploadUrl: "imageUploader" }  );      
     $(function() {
       if(data==null){
         //$.getJSON( "/internal/markup/crsmng/api/timetable.json", function( data_ ) {data=data_ });
       }
       if(teacher_list==null){
-        $.getJSON( "/internal/markup/crsmng/api/secteacher.json", function( data_ ) {
+        $.getJSON( `/internal/markup/crsmng/api/secteacher.json?c=!{c}`, function( data_ ) {
           teacher_list=data_
           $("#staf_ref").CustCombobox({cbxid:"cbx_Teacher",source:teacher_list});
         });
       }      
+      if(course_list==null){
+        $.getJSON( `/internal/markup/crsmng/api/seccourse.json?c=!{c}`, function( data_ ) {
+          course_list=data_
+          console.log(course_list)
+          for(let i=0;i<course_list.length;i++)
+            courseName_list.push(course_list[i][0])
+          $("#courseName").CustCombobox({cbxid:"cbx_courseName",source:courseName_list});
+        });
+      }      
+      
       $("#classnocbx").combobox();
       $("#c_ng_idcbx").combobox();
       $("#c_T_type").comboboxWithSource({ source: ["","必修","必選","職業文化","職業專業"] });
-      $("#c_field").comboboxWithSource({ source: ["","中文","英文","數學","德育","電腦","體育","歷史","地理","物理","化學","生物","自然科學","音藝","葡文","公民教育"] });
+      if(sect=='S'){
+        $("#c_field").comboboxWithSource({ source: ["","中文","英文","數學","德育","電腦","體育","歷史","地理","物理","化學","生物","自然科學","音藝","葡文","公民教育","學科"] });
+      }else{
+        $("#c_field").comboboxWithSource({ source: ["","中文","英語","數學","學科"] });
+      }
 
     });
 

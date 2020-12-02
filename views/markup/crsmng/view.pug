@@ -22,10 +22,10 @@ block content
       }
     }
   .btn-group
-    a(href=`/internal/markup/crsmng/${book.course_d_id}/edit`, class='btn btn-primary btn-sm')
+    a(href=`/internal/markup/crsmng/${book.course_d_id}/edit?c=${c}`, class='btn btn-primary btn-sm')
       i.glyphicon.glyphicon-edit
       span  Edit
-    a(href="#",onclick=`confirmDelete("/internal/markup/crsmng/${book.course_d_id}/delete",${book.course_d_id});`, class='btn btn-danger btn-sm')
+    a(href="#",onclick=`confirmDelete("/internal/markup/crsmng/${book.course_d_id}/delete?c=${c}",${book.course_d_id});`, class='btn btn-danger btn-sm')
       i.glyphicon.glyphicon-trash
       span  Delete
   .media

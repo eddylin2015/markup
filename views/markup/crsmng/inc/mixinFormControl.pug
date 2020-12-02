@@ -26,42 +26,69 @@ mixin inputNGrade(n,v)
       option(value="0") Select one...
       option(value="1",selected=v=="1"?true:false) 必修-扣3學分
       option(value="4",selected=v=="4"?true:false) 必選-扣1.5學分
+      option(value="9",selected=v=="9"?true:false) 必選-扣1.5學分      
 
-mixin inputClassNo(n,v)
+mixin inputClassNo(n,v,c)
   div(class="ui-widget")
     select(id=(n+"cbx"),name=n)
       option(value="") Select one...
-      option(value="SG1A",selected=v=="SG1A"?true:false) SG1A 初一信
-      option(value="SG1B",selected=v=="SG1B"?true:false) SG1B 初一望
-      option(value="SG1C",selected=v=="SG1C"?true:false) SG1C 初一愛
-      option(value="SG1D",selected=v=="SG1D"?true:false) SG1D 初一善
-      option(value="SG2A",selected=v=="SG2A"?true:false) SG2A 初二信
-      option(value="SG2B",selected=v=="SG2B"?true:false) SG2B 初二望
-      option(value="SG2C",selected=v=="SG2C"?true:false) SG2C 初二愛
-      option(value="SG2D",selected=v=="SG2D"?true:false) SG2D 初二善
-      option(value="SG3A",selected=v=="SG3A"?true:false) SG3A 初三信
-      option(value="SG3B",selected=v=="SG3B"?true:false) SG3B 初三望
-      option(value="SG3C",selected=v=="SG3C"?true:false) SG3C 初三愛
-      option(value="SG3D",selected=v=="SG3D"?true:false) SG3D 初三善
-      option(value="SC1A",selected=v=="SC1A"?true:false) SC1A 高一信
-      option(value="SC1B",selected=v=="SC1B"?true:false) SC1B 高一望
-      option(value="SC1C",selected=v=="SC1C"?true:false) SC1C 高一愛
-      option(value="SC1D",selected=v=="SC1D"?true:false) SC1D 高一善
-      option(value="SC1E",selected=v=="SC1E"?true:false) SC1E 高一樂
-      option(value="SC2A",selected=v=="SC2A"?true:false) SC2A 高二信
-      option(value="SC2B",selected=v=="SC2B"?true:false) SC2B 高二望
-      option(value="SC2C",selected=v=="SC2C"?true:false) SC2C 高二愛
-      option(value="SC2D",selected=v=="SC2D"?true:false) SC2D 高二善
-      option(value="SC2E",selected=v=="SC2E"?true:false) SC2E 高二樂
-      option(value="SC3A",selected=v=="SC3A"?true:false) SC3A 高三信
-      option(value="SC3B",selected=v=="SC3B"?true:false) SC3B 高三望
-      option(value="SC3C",selected=v=="SC3C"?true:false) SC3C 高三愛
-      option(value="SC3D",selected=v=="SC3D"?true:false) SC3D 高三善
-      option(value="SC3E",selected=v=="SC3E"?true:false) SC3E 高三樂
-      option(value="I1A",selected=v=="I1A"?true:false) I1A I1A
+      if c=="P"
+        option(value="P1A",selected=v=="P1A"?true:false) P1A 小一信
+        option(value="P1B",selected=v=="P1B"?true:false) P1B 小一望
+        option(value="P1C",selected=v=="P1C"?true:false) P1C 小一愛
+        option(value="P1D",selected=v=="P1D"?true:false) P1D 小一善
+        option(value="P2A",selected=v=="P2A"?true:false) P2A 小二信
+        option(value="P2B",selected=v=="P2B"?true:false) P2B 小二望
+        option(value="P2C",selected=v=="P2C"?true:false) P2C 小二愛
+        option(value="P2D",selected=v=="P2D"?true:false) P2D 小二善
+        option(value="P3A",selected=v=="P3A"?true:false) P3A 小三信
+        option(value="P3B",selected=v=="P3B"?true:false) P3B 小三望
+        option(value="P3C",selected=v=="P3C"?true:false) P3C 小三愛
+        option(value="P3D",selected=v=="P3D"?true:false) P3D 小三善
+        option(value="P4A",selected=v=="P4A"?true:false) P4A 小四信
+        option(value="P4B",selected=v=="P4B"?true:false) P4B 小四望
+        option(value="P4C",selected=v=="P4C"?true:false) P4C 小四愛
+        option(value="P4D",selected=v=="P4D"?true:false) P4D 小四善
+        option(value="P5A",selected=v=="P5A"?true:false) P5A 小五信
+        option(value="P5B",selected=v=="P5B"?true:false) P5B 小五望
+        option(value="P5C",selected=v=="P5C"?true:false) P5C 小五愛
+        option(value="P5D",selected=v=="P5D"?true:false) P5D 小五善
+        option(value="P6A",selected=v=="P6A"?true:false) P6A 小六信
+        option(value="P6B",selected=v=="P6B"?true:false) P6B 小六望
+        option(value="P6C",selected=v=="P6C"?true:false) P6C 小六愛
+        option(value="P6D",selected=v=="P6D"?true:false) P6D 小六善
+      if c=="S"
+        option(value="SG1A",selected=v=="SG1A"?true:false) SG1A 初一信
+        option(value="SG1B",selected=v=="SG1B"?true:false) SG1B 初一望
+        option(value="SG1C",selected=v=="SG1C"?true:false) SG1C 初一愛
+        option(value="SG1D",selected=v=="SG1D"?true:false) SG1D 初一善
+        option(value="SG2A",selected=v=="SG2A"?true:false) SG2A 初二信
+        option(value="SG2B",selected=v=="SG2B"?true:false) SG2B 初二望
+        option(value="SG2C",selected=v=="SG2C"?true:false) SG2C 初二愛
+        option(value="SG2D",selected=v=="SG2D"?true:false) SG2D 初二善
+        option(value="SG3A",selected=v=="SG3A"?true:false) SG3A 初三信
+        option(value="SG3B",selected=v=="SG3B"?true:false) SG3B 初三望
+        option(value="SG3C",selected=v=="SG3C"?true:false) SG3C 初三愛
+        option(value="SG3D",selected=v=="SG3D"?true:false) SG3D 初三善
+        option(value="SC1A",selected=v=="SC1A"?true:false) SC1A 高一信
+        option(value="SC1B",selected=v=="SC1B"?true:false) SC1B 高一望
+        option(value="SC1C",selected=v=="SC1C"?true:false) SC1C 高一愛
+        option(value="SC1D",selected=v=="SC1D"?true:false) SC1D 高一善
+        option(value="SC1E",selected=v=="SC1E"?true:false) SC1E 高一樂
+        option(value="SC2A",selected=v=="SC2A"?true:false) SC2A 高二信
+        option(value="SC2B",selected=v=="SC2B"?true:false) SC2B 高二望
+        option(value="SC2C",selected=v=="SC2C"?true:false) SC2C 高二愛
+        option(value="SC2D",selected=v=="SC2D"?true:false) SC2D 高二善
+        option(value="SC2E",selected=v=="SC2E"?true:false) SC2E 高二樂
+        option(value="SC3A",selected=v=="SC3A"?true:false) SC3A 高三信
+        option(value="SC3B",selected=v=="SC3B"?true:false) SC3B 高三望
+        option(value="SC3C",selected=v=="SC3C"?true:false) SC3C 高三愛
+        option(value="SC3D",selected=v=="SC3D"?true:false) SC3D 高三善
+        option(value="SC3E",selected=v=="SC3E"?true:false) SC3E 高三樂
+      option(value="I1A",selected=v=="I1A"?true:false) I1A TEST
 
 mixin inputNum(n,v)
-  input(name=n,value=v,style="color:black;text-align:right",placeholder="", pattern="([1-9][0-9]*)|()", title="Enter Number")
+  input.form-control(id=n,name=n,value=v,style="color:black;text-align:right",placeholder="", pattern="([0-9]+)|()", title="Enter Number")
 
 mixin inputDate(n,v)
   input(name=n,value=FDate(v),placeholder="YYYY/MM/DD", pattern="([0-9]{4}/[0-9]{2}/[0-9]{2})|()", title="Enter a date in this format YYYY/MM/DD")
