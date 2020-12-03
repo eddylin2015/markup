@@ -116,6 +116,8 @@ block content
           if(classno.indexOf('E')>-1) if( r[1].trim().indexOf('職')==-1 ) continue;
           $("#c_T_type").val(r[1]);
           $("#c_field").val(r[2]);
+          $("#cTtype").val(r[1]);
+          $("#cfield").val(r[2]);
           $("#groupid").val(r[3]);
           $("#rate").val(r[4]);
           $("#tab").val(r[5]);
@@ -181,11 +183,11 @@ block content
       
       $("#classnocbx").combobox();
       $("#c_ng_idcbx").combobox();
-      $("#c_T_type").comboboxWithSource({ source: ["","必修","必選","職業文化","職業專業"] });
-      if(sect=='S'){
-        $("#c_field").comboboxWithSource({ source: ["","中文","英文","數學","德育","電腦","體育","歷史","地理","物理","化學","生物","自然科學","音藝","葡文","公民教育","學科"] });
+      $("#c_T_type").comboboxWithSource({cbxid:"cTtype", source: ["","必修","必選","職業文化","職業專業"] });
+      if(sect=='SC'||sect=='SG'||sect=='S'){
+        $("#c_field").comboboxWithSource({cbxid:"cfield",  source: ["","中文","英文","數學","德育","電腦","體育","歷史","地理","物理","化學","生物","自然科學","音藝","葡文","公民教育","學科"] });
       }else{
-        $("#c_field").comboboxWithSource({ source: ["","中文","英語","數學","學科"] });
+        $("#c_field").comboboxWithSource({cbxid:"cfield",  source: ["","中文","英語","數學","學科"] });
       }
     });
 

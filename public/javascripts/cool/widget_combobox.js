@@ -1,4 +1,8 @@
 $.widget("custom.combobox", {
+    options: {
+        source: null,
+        cbxid:null,
+    },
     _create: function () {
         this.wrapper = $("<span>")
             .addClass("custom-combobox")
@@ -10,7 +14,8 @@ $.widget("custom.combobox", {
     _createAutocomplete: function () {
         var selected = this.element.children(":selected"),
             value = selected.val() ? selected.text() : "";
-        this.input = $("<input>")
+            this.input =this.options.cbxid?$(`<input id="${this.options.cbxid}">`): $("<input>")
+            this.input
             .appendTo(this.wrapper)
             .val(value)
             .attr("title", "")
@@ -121,6 +126,7 @@ $.widget("custom.combobox", {
 $.widget("custom.comboboxWithSource", {
     options: {
         source: null,
+        cbxid:null,
     },
     _create: function () {
         this.source = this.options.source;
@@ -133,7 +139,8 @@ $.widget("custom.comboboxWithSource", {
     },
     _createAutocomplete: function () {
         value = this.element.val();
-        this.input = $("<input>")
+        this.input =this.options.cbxid?$(`<input id="${this.options.cbxid}">`): $("<input>")
+        this.input
             .appendTo(this.wrapper)
             .val(value)
             .attr("title", "")
@@ -247,7 +254,7 @@ $.widget("custom.comboboxWithSource", {
 $.widget("custom.CustCombobox", {
     options: {
         source: 0,
-        cbxid:""
+        cbxid:null
     },
     _create: function () {
         this.source = this.options.source;
@@ -260,7 +267,8 @@ $.widget("custom.CustCombobox", {
     },
     _createAutocomplete: function () {
         value = this.element.val();
-        this.input = $(`<input id="${this.options.cbxid}">`)
+        this.input =this.options.cbxid?$(`<input id="${this.options.cbxid}">`): $("<input>")
+        this.input
             .appendTo(this.wrapper)
             .val(value)
             .attr("title", "")
