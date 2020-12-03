@@ -145,7 +145,18 @@ router.post(
         return;
       }
       if(req.query.batch){
-        res.end(JSON.stringify(savedData))  
+        let msg=JSON.stringify(savedData)  
+        savedData.course_d_id=0;
+        let c=req.session.c;
+        res.render('markup/crsmng/form.pug', {
+          profile: req.user,
+          c:c,
+          batch:req.query.batch,
+          book:savedData,
+          action: 'Add',
+          msg:msg
+        });
+        //
      }else{
       res.redirect(`${req.baseUrl}/${savedData.course_d_id}`);
      }

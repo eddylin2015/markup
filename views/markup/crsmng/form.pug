@@ -12,9 +12,20 @@ block content
   include ./inc/mixinFormControl    
   script(src='/ckeditor/ckeditor.js')
   script(src='/javascripts/cool/webtoolkit.aim.js')
+  script.
+    function startCallback(e) { 
+      console.log(Flag)
+       return Flag; }
+    function completeCallback(response) {
+      Flag=false;
+      console.log(Flag)
+      document.getElementById('msg').innerHTML +="<br>"+ response;
+      $("#classno_input").focus();
+    }     
+
   -let SubmitAct=""
   if batch
-    -SubmitAct="return AIM.submit(this, {'onStart' : startCallback, 'onComplete' : completeCallback})"
+    //-SubmitAct="return AIM.submit(this, {'onStart' : startCallback, 'onComplete' : completeCallback})"
   form#formA(method="POST", enctype="multipart/form-data",onSubmit=SubmitAct)
     table#tbl
       tr
@@ -37,7 +48,7 @@ block content
         tr        
           td 
             span 課程
-            a(href="#",onclick="ShowGrid();") [?]
+            a(onclick="ShowGrid();") [?]
           td 
             input.form-control(type="text", name="courseName", id="courseName", value=book.courseName)
         tr        
@@ -61,7 +72,7 @@ block content
             +inputNum("rate",book.rate)                   
         tr        
           td 
-            a(href="#",onclick="GenTab();") [順序]                          
+            a(onclick="GenTab();") [順序]                          
           td 
             //input.form-control(type="text", name="tab", id="tab", value=book.tab)
             +inputNum("tab",book.tab)
@@ -85,7 +96,7 @@ block content
             //+inputNum("SPK",book.SPK)                  
         tr        
           td
-            a(href="#",onclick="GenFileName();") [filename]
+            a(onclick="GenFileName();") [filename]
           td 
             input.form-control(type="text", name="filename", id="filename", value=book.filename,readonly=true,onclick="GenFileName();")
     //.form-group.hidden
@@ -95,7 +106,9 @@ block content
        label(for="createdById") Created by ID
        input.form-control(type="text", name="createdById", id="createdById", value=book.createdById)
     button.btn.btn-success(type="button",onclick="submitAct()") Save
-  div#msg
+    //button.btn.btn-success(type="submit") save
+    //,onclick="SetFlag();",value="Save")
+  div#msg= msg
   div#dialog-form(title="Course List")
     p#dialog-form-html(class="validateTips")
   script.
@@ -106,13 +119,15 @@ block content
     var course_list=null; //[courseName,c_t_type,c_field,groupid,rate,tab,c_ng_id ]
     var courseName_list=[];
     var dialog=null;
+    var Flag=false;
+    function SetFlag(){
+      console.log(this)
+      Flag=true;
+    }
 
-    function startCallback() { return true; }
-    function completeCallback(response) {
-      document.getElementById('msg').innerHTML +="<br>"+ response;
-      $("#classno_input").focus();
-    }     
-    function submitAct(){document.getElementById('formA').submit();}
+    function submitAct(){
+      document.getElementById('formA').submit();
+    }
     function GenType(){
       let classno=$("#classnocbx").val();
       let ctype=$("#c_T_type").val();

@@ -113,11 +113,11 @@ router.get('/mark_report_mrs_course_list', (req, res) => {
         res.render('markup/statistics/report_mrs_course_list.pug', { books: entity });
     });
 });
-router.get('/mark_report_mrs_course_table', (req, res) => {
+router.get('/mark_report_mrs_course_table', (req, res,next) => {
     let c=req.query.c;
     let orderby=req.query.orderby;
     orderby = orderby ? orderby.replace( /(\w+)\s(\w+)/, '$2,$1'):"classno,tab";  
-    var sql='SELECT course_d_id, mrs_course_detail.classno, mrs_course_detail.staf_ref, c_name, coursename, c_t_type, c_field, c_section_total, tab, groupid,rate, filename, upcnt,c_ng_id '+
+    var sql='SELECT course_d_id, mrs_course_detail.classno, mrs_course_detail.staf_ref, es_user.c_name, coursename, c_t_type, c_field, c_section_total, tab, groupid,rate, filename, upcnt,c_ng_id '+
     ' FROM mrs_course_detail '+
     ' LEFT JOIN es_user ON mrs_course_detail.staf_ref = es_user.staf_ref'+
     ' WHERE session_id >0 ';
