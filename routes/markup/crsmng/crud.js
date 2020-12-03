@@ -57,7 +57,21 @@ router.get('/list', authRequired, (req, res, next) => {
     });
   });
 });
-
+router.get('/grid', authRequired, (req, res, next) => {
+  let c=req.session.c;
+  getModel().list(req.user.id, c, 300, req.query.pageToken, (err, entities, cursor) => {
+    if (err) {
+      next(err);
+      return;
+    }
+    res.render('markup/crsmng/grid.pug', {
+      profile: req.user,
+      books: entities,
+      nextPageToken: cursor,
+      c:c
+    });
+  });
+});
 router.get('/api/seccourse.json',authRequired,  (req, res) => {
   res.type('application/json'); 
   let c=req.session.c;
@@ -138,7 +152,6 @@ router.post(
     });
   }
 );
-
 // [END add]
 /**
  * GET /books/:id/edit

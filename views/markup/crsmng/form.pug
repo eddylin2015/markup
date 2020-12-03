@@ -15,7 +15,7 @@ block content
   -let SubmitAct=""
   if batch
     -SubmitAct="return AIM.submit(this, {'onStart' : startCallback, 'onComplete' : completeCallback})"
-  form(method="POST", enctype="multipart/form-data",onSubmit=SubmitAct)
+  form#formA(method="POST", enctype="multipart/form-data",onSubmit=SubmitAct)
     table#tbl
       tr
         td course_d_id
@@ -35,7 +35,9 @@ block content
           td 
             input.form-control(type="text", name="staf_ref", id="staf_ref", value=book.staf_ref)
         tr        
-          td 課程
+          td 
+            span 課程
+            a(href="#",onclick="ShowGrid();") [?]
           td 
             input.form-control(type="text", name="courseName", id="courseName", value=book.courseName)
         tr        
@@ -48,12 +50,6 @@ block content
           td 
             input.form-control(type="text", name="c_field", id="c_field", value=book.c_field)
         tr        
-          td 
-            a(href="#",onclick="GenTab();") [順序]                          
-          td 
-            //input.form-control(type="text", name="tab", id="tab", value=book.tab)
-            +inputNum("tab",book.tab)
-        tr        
           td 組別
           td 
             //input.form-control(size=30,type="text", name="groupid", id="groupid", value=book.groupid)
@@ -63,6 +59,13 @@ block content
           td 
             //input.form-control(type="text", name="rate", id="rate", value=book.rate)
             +inputNum("rate",book.rate)                   
+        tr        
+          td 
+            a(href="#",onclick="GenTab();") [順序]                          
+          td 
+            //input.form-control(type="text", name="tab", id="tab", value=book.tab)
+            +inputNum("tab",book.tab)
+
         tr        
           td 扣分  
           td 
@@ -91,20 +94,26 @@ block content
     //.form-group.hidden
        label(for="createdById") Created by ID
        input.form-control(type="text", name="createdById", id="createdById", value=book.createdById)
-    button.btn.btn-success(type="submit") Save
+    button.btn.btn-success(type="button",onclick="submitAct()") Save
   div#msg
+  div#dialog-form(title="Course List")
+    p#dialog-form-html(class="validateTips")
   script.
+    //CKEDITOR.replace( 'description',{ filebrowserUploadUrl: "imageUploader" }  );        
+    var sect='!{c}';
+    var data=null;
+    var teacher_list=null;
+    var course_list=null; //[courseName,c_t_type,c_field,groupid,rate,tab,c_ng_id ]
+    var courseName_list=[];
+    var dialog=null;
 
-    function startCallback() {
-      return true;
-    }
-
+    function startCallback() { return true; }
     function completeCallback(response) {
-      //document.getElementById('nr').innerHTML = parseInt(document.getElementById('nr').innerHTML) + 1;
       document.getElementById('msg').innerHTML +="<br>"+ response;
+      $("#classno_input").focus();
     }     
+    function submitAct(){document.getElementById('formA').submit();}
     function GenType(){
-      //course_list=null;//[ courseName,c_t_type,c_field,groupid,rate,tab,c_ng_id ]
       let classno=$("#classnocbx").val();
       let ctype=$("#c_T_type").val();
       let coursename=$("#courseName").val();
@@ -123,12 +132,11 @@ block content
           $("#tab").val(r[5]);
           $("#c_ng_idcbx option[value=" + r[6] + "]").attr('selected','selected');
           break;
-        }//sect I S P
+        }
       }
       GenFileName();
     }
     function GenTab(){
-      //course_list=null;//[ courseName,c_t_type,c_field,groupid,rate,tab,c_ng_id ]
       let classno=$("#classnocbx").val();
       let ctype=$("#c_T_type").val();
       let coursename=$("#courseName").val();
@@ -143,9 +151,8 @@ block content
           $("#rate").val(r[4]);
           $("#tab").val(r[5]);
           $("#c_ng_idcbx option[value=" + r[6] + "]").attr('selected','selected');
-          
           break;
-        }//sect I S P
+        }
       }
       GenFileName();
     }
@@ -154,14 +161,15 @@ block content
       let filename=`${$("#classnocbx").val()}${$("#c_T_type").val()}${courseName}.xls`;
       $("#filename").val(filename)
     }
-    var sect='!{c}';
-    var data=null;
-    var teacher_list=null;
-    var course_list=null;//courseName,type,field,groupid,rate,tab
-    var courseName_list=[];
-    //CKEDITOR.replace( 'description',{    filebrowserUploadUrl: "imageUploader" }  );      
+    function ShowGrid(){
+      dialog.dialog( "open" );
+    }
     $(function() {
-
+      dialog = $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 400,
+      width: 500,
+      modal: false});
       if(data==null){
         //$.getJSON( "/internal/markup/crsmng/api/timetable.json", function( data_ ) {data=data_ });
       }
@@ -175,13 +183,18 @@ block content
         $.getJSON( `/internal/markup/crsmng/api/seccourse.json?c=!{c}`, function( data_ ) {
           course_list=data_
           console.log(course_list)
-          for(let i=0;i<course_list.length;i++)
+          htmltxt="<table><tr><th>課程<tH>必修/必選<th>學科<th>組別<th>100比率<th>次序<td>扣減"
+          for(let i=0;i<course_list.length;i++){
             courseName_list.push(course_list[i][0])
+            htmltxt+="<tr><td>"+course_list[i] .join("<td style='padding:10px;'>")
+          }
+          htmltxt+="</table>"
           $("#courseName").CustCombobox({cbxid:"cbx_courseName",source:courseName_list});
+          $("#dialog-form-html").html(htmltxt);
         });
       }      
       
-      $("#classnocbx").combobox();
+      $("#classnocbx").combobox({cbxid:"classno_input"});
       $("#c_ng_idcbx").combobox();
       $("#c_T_type").comboboxWithSource({cbxid:"cTtype", source: ["","必修","必選","職業文化","職業專業"] });
       if(sect=='SC'||sect=='SG'||sect=='S'){
@@ -189,5 +202,6 @@ block content
       }else{
         $("#c_field").comboboxWithSource({cbxid:"cfield",  source: ["","中文","英語","數學","學科"] });
       }
+      $("#classno_input").focus();
     });
 
