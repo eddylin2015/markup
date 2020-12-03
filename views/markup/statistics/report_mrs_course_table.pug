@@ -85,13 +85,13 @@ html
           
           case lchar
             when "A"
-              -colA+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2)+"<td>. "+book.c_section_total 
+              -colA+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2)+"<td>. "+book.c_section_total  +"<td>. "+book.c_ng_id
             when "B" 
-              -colB+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2)+"<td>. "+book.c_section_total     
+              -colB+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2)+"<td>. "+book.c_section_total  +"<td>. "+book.c_ng_id     
             when "C"
-              -colC+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2) +"<td>. "+book.c_section_total                   
+              -colC+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2) +"<td>. "+book.c_section_total   +"<td>. "+book.c_ng_id                 
             when "D" 
-              -colD+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2) +"<td>. "+book.c_section_total                  
+              -colD+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2) +"<td>. "+book.c_section_total   +"<td>. "+book.c_ng_id                
             when "E"
-              -colE+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2) +"<td>. "+book.c_section_total     
+              -colE+="<tr><td>"+book.classno+"<td>"+book.coursename+"<td>"+book.tab+"<td>"+(book.groupid<100? book.groupid:"")+(book.rate<100?"("+book.rate+")":"")  +"<td>"+(book.c_name?book.c_name.substring(book.c_name.length-2):"") +"<td>. "+book.c_t_type+"<td>. "+book.c_field.substr(0,2) +"<td>. "+book.c_section_total   +"<td>. "+book.c_ng_id   
         +list(colA,colB,colC,colD,colE)

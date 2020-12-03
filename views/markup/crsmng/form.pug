@@ -1,16 +1,3 @@
-//- Copyright 2017, Google, Inc.
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-
 extends ./base.pug
 
 block content
@@ -24,13 +11,17 @@ block content
     select, option {color: black;}
   include ./inc/mixinFormControl    
   script(src='/ckeditor/ckeditor.js')
-  form(method="POST", enctype="multipart/form-data")
+  script(src='/javascripts/cool/webtoolkit.aim.js')
+  -let SubmitAct=""
+  if batch
+    -SubmitAct="return AIM.submit(this, {'onStart' : startCallback, 'onComplete' : completeCallback})"
+  form(method="POST", enctype="multipart/form-data",onSubmit=SubmitAct)
     table#tbl
       tr
         td course_d_id
         td= book.course_d_id
         tr        
-          td session_id
+          td 學年編號
           td
             input.form-control(type="text", name="session_id", id="session_id", value=book.session_id, readonly=true)
         tr        
@@ -48,7 +39,8 @@ block content
           td 
             input.form-control(type="text", name="courseName", id="courseName", value=book.courseName)
         tr        
-          td 類別
+          td
+            a(href="#",onclick="GenType();") [類別]
           td 
             input.form-control(type="text", name="c_T_type", id="c_T_type", value=book.c_T_type)
         tr        
@@ -57,12 +49,7 @@ block content
             input.form-control(type="text", name="c_field", id="c_field", value=book.c_field)
         tr        
           td 
-          td
-            input.form-control.hidden(type="text", name="c_section_total", id="c_section_total", value=book.c_section_total)
-            //+inputNum("c_section_total",book.c_section_total)
-        tr        
-          td 
-            a(href="#",onclick="GenTab();") [順序]
+            a(href="#",onclick="GenTab();") [順序]                          
           td 
             //input.form-control(type="text", name="tab", id="tab", value=book.tab)
             +inputNum("tab",book.tab)
@@ -83,12 +70,19 @@ block content
             .form-group 
               +inputNGrade("c_ng_id",book.c_ng_id)                
         tr        
+          td 周節
+          td
+            //input.form-control(type="text", name="c_section_total", id="c_section_total", value=book.c_section_total)
+            +inputNum("c_section_total",book.c_section_total)
+
+        tr        
           td SPK
           td 
             input.form-control(type="text", name="SPK", id="SPK", value=book.SPK,readonly="true")
             //+inputNum("SPK",book.SPK)                  
         tr        
-          td filename
+          td
+            a(href="#",onclick="GenFileName();") [filename]
           td 
             input.form-control(type="text", name="filename", id="filename", value=book.filename,readonly=true,onclick="GenFileName();")
     //.form-group.hidden
@@ -98,26 +92,60 @@ block content
        label(for="createdById") Created by ID
        input.form-control(type="text", name="createdById", id="createdById", value=book.createdById)
     button.btn.btn-success(type="submit") Save
+  div#msg
   script.
-    function GenTab(){
-      //course_list=null;//courseName,type,field,groupid,rate,tab
-      let coursename=$("#courseName").val();
+
+    function startCallback() {
+      return true;
+    }
+
+    function completeCallback(response) {
+      //document.getElementById('nr').innerHTML = parseInt(document.getElementById('nr').innerHTML) + 1;
+      document.getElementById('msg').innerHTML +="<br>"+ response;
+    }     
+    function GenType(){
+      //course_list=null;//[ courseName,c_t_type,c_field,groupid,rate,tab,c_ng_id ]
+      let classno=$("#classnocbx").val();
       let ctype=$("#c_T_type").val();
-      //console.log($("#classnocbx").val());
+      let coursename=$("#courseName").val();
+      for(let i=0;i<course_list.length;i++)
+      {
+        let r=course_list[i];
+        if( r[0].trim()==coursename.trim() )
+        {
+          if(classno.indexOf('E')>-1) if( r[1].trim().indexOf('職')==-1 ) continue;
+          $("#c_T_type").val(r[1]);
+          $("#c_field").val(r[2]);
+          $("#groupid").val(r[3]);
+          $("#rate").val(r[4]);
+          $("#tab").val(r[5]);
+          $("#c_ng_idcbx option[value=" + r[6] + "]").attr('selected','selected');
+          break;
+        }//sect I S P
+      }
+      GenFileName();
+    }
+    function GenTab(){
+      //course_list=null;//[ courseName,c_t_type,c_field,groupid,rate,tab,c_ng_id ]
+      let classno=$("#classnocbx").val();
+      let ctype=$("#c_T_type").val();
+      let coursename=$("#courseName").val();
       for(let i=0;i<course_list.length;i++)
       {
         let r=course_list[i];
         console.log(r,coursename,ctype)
         console.log(r[0].trim()==coursename.trim() , r[1].trim() == ctype.trim());
-        if(sect=='P' && r[0].trim()==coursename.trim() && r[1].trim() == ctype.trim())
+        if( r[0].trim()==coursename.trim() && r[1].trim() == ctype.trim())
         {
           $("#groupid").val(r[3]);
           $("#rate").val(r[4]);
           $("#tab").val(r[5]);
+          $("#c_ng_idcbx option[value=" + r[6] + "]").attr('selected','selected');
           
           break;
-        }
+        }//sect I S P
       }
+      GenFileName();
     }
     function GenFileName(){
       let courseName=$("#courseName").val().replace('※',"");
@@ -131,6 +159,7 @@ block content
     var courseName_list=[];
     //CKEDITOR.replace( 'description',{    filebrowserUploadUrl: "imageUploader" }  );      
     $(function() {
+
       if(data==null){
         //$.getJSON( "/internal/markup/crsmng/api/timetable.json", function( data_ ) {data=data_ });
       }
@@ -158,6 +187,5 @@ block content
       }else{
         $("#c_field").comboboxWithSource({ source: ["","中文","英語","數學","學科"] });
       }
-
     });
 

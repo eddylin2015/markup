@@ -117,12 +117,14 @@ router.get('/mark_report_mrs_course_table', (req, res) => {
     let c=req.query.c;
     let orderby=req.query.orderby;
     orderby = orderby ? orderby.replace( /(\w+)\s(\w+)/, '$2,$1'):"classno,tab";  
-    var sql='SELECT course_d_id, mrs_course_detail.classno, mrs_course_detail.staf_ref, c_name, coursename, c_t_type, c_field, c_section_total, tab, groupid,rate, filename, upcnt '+
+    var sql='SELECT course_d_id, mrs_course_detail.classno, mrs_course_detail.staf_ref, c_name, coursename, c_t_type, c_field, c_section_total, tab, groupid,rate, filename, upcnt,c_ng_id '+
     ' FROM mrs_course_detail '+
     ' LEFT JOIN es_user ON mrs_course_detail.staf_ref = es_user.staf_ref'+
     ' WHERE session_id >0 ';
     if(c=="P") {sql+=" and mrs_course_detail.classno like 'P%'";}
     if(c=="S") {sql+=" and mrs_course_detail.classno like 'S%'";}
+    if(c=="SC") {sql+=" and mrs_course_detail.classno like 'SC%'";}
+    if(c=="SG") {sql+=" and mrs_course_detail.classno like 'SG%'";}
     sql+=" ORDER BY "+orderby;
     getModel().DataReaderQuery(sql, (err, entity) => {
         if (err) { next(err); return; }

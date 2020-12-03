@@ -20,7 +20,7 @@ function authRequired(req, res, next) {
   let c=req.session.c?req.session.c:req.query.c;
   if("2003006"==req.user.id && c!="P"){
     return res.end(`${req.user.id}please auth required for Markup_CrsMng_Crud for P !`);
-  }else if("2006011,2012021".indexOf(req.user.id)>-1 && c!="S"){
+  }else if("2006011,2012021".indexOf(req.user.id)>-1 && !(c=="SC"&&c=="SG")){
     return res.end(`${req.user.id}please auth required for Markup_CrsMng_Crud for S !`);
   }
   next();
@@ -43,7 +43,7 @@ router.get('/', authRequired, (req, res, next) => {
 });
 
 router.get('/list', authRequired, (req, res, next) => {
-  let c=req.query.c?req.query.c:req.session.c;
+  let c=req.session.c;
   getModel().list(req.user.id, c, 100, req.query.pageToken, (err, entities, cursor) => {
     if (err) {
       next(err);
@@ -60,19 +60,20 @@ router.get('/list', authRequired, (req, res, next) => {
 
 router.get('/api/seccourse.json',authRequired,  (req, res) => {
   res.type('application/json'); 
-  let c=req.query.c?req.query.c:req.session.c;
-  let spk=c=='S'?"1":"2";
-  const path = process.cwd() + "\\jsondata\\CourseDefPri.json";
-  if(spk=='1')
-    path = process.cwd() + "\\jsondata\\CourseDefSec.json";
+  let c=req.session.c;
+  let path = process.cwd() + "\\jsondata\\CourseDefPri.json";
+  if(c=='SC')
+    {path = process.cwd() + "\\jsondata\\CourseDefSC.json";}
+  else if(c=='SG')
+    {path = process.cwd() + "\\jsondata\\CourseDefSG.json";}
   var readStream = fs.createReadStream(path);
   readStream.pipe(res);
 });
 
 router.get('/api/secteacher.json',authRequired,  (req, res) => {
   res.type('application/json'); 
-  let c=req.query.c?req.query.c:req.session.c;
-  let spk=c=='S'?"1":"2";
+  let c=req.session.c;
+  let spk=c.startsWith('S')?"1":"2";
   const path = process.cwd() + "\\jsondata\\teachers_obj.json";
   fs.readFile(path, (err, data) => {
     if (err) throw err;
@@ -93,10 +94,11 @@ router.get('/api/secteacher.json',authRequired,  (req, res) => {
  */
 router.get('/add', authRequired, (req, res) => {
   let c=req.session.c;
-  let spk=c=='S'?1:2;
+  let spk=c.startsWith('S')?1:2;
   res.render('markup/crsmng/form.pug', {
     profile: req.user,
     c:c,
+    batch:req.query.batch,
     book: {
       session_id: Number(GetSID(req)),
       SPK:spk ,
@@ -104,8 +106,8 @@ router.get('/add', authRequired, (req, res) => {
       groupid:100,
       rate:100,
       c_section_total:0,
-      c_ng_id:9
-
+      c_ng_id:9,
+      tab:100
     },
     action: 'Add'
   });
@@ -128,7 +130,11 @@ router.post(
         next(err);
         return;
       }
+      if(req.query.batch){
+        res.end(JSON.stringify(savedData))  
+     }else{
       res.redirect(`${req.baseUrl}/${savedData.course_d_id}`);
+     }
     });
   }
 );
@@ -140,7 +146,6 @@ router.post(
  */
 router.get('/:book/edit', (req, res, next) => {
   let c=req.session.c;
-  let spk=c=='S'?1:2;
   getModel().read(req.user.id, req.params.book, (err, entity) => {
     if (err) {
       next(err);
@@ -150,6 +155,7 @@ router.get('/:book/edit', (req, res, next) => {
       profile: req.user,
       book: entity,
       c:c,
+      batch:req.query.batch,
       action: 'Edit'
     });
   });
@@ -178,7 +184,11 @@ router.post(
     //if (req.file && req.file.cloudStoragePublicUrl) { req.body.imageUrl = req.file.cloudStoragePublicUrl; }
     getModel().update(req.user.id, req.params.book, data, (err, savedData) => {
       if (err) { next(err); return; }
+      if(req.query.batch){
+         res.end(JSON.stringify(savedData))  
+      }else{
       res.redirect(`${req.baseUrl}/${savedData.course_d_id}`);
+      }
     });
   }
 );
@@ -188,7 +198,6 @@ router.post(
  */
 router.get('/:book', (req, res, next) => {
   let c=req.query.c?req.query.c:"S";
-  let spk=c=='S'?1:2;
   getModel().read(req.user.id, req.params.book, (err, entity) => {
     
     if (err) {

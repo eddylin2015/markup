@@ -43,10 +43,15 @@ html
           li
             a(href=`/internal/markup/crsmng/list?c=${c}`) 課程
           li
+            a(href=`/internal/markup/crsmng/grid?c=${c}`) 課程表格         
+          li
             a(href=`/internal/markup/mark_report_mrs_course_table?c=${c}&orderby=classno,tab`) 大表
           li
+            a(href=`/internal/markup/crsmng/add?c=${c}&batch=true`) [ADD]
+
+          //li
             a(href="/internal/markup/crsmng/searchform") 查詢
-          li
+          //li
             a(href='/internal/markup/crsmng/searchforKW')
               span(class="glyphicon glyphicon-search")
         p.navbar-text.navbar-right
